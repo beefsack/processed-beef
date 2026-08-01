@@ -24,5 +24,8 @@ increased to parallelize independent work.
 
 The process enforces these limits even when the host cannot. Host enforcement is
 an additional safeguard where available. Near 85% of the effective limit, or
-when the next unit may exceed the remaining budget, a role writes `handover.md`
-and stops. No role continues past its configured limit.
+when the next unit may exceed the remaining budget, a role stops. A role with a
+live parent returns a terminal curated report through chat; the chat return is
+a terminal handover even when reported as `blocked`, and the outgoing role does
+not resume. A top-level session or a boundary without a live parent writes a
+terminal `handover.md`. No role continues past its configured limit.

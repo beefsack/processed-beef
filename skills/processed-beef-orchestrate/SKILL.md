@@ -65,8 +65,11 @@ Upgrade triggers and routing details: `references/artifacts.md`.
   plan, log, and state. Only the Lead mutates plans and state.
 - Every role uses its effective configured context limit, default `150000`,
   enforced by process. Near 85% of that limit, or when the next unit may exceed
-  the remaining budget, the role writes `handover.md` and stops; it never
-  schedules more tasks to fit.
+  the remaining budget, the role stops and returns a terminal curated report
+  through chat when a live parent exists; only a top-level session or a
+  boundary without a live parent writes a terminal `handover.md`. The chat
+  return is a terminal handover even when reported as `blocked`, and the
+  outgoing role does not resume. It never schedules more tasks to fit.
 - Work-unit IDs, brief format, context limits, and handovers:
   `references/scheduling.md`.
 
@@ -78,6 +81,18 @@ and a stop-on-surprise instruction. The Lead inspects actual changes and
 evidence, never a summary. A suspicious Worker result is not reverted before
 the actual changes are inspected; the diff decides. Brief contents:
 `references/scheduling.md`.
+
+A `complete` Worker report and every actual handover are terminal: the Worker
+or role ends, and fresh subagents are required after completion, handover,
+changed scope, corrections, or further work. An ordinary `blocked` or
+`decision-needed` Worker return is a pause report, not a handover: a Worker may
+resume only its same unfinished unit, and only after the Lead answers a
+specific `decision-needed` report or resolves its concrete `blocked` condition
+within the Worker's context budget. A context-ceiling return is a terminal chat
+handover even if its status is `blocked`: the outgoing role stops for
+succession and does not resume. Worker-to-Lead and Lead-to-Orchestrator reports
+and handovers return through chat, curated and comprehensive, without
+exhaustive transcripts or persisted report files.
 
 ## Verify and Review
 

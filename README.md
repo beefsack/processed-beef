@@ -32,8 +32,9 @@ The process routes work to the smallest suitable level and upgrades in place whe
 ## v1 Constraints
 
 - **Serial**: exactly one subagent is active at a time across the whole hierarchy; never parallelized, in any mode.
-- **Context ceiling**: each role uses a configurable default `150000`-token context limit, enforced by the process. Near 85% of the effective limit, or when the next unit may exceed the remaining budget, a role writes `handover.md` and stops.
-- **Crash recovery**: `log.md` is an append-only checkpoint log and Git is the recovery truth after abrupt session or quota loss; `handover.md` supports deliberate context transfer.
+- **Context ceiling**: each role uses a configurable default `150000`-token context limit, enforced by the process. Near 85% of the effective limit, or when the next unit may exceed the remaining budget, a role with a live parent returns a terminal curated report through chat and stops; only a top-level session or a boundary without a live parent writes a terminal `handover.md`.
+- **Handovers are terminal**: `complete` ends its Worker, and every actual handover ends its outgoing agent; a fresh subagent is required after completion, handover, changed scope, corrections, or further work. An ordinary `blocked` or `decision-needed` return is a pause report, not a handover: a Worker may resume only its same unfinished unit, and only after a specific `decision-needed` answer or a resolved concrete `blocked` condition, within context budget. A context-ceiling return is a terminal chat handover even when reported as `blocked`: the outgoing agent stops for succession and does not resume. Worker-to-Lead and Lead-to-Orchestrator reports and handovers return curated comprehensive chat reports, not persisted files or exhaustive transcripts.
+- **Crash recovery**: `log.md` is an append-only checkpoint log and Git is the recovery truth after abrupt session or quota loss; `handover.md` is reserved for a top-level session transfer or a boundary without a live parent where chat cannot bridge.
 
 ## Prerequisites
 

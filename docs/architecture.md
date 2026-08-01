@@ -108,10 +108,30 @@ Process context limits are always skill-enforced and optionally host-enforced.
 - The target hosts do not consistently provide per-agent hard context
   ceilings, so v1 enforces the `150000` limit at the process level.
 - Near 85% of the effective limit, or when the next unit may exceed the
-  remaining budget, the role writes `handover.md` and stops. No role
-  continues past its limit.
+  remaining budget, a role with a live parent returns a terminal curated
+  report through chat and stops; a top-level session or a boundary without a
+  live parent writes a terminal `handover.md`. No role continues past its
+  limit.
 - Where a host offers a per-agent limit, treat it as an additional safeguard,
   not as the enforcement mechanism.
+
+## Handover Boundaries
+
+A `complete` report and every actual handover are terminal: they end the
+reporting or handing-off agent, and a fresh subagent is required after
+completion, handover, changed scope, corrections, or further work. An ordinary
+`blocked` or `decision-needed` return is a pause report, not a handover: the
+sole resumption exception is the same unfinished Worker unit after the parent
+answers a specific `decision-needed` report or resolves its concrete `blocked`
+condition, and only while the Worker remains within its context budget. A
+context-ceiling return is a terminal chat handover even if its status is
+`blocked`: the outgoing agent stops for succession and does not resume.
+
+Worker-to-Lead and Lead-to-Orchestrator reports and actual handovers return
+through chat as curated, comprehensive reports, never as persisted report files
+or exhaustive transcripts. `handover.md` is reserved for a top-level session
+transfer or a boundary without a live parent where chat cannot bridge; writing
+it ends the outgoing agent and a successor starts fresh.
 
 ## Concurrency
 

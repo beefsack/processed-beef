@@ -83,7 +83,11 @@ Worker must not delegate, so it gets neither.
 
 VS Code does not provide a per-agent hard context ceiling. The `150000` limit
 is skill-enforced: near 85% of the effective limit, or when the next unit may
-exceed the remaining budget, the role writes `handover.md` and stops.
+exceed the remaining budget, a role with a live parent returns a terminal
+curated report through chat and stops; the return is a terminal chat handover
+even when reported as `blocked`, and the outgoing role does not resume. Only a
+top-level session or a boundary without a live parent writes a terminal
+`handover.md`.
 
 ## Zero-Config Fallback
 

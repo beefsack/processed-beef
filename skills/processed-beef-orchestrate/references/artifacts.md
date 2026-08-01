@@ -30,7 +30,7 @@ docs/changes/<active-change>/
     plan.md      # required
     log.md       # required for active Standard and Expanded work
     state.md     # only for multi-Lead work
-    handover.md  # only for a planned context transfer
+    handover.md  # only for a top-level transfer without a live parent
     research/    # only for durable decision evidence
 ```
 
@@ -75,10 +75,12 @@ copied output, speculation, or information obvious from the diff.
 - `state.md` - template `assets/state.md`; added when the change needs successive
   Leads; records current
   major unit, completed units, blockers, and next dispatch.
-- `handover.md` - template `assets/handover.md`; written before a deliberate
-  context transfer; records the
+- `handover.md` - template `assets/handover.md`; written only at a top-level
+  session transfer or a boundary without a live parent where chat cannot
+  bridge; the handover is terminal and ends the outgoing agent. It records the
   objective, completed work, exact files and commits, decisions, verification,
-  blockers, and next action.
+  blockers, and next action. Worker-to-Lead and Lead-to-Orchestrator handovers
+  return curated reports through chat and do not write this file.
 - `research/` - stores conclusions and citations that must survive planning.
   Raw exploration transcripts are not retained.
 

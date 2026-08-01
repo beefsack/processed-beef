@@ -48,6 +48,22 @@ Return exactly one status:
 | `blocked` | stopped by a condition the brief cannot resolve; state it and why |
 | `decision-needed` | brief ambiguous, competing readings, or an unrequested decision |
 
+- `complete` is terminal and ends this Worker. Every actual handover is also
+  terminal and ends this Worker: a curated chat handover, or a `handover.md`
+  transfer at a top-level session transfer or a boundary without a live parent.
+  A fresh subagent is required after completion, handover, changed scope,
+  corrections, or further work.
+- An ordinary `blocked` or `decision-needed` return is a pause report, not a
+  handover: it does not end this Worker. Resumption is permitted only for this
+  same unfinished unit, and only after the Lead answers a specific
+  `decision-needed` report or resolves this Worker's concrete `blocked`
+  condition, and only while this Worker remains within its context budget.
+- A context-ceiling return is a terminal chat handover even if its status is
+  `blocked`: this Worker stops for succession and does not resume, and a fresh
+  subagent takes over. It is not an ordinary resumable `blocked` report.
+- Reports return through chat, curated and comprehensive, without exhaustive
+  transcripts or persisted report files.
+
 Risks (surprising complexity, fragile code, maintenance hazards) are report-only:
 give impact and proportionate remediation in the report; do not fix them.
 
@@ -57,15 +73,20 @@ result, changed files, and verification. No narration or copied output.
 ## Context Ceiling
 
 Use the effective configured context limit, default `150000`. Near 85% of it, or
-when finishing may exceed it: write `handover.md` (objective, completed work,
-exact files, decisions, verification, blockers, next action), then stop and
-report `blocked`.
+when finishing may exceed it: stop, checkpoint `log.md` when one exists, and
+report `blocked` through chat with a curated report. This is a terminal chat
+handover even though its status is `blocked`: this Worker stops for succession
+and does not resume. Do not write `handover.md`; it is reserved for top-level
+session transfers or boundaries without a live parent where chat cannot
+bridge.
 
 ## Report Shape
 
 Concise and structured: status line, objective, changed files, evidence per
 claim, reported risks, blockers or decisions needed. The report only points at
-evidence; the diff and evidence decide what happened.
+evidence; the diff and evidence decide what happened. Returned through chat,
+curated and comprehensive, without exhaustive transcripts or persisted report
+files.
 
 ## Shared Engineering Standard
 
