@@ -1,0 +1,15 @@
+# Log: <title>
+
+Append-only. Append after a meaningful checkpoint: completed unit, verified
+partial result, consequential discovery, blocker, commit, or approved plan
+change. Each entry records timestamp, role and work unit, result, changed files
+or commit, verification, and any discovery, blocker, or required decision. No
+narration, copied output, or speculation.
+
+## YYYY-MM-DD HH:MM
+
+- Role / unit: <role> / <unit-id>
+- Result: <result>
+- Files / commit: <paths or hash>
+- Verification: <evidence>
+- Notes: <discovery, blocker, or required decision>

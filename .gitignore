@@ -1,0 +1,13 @@
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+
+# Build
+dist/
+build/
+*.log

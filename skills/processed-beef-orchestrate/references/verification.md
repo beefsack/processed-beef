@@ -1,0 +1,51 @@
+# Verification Reference
+
+## Evidence Standard
+
+Every acceptance criterion maps to reproducible evidence in `plan.md`. Evidence
+may be a focused test, check, inspection, screenshot, log, or other current
+observation appropriate to the behavior.
+
+- Bug work begins with a reproduced failure or other falsifiable evidence.
+- Regression-first tests are expected for bugs when a practical test boundary
+  exists.
+- New behavior receives targeted tests appropriate to repository conventions
+  and risk.
+- Mechanical changes use proportionate checks rather than ceremonial tests.
+- Leads inspect actual changes and evidence.
+- Orchestrators inspect alignment and the evidence map, not the implementation
+  again.
+
+## Worker Results
+
+Worker output is never accepted without Lead inspection. The Lead:
+
+- inspects the actual diff and files, not the summary;
+- checks that every completion claim has current evidence;
+- treats the diff and evidence as ground truth when a report looks wrong;
+- does not revert or discard a suspicious result before inspecting the real
+  changes.
+
+## Review Triggers
+
+Dispatch one independent review when any of these applies:
+
+- security, authorization, migration, destructive behavior, public contracts,
+  or difficult rollback;
+- broad or subtle changes not adequately established by focused evidence;
+- a Worker crossed scope, guessed, omitted evidence, or returned a suspicious
+  result;
+- two attempts failed on the same work unit;
+- the Lead introduced a consequential design choice without prior independent
+  evidence.
+
+Routine work does not receive duplicated independent reviews.
+
+## Review Protocol
+
+The review Worker receives approved constraints, the diff, and evidence, but
+not the implementation narrative. It returns only concrete, evidenced findings.
+
+The Lead classifies each finding as fix, defer with reason, or reject with
+reason. One bounded correction pass follows. Unresolved serious findings
+escalate rather than starting an open-ended review loop.

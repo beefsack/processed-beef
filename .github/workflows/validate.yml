@@ -1,0 +1,15 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run validation
+        run: sh tests/validate.sh
+      - name: Verify Agent Skills discovery
+        run: npx --yes skills add . --list
