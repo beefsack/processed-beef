@@ -171,4 +171,8 @@ done
 
 check_invariants
 
+if ! node "$repo_root/tests/opencode-plugin.mjs"; then
+    error "OpenCode plugin contract failed"
+fi
+
 exit "$fail"

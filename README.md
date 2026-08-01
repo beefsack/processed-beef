@@ -41,25 +41,40 @@ Full operation requires nested subagents to depth two: the Orchestrator dispatch
 
 ## Install
 
-Install the three skills from the repository. The repository is not yet published, so replace the placeholder `<owner>` with the actual GitHub owner once it is.
+Install the three skills from the repository.
 
 This repository is the canonical source. Dotfiles and Nix configurations should
 pin and consume it rather than copy or regenerate the skills.
 
 ```
-npx skills add <owner>/processed-beef --all
+npx skills add beefsack/processed-beef --all
 ```
 
 ```
-gh skill install <owner>/processed-beef --all --agent <agent> --scope user
+gh skill install beefsack/processed-beef --all --agent <agent> --scope user
 ```
 
 Local install from a checkout:
 
 ```
-git clone https://github.com/<owner>/processed-beef.git
+git clone https://github.com/beefsack/processed-beef.git
 npx skills add ./processed-beef --all
 ```
+
+OpenCode can load the skills directly from the Git repository as a plugin:
+
+```json
+{
+  "plugin": [
+    "processed-beef@git+https://github.com/beefsack/processed-beef.git"
+  ]
+}
+```
+
+Restart OpenCode after changing plugin configuration. The plugin exposes the
+skills but does not activate the workflow or configure role agents and nested
+delegation; follow the [OpenCode integration guide](docs/integrations/opencode.md)
+for those settings.
 
 For a manual install, copy the three directories inside `skills/` into the
 destination documented by the relevant integration guide. Do not copy the

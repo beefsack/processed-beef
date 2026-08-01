@@ -20,6 +20,23 @@ creates the `processed-beef-lead` agent. The `.opencode` and
 `~/.config/opencode` directories accept either `agent/` or `agents/`
 subdirectories.
 
+## Install as a Plugin
+
+Add the Git-backed package to the `plugin` array in project or global
+`opencode.json`:
+
+```json
+{
+  "plugin": [
+    "processed-beef@git+https://github.com/beefsack/processed-beef.git"
+  ]
+}
+```
+
+Restart OpenCode after changing plugin configuration. The plugin registers the
+repository's bundled skills only. It does not activate the workflow, create
+role agents, or set `subagent_depth` and permissions; configure those below.
+
 ## Minimal Role-Agent Configuration
 
 Project `opencode.json`:
