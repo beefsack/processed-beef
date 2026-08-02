@@ -7,7 +7,7 @@
 | Plan adjustment within approved constraints | Lead | Orchestrator | Lead |
 | Obvious spec correction with one clear, simple, non-contentious answer | Lead | Orchestrator | Lead |
 | Ambiguous, consequential, or contentious spec change | Lead | User through Orchestrator | Lead after approval |
-| `principles.md` or `decisions.md` change | Orchestrator discusses with user | User only | Delegated subagent after approval |
+| `docs/principles.md` or `docs/decisions.md` change | Orchestrator discusses with user | User only | Delegated subagent after approval |
 
 A clear specification correction cannot alter scope, externally visible
 behavior, architecture, security posture, data semantics, cost profile, or an
@@ -56,3 +56,9 @@ changing governance or implementing the contradiction.
 The Lead escalates to the Orchestrator, and the Orchestrator to the user,
 product and governance decisions, consequential technical decisions, and any
 change that is ambiguous, contentious, or outside approved constraints.
+
+Delegating research, implementation, review, or evidence gathering does not
+delegate product or governance authority. Lead reports cite the relevant
+governing clauses and decision needed; for a consequential ruling, the
+Orchestrator may directly read the narrowly cited clause rather than an entire
+governance corpus.

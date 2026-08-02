@@ -24,4 +24,4 @@ of behavior.
 | Run | Observed behavior |
 |---|---|
 | RED | Mostly complied because inherited local rules aligned with the process, but prematurely proposed reverting a suspicious Worker result before inspecting the actual changes, and lacked the exact configured-limit behavior (no 85% handover). |
-| GREEN | Inspected the actual diff, files, and evidence first and let the diff decide, and wrote `handover.md` and stopped at 85% of the configured context limit. |
+| GREEN | Inspected the actual diff, files, and evidence first and let the diff decide, then conservatively counted raw bytes one-to-one and returned through the appropriate terminal boundary before the 85% context limit. |

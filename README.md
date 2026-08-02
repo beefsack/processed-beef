@@ -8,11 +8,18 @@ Start a session by invoking only the `processed-beef` entry skill. It replaces m
 
 | Role | Skill | Responsibility |
 |---|---|---|
-| Orchestrator | `processed-beef` | Maintains coherence, priorities, principles, and decisions; approves every `spec.md` and `plan.md` creation or edit; delegates major units to Leads; performs no implementation work |
-| Lead | `processed-beef-orchestrate` | Owns one major unit; creates Worker briefs; dispatches Workers serially; inspects the actual diff, files, and evidence, never a summary |
+| Orchestrator | `processed-beef` | Maintains backlog priorities, principles, decisions, role configuration, and cross-change dependencies; approves every `spec.md` and `plan.md` creation or edit; delegates major units to Leads; performs no implementation work |
+| Lead | `processed-beef-orchestrate` | Owns one major unit; deeply reads the active change's relevant specification, plan, and evidence; creates Worker briefs; dispatches Workers serially; inspects the actual diff, files, and evidence, never a summary |
 | Worker | `processed-beef-work-unit` | Executes one bounded unit from a Lead brief and returns verified evidence |
 
 The Orchestrator normally runs as the top-level session. The Lead is a subagent one level down, and the Worker is a nested subagent two levels down.
+
+Every role reads `docs/principles.md` at startup when present. The Orchestrator
+also reads `docs/backlog.md` and `docs/decisions.md` when present; Leads and
+Workers read `docs/backlog.md` only when assigned work needs current priorities
+or cross-change coordination. Workers otherwise read only their bounded brief
+inputs, while Leads deeply read the active change's relevant specification and
+plan before implementation or review.
 
 ## Adaptive Flow
 
@@ -24,7 +31,7 @@ The process routes work to the smallest suitable level and upgrades in place whe
 
 ## Governance
 
-- The user owns `principles.md` and `decisions.md`; agents may propose changes, but only the user approves them.
+- The user owns `docs/principles.md` and `docs/decisions.md`; agents may propose changes, but only the user approves them.
 - The Orchestrator approves every `spec.md` and `plan.md` creation or edit before it happens.
 - The user approves specifications before implementation and results before completion, unless the user explicitly requests autonomous mode.
 - Autonomous mode delegates plan and specification approval but never governance authority or permission to contradict active governance.
@@ -32,7 +39,7 @@ The process routes work to the smallest suitable level and upgrades in place whe
 ## v1 Constraints
 
 - **Serial**: exactly one subagent is active at a time across the whole hierarchy; never parallelized, in any mode.
-- **Context ceiling**: each role uses a configurable default `150000`-token context limit, enforced by the process. Near 85% of the effective limit, or when the next unit may exceed the remaining budget, a role with a live parent returns a terminal curated report through chat and stops; only a top-level session or a boundary without a live parent writes a terminal `handover.md`.
+- **Context ceiling**: each role uses a configurable default `150000`-token context limit, enforced by the process. Before each new work package, it checks remaining context and stops scheduling when the package may not fit. Near 85% of the effective limit, or when the next unit may exceed the remaining budget, a role with a live parent returns a terminal curated report through chat and stops; only a top-level session or a boundary without a live parent writes a terminal `handover.md`. Without exact host token telemetry, use `wc -c` or equivalent before each raw read to count each byte loaded into the role as one token; return before a read or package reaches 85% of the effective limit (`127500` bytes by default). Cancellations, retries, and failed units trigger reassessment and a compressed replacement brief.
 - **Handovers are terminal**: `complete` ends its Worker, and every actual handover ends its outgoing agent; a fresh subagent is required after completion, handover, changed scope, corrections, or further work. An ordinary `blocked` or `decision-needed` return is a pause report, not a handover: a Worker may resume only its same unfinished unit, and only after a specific `decision-needed` answer or a resolved concrete `blocked` condition, within context budget. A context-ceiling return is a terminal chat handover even when reported as `blocked`: the outgoing agent stops for succession and does not resume. Worker-to-Lead and Lead-to-Orchestrator reports and handovers return curated comprehensive chat reports, not persisted files or exhaustive transcripts.
 - **Crash recovery**: `log.md` is an append-only checkpoint log and Git is the recovery truth after abrupt session or quota loss; `handover.md` is reserved for a top-level session transfer or a boundary without a live parent where chat cannot bridge.
 

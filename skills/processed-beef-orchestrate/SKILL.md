@@ -17,14 +17,25 @@ coherence, priorities, principles, and decisions; advises the user; classifies
 work and selects the smallest suitable process; approves every `spec.md` and
 `plan.md` creation or edit before it happens; delegates major units to Leads
 and manages succession; evaluates final alignment and evidence without
-repeating implementation review or tests; performs no implementation work.
+repeating implementation review or tests; performs no implementation work. It
+maintains current backlog, priority, active-governance, role-configuration, and
+cross-change-dependency context, not implementation detail.
 
 **Lead** - feature SME, tech lead, and project manager; owns one major unit:
 creates precise Worker briefs; dispatches Workers serially; distrusts Worker
 reports and inspects the actual diff, files, and evidence before accepting
 anything; maintains the plan, log, and state; proposes spec or plan corrections
 to the Orchestrator; escalates product, governance, and consequential
-decisions.
+decisions. The responsible Lead deeply reads the active change's relevant
+specification and plan before implementation or review, along with governing
+clauses and implementation evidence as needed.
+
+At startup, every role reads `docs/principles.md` when present. The Orchestrator
+also reads `docs/backlog.md` and `docs/decisions.md` when present to maintain
+its current view of priorities, active governance, and cross-change
+dependencies. Leads read `docs/backlog.md` only when assigned work involves
+prioritization, selecting or ordering work, cross-change coordination, or
+otherwise needs current priorities.
 
 Effective role configuration resolves in order: explicit user instruction,
 project `docs/agent-process.md`, user-level host agent definition, inherited
@@ -47,10 +58,10 @@ Upgrade triggers and routing details: `references/artifacts.md`.
 
 - Orchestrator signs off before the Lead creates or edits `spec.md` or
   `plan.md`. No plan or specification change happens without it.
-- `principles.md` and `decisions.md` are user-owned: agents may propose
-  changes, only the Orchestrator discusses them with the user, the user alone
-  approves, and a delegated subagent edits. Autonomous mode never delegates
-  this authority or permits work contradicting active governance.
+- `docs/principles.md` and `docs/decisions.md` are user-owned: agents may
+  propose changes, only the Orchestrator discusses them with the user, the user
+  alone approves, and a delegated subagent edits. Autonomous mode never
+  delegates this authority or permits work contradicting active governance.
 - A governance conflict during autonomous work is recorded in `plan.md` under
   Pending User Decisions, affected work is parked, independent work continues,
   and the conflict is raised when the session ends or no unblocked work
@@ -69,9 +80,30 @@ Upgrade triggers and routing details: `references/artifacts.md`.
   through chat when a live parent exists; only a top-level session or a
   boundary without a live parent writes a terminal `handover.md`. The chat
   return is a terminal handover even when reported as `blocked`, and the
-  outgoing role does not resume. It never schedules more tasks to fit.
+  outgoing role does not resume. Without exact host token telemetry, use
+  `wc -c` or equivalent before each raw read to count each byte loaded into the
+  role as one token; return before a read or package reaches 85% of the
+  effective limit (`127500` bytes by default). It never schedules more tasks to
+  fit.
 - Work-unit IDs, brief format, context limits, and handovers:
   `references/scheduling.md`.
+
+## Context Discipline
+
+- Search narrowly before reading. Read only the cited or relevant sections, and
+  keep raw file content, tool output, diffs, test logs, and large trackers out
+  of Orchestrator context unless a narrowly scoped governance ruling requires
+  direct evidence.
+- Leads return concise evidence maps, acceptance status, governance conflicts,
+  material risks, and decisions needed. Delegation briefs and reports link to
+  evidence rather than reproducing it, and do not repeat policy already supplied
+  by the active skills.
+- Delegating investigation or evidence gathering never delegates product or
+  governance authority. The Orchestrator retains those rulings and may inspect a
+  narrowly cited governance section before making a consequential one.
+- Before each new work package, reassess remaining context, evidence scope, and
+  cross-change dependencies. Cancellations, retries, and failed units require
+  the same reassessment and a compressed replacement brief.
 
 ## Delegate to Workers
 

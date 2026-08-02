@@ -149,6 +149,53 @@ check_invariants() {
     done
 }
 
+check_process_conventions() {
+    if grep -R -E -q --exclude-dir=.git --exclude-dir=node_modules 'VISION[.]md' "$repo_root"; then
+        error "process guidance still references an obsolete startup document"
+    fi
+
+    for file in \
+        "$repo_root/README.md" \
+        "$repo_root/docs/architecture.md" \
+        "$repo_root/skills/processed-beef/SKILL.md" \
+        "$repo_root/skills/processed-beef-orchestrate/SKILL.md" \
+        "$repo_root/skills/processed-beef-work-unit/SKILL.md" \
+        "$repo_root/skills/processed-beef-orchestrate/assets/agent-process.md" \
+        "$repo_root/skills/processed-beef-orchestrate/references/scheduling.md"; do
+        if ! grep -Fq 'docs/principles.md' "$file"; then
+            error "${file#"$repo_root"/}: missing canonical principles path"
+        fi
+    done
+
+    for file in \
+        "$repo_root/README.md" \
+        "$repo_root/docs/architecture.md" \
+        "$repo_root/skills/processed-beef/SKILL.md" \
+        "$repo_root/skills/processed-beef-orchestrate/SKILL.md" \
+        "$repo_root/skills/processed-beef-orchestrate/assets/agent-process.md"; do
+        if ! grep -Fq 'docs/backlog.md' "$file" || ! grep -Fq 'docs/decisions.md' "$file"; then
+            error "${file#"$repo_root"/}: missing canonical governance or backlog path"
+        fi
+    done
+
+    for file in \
+        "$repo_root/README.md" \
+        "$repo_root/docs/architecture.md" \
+        "$repo_root/skills/processed-beef-orchestrate/SKILL.md" \
+        "$repo_root/skills/processed-beef-work-unit/SKILL.md" \
+        "$repo_root/skills/processed-beef-orchestrate/assets/agent-process.md" \
+        "$repo_root/skills/processed-beef-orchestrate/references/scheduling.md" \
+        "$repo_root/docs/integrations/antigravity.md" \
+        "$repo_root/docs/integrations/claude-code.md" \
+        "$repo_root/docs/integrations/codex.md" \
+        "$repo_root/docs/integrations/opencode.md" \
+        "$repo_root/docs/integrations/vscode.md"; do
+        if ! grep -Fq 'wc -c' "$file" || ! grep -Fq 'one token' "$file" || ! grep -Fq '127500' "$file"; then
+            error "${file#"$repo_root"/}: missing reproducible context fallback"
+        fi
+    done
+}
+
 for skill in "$skills_dir"/*/; do
     skill_name=$(basename "$skill")
     file=$skill/SKILL.md
@@ -170,6 +217,7 @@ for file in $markdown_files; do
 done
 
 check_invariants
+check_process_conventions
 
 if ! node "$repo_root/tests/opencode-plugin.mjs"; then
     error "OpenCode plugin contract failed"

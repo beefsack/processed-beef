@@ -54,6 +54,23 @@ Orchestrator retains project-wide product and engineering context, advises the
 user, directs successive Leads, and avoids implementation detail. This allows
 large quantities of work without any one role exceeding its context budget.
 
+Every role reads `docs/principles.md` at startup when present. The Orchestrator
+also reads `docs/backlog.md` and `docs/decisions.md` when present to build a
+current view of priorities and cross-change dependencies. It does not normally
+consume full change specifications or plans, implementation files, review
+corpora, raw diffs, test logs, or large trackers. Leads deeply read the active
+change's relevant specification and plan before implementation or review, then
+return concise evidence maps, acceptance status, governance conflicts, material
+risks, and decisions needed. Leads and Workers read `docs/backlog.md` only when
+assigned work involves prioritization, selecting or ordering work, cross-change
+coordination, or otherwise needs current priorities. Workers read only their
+bounded brief inputs beyond the universal files, not unrelated plans or the
+wider backlog. Evidence gathering does not transfer product or governance
+authority; for a consequential ruling, the Orchestrator may inspect the
+narrowly cited governing clause directly. It approves specifications and plans
+from the Lead's report unless an ambiguity or consequential decision requires a
+narrowly cited proposal section.
+
 ## Effective Role Configuration
 
 Effective role configuration resolves in this order:
@@ -112,6 +129,14 @@ Process context limits are always skill-enforced and optionally host-enforced.
   report through chat and stops; a top-level session or a boundary without a
   live parent writes a terminal `handover.md`. No role continues past its
   limit.
+- Before each new work package, the responsible role checks whether the
+  remaining context can accommodate its evidence and report, and stops
+  scheduling before the ceiling when it cannot. Without exact host token
+  telemetry, use `wc -c` or equivalent before each raw read to count each byte
+  loaded into the role as one token; return before a read or package reaches
+  85% of the effective limit (`127500` bytes by default). Cancellations,
+  retries, and failed units trigger a reassessment and a compressed replacement
+  brief.
 - Where a host offers a per-agent limit, treat it as an additional safeguard,
   not as the enforcement mechanism.
 

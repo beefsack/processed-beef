@@ -34,9 +34,9 @@ docs/changes/<active-change>/
     research/    # only for durable decision evidence
 ```
 
-`backlog.md` is created only when more than one change is pending or active.
-Each item is one physical line linking to its change directory; it never
-duplicates plan tasks.
+`docs/backlog.md` is created only when more than one change is pending or
+active. Each item is one physical line linking to its change directory and
+identifying cross-change dependencies; it never duplicates plan tasks.
 
 ## spec.md
 
@@ -101,5 +101,6 @@ user decisions, or acceptance gaps remain:
 The archive retains `spec.md`, `plan.md`, and only research with lasting
 standalone value.
 
-Project-level templates: `assets/principles.md`, `assets/decisions.md`,
-`assets/backlog.md`, and `assets/agent-process.md`.
+Project-level templates: `assets/principles.md` to `docs/principles.md`,
+`assets/decisions.md` to `docs/decisions.md`, `assets/backlog.md` to
+`docs/backlog.md`, and `assets/agent-process.md` to `docs/agent-process.md`.

@@ -20,7 +20,7 @@ Non-goals:
 
 ## Applicable Principles and Decisions
 
-- <principles.md or decisions.md clause>
+- <docs/principles.md or docs/decisions.md clause>
 
 ## Constraints
 

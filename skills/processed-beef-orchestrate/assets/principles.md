@@ -1,8 +1,8 @@
 # Principles
 
-Principles are user-owned. Agents may propose changes, the Orchestrator
-discusses them with the user, and only the user approves. No work may
-contradict an active principle.
+Template for `docs/principles.md`. Principles are user-owned. Agents may propose
+changes, the Orchestrator discusses them with the user, and only the user
+approves. No work may contradict an active principle.
 
 - Correctness, quality, simplicity, readability, and maintainability over
   speed.

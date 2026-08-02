@@ -28,11 +28,27 @@ report and stopping; the chat return is a terminal handover even when reported
 as `blocked`, and the outgoing role does not resume. It never means scheduling
 more tasks to make use of the remaining budget.
 
+Before starting each new work package, the responsible role checks remaining
+context against the package's expected evidence and report. It stops scheduling
+new packages before the ceiling when that work may not fit, rather than using
+the remaining budget opportunistically. Without exact host token telemetry, use
+`wc -c` or equivalent before each raw read to maintain a cumulative count of
+raw bytes loaded into the role from source, diffs, reviews, trackers, and test
+logs. Count one byte as one token and return before a read or package reaches
+85% of the effective limit (`127500` bytes by default).
+
+A cancellation, retry, or failed unit triggers this same context reassessment.
+The replacement brief is compressed to the unresolved objective, relevant
+constraints, current evidence pointers, and the specific reason the prior unit
+stopped; it does not replay policy or raw transcripts.
+
 ## Worker Brief
 
 Every dispatch includes:
 
 - one bounded objective;
+- `docs/principles.md` when present, plus only the bounded inputs needed for
+  the objective;
 - required inputs and relevant constraints;
 - allowed scope;
 - expected evidence;
@@ -41,6 +57,10 @@ Every dispatch includes:
 
 Workers execute, verify every completion claim, checkpoint the log when one
 exists, and return one of `complete`, `blocked`, or `decision-needed`.
+Workers do not independently read `docs/backlog.md`, unrelated plans, or the
+wider project context. They read `docs/backlog.md` only when their assigned work
+involves prioritization, selecting or ordering work, cross-change coordination,
+or otherwise needs current priorities.
 
 ## Terminal Reports, Handovers, and Resumption
 
@@ -70,6 +90,15 @@ decision: do not revert, rewrite, or discard it until the real changes are read
 and the evidence checked. The diff decides what happened; the report only
 points at it.
 
+Before implementation or review, the Lead deeply reads the active change's
+relevant specification and plan, governing clauses, implementation evidence,
+and Worker results enough to accept or reject work. It reads `docs/backlog.md`
+only when its assigned work involves prioritization, selecting or ordering work,
+cross-change coordination, or otherwise needs current priorities. It returns
+the Orchestrator a concise evidence map, acceptance status, governance
+conflicts, material risks, and decisions needed. The Orchestrator does not
+receive raw implementation material by default.
+
 ## Recovery
 
 - Treat `log.md` and Git as recovery truth after abrupt quota or session loss.
@@ -91,11 +120,15 @@ points at it.
 ## Standard Dispatch Sequence
 
 1. Orchestrator dispatches one Lead to survey only enough code and evidence to
-   propose a spec and plan without writing them.
+   propose a spec and plan without writing them. The Lead, not the
+   Orchestrator, ensures relevant active-change material is read before
+   implementation.
 2. Lead uses serial Workers for focused investigation only when direct reads
    are insufficient.
-3. Lead returns proposed documents; Orchestrator reviews alignment, ambiguity,
-   scope, and verification.
+3. Lead returns a concise proposal summary, approval-relevant sections, and
+   acceptance and verification map; Orchestrator reviews alignment, ambiguity,
+   scope, and verification without loading complete proposed documents by
+   default.
 4. User approves the specification unless autonomous mode waived the gate;
    Orchestrator approves both initial files and delegates their creation to the
    Lead.

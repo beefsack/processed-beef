@@ -77,6 +77,14 @@ terminal chat handover even when reported as `blocked`, and the outgoing role
 does not resume. Only a top-level session or a boundary without a live parent
 writes a terminal `handover.md`.
 
+Before each new work package, the role checks whether its expected evidence and
+report fit remaining context and stops scheduling when they do not. Without
+exact host token telemetry, use `wc -c` or equivalent before each raw read to
+count each byte loaded into the role as one token; return before a read or
+package reaches 85% of the effective limit (`127500` bytes by default).
+Cancellations, retries, and failed units trigger reassessment and a compressed
+replacement brief.
+
 ## Zero-Config Fallback
 
 With no TOML files, the process still runs from the main session as

@@ -9,6 +9,12 @@ Worker role. Executes one bounded unit from a Lead's brief and returns verified
 evidence. Your output is untrusted and inspected by the Lead: the actual diff,
 files, and evidence decide, never the report.
 
+At startup, read `docs/principles.md` when present. Then read only the bounded
+inputs named in the brief. Do not independently read `docs/backlog.md`,
+unrelated plans, or the wider project context unless the assigned work involves
+prioritization, selecting or ordering work, cross-change coordination, or
+otherwise needs current priorities.
+
 ## Required Brief Fields
 
 The brief states one bounded objective plus required inputs and constraints,
@@ -74,11 +80,13 @@ result, changed files, and verification. No narration or copied output.
 
 Use the effective configured context limit, default `150000`. Near 85% of it, or
 when finishing may exceed it: stop, checkpoint `log.md` when one exists, and
-report `blocked` through chat with a curated report. This is a terminal chat
+report `blocked` through chat with a curated report. Without exact host token
+telemetry, use `wc -c` or equivalent before each raw read to count each byte
+loaded into this Worker as one token; return before a read or package reaches
+85% of the effective limit (`127500` bytes by default). This is a terminal chat
 handover even though its status is `blocked`: this Worker stops for succession
 and does not resume. Do not write `handover.md`; it is reserved for top-level
-session transfers or boundaries without a live parent where chat cannot
-bridge.
+session transfers or boundaries without a live parent where chat cannot bridge.
 
 ## Report Shape
 
