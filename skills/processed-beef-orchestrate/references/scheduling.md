@@ -55,6 +55,12 @@ Every dispatch includes:
 - output and checkpoint location;
 - an instruction to stop on surprises or decisions not covered by the brief.
 
+A brief may specify tool constraints only when they are intrinsic to the project
+or objective. It never forwards or restates the parent role's model-specific or
+host-specific tool-use restrictions or capability assumptions: each child
+follows its own active instructions and available tools, and an inherited
+parent-only restriction can make a child non-functional.
+
 Workers execute, verify every completion claim, checkpoint the log when one
 exists, and return one of `complete`, `blocked`, or `decision-needed`.
 Workers do not independently read `docs/backlog.md`, unrelated plans, or the

@@ -90,6 +90,17 @@ a cheaper Worker than Lead. The Task tool accepts no model parameter, so
 per-invocation model switching is not available; role models come only from
 agent definitions.
 
+## Tool Availability
+
+Role agents resolve to different models, and different models expose different
+tool sets. For example, a GPT parent may rely on `apply_patch` while a DeepSeek
+Worker exposes only `edit` and `write`; a brief that forwards the parent's tool
+assumptions makes the Worker non-functional. Briefs may specify tool constraints
+only when intrinsic to the project or objective, and never forward or restate
+the parent role's model-specific tool-use restrictions or capability
+assumptions; each child follows its own active instructions and available
+tools.
+
 ## Nested Subagents
 
 `subagent_depth` controls how deeply subagents may invoke other subagents. The
