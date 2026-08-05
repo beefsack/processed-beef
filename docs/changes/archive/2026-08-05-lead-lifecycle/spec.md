@@ -74,3 +74,10 @@ Non-goals:
 - This record supersedes the terminal-completion and correction lifecycle in
   `2026-08-02-terminal-handover-boundaries`; the historical record remains
   unchanged and terminal handovers remain terminal.
+
+## Rationale and Follow-Up Observation
+
+Historical baseline evidence, decision rationale, and future-session hypotheses
+and watchlist are recorded in
+[`rationale-and-watchlist.md`](rationale-and-watchlist.md). That record is
+non-normative; installed skills and references define the lifecycle contract.

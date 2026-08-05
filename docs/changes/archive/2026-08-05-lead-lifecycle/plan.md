@@ -54,6 +54,13 @@ governance changes.
 - Host enforcement depends on host versions and configuration; portable skills
   still enforce process policy and report mismatches.
 
+## Rationale and Follow-Up Observation
+
+See [`rationale-and-watchlist.md`](rationale-and-watchlist.md) for the brdgme
+baseline, the rationale behind this lifecycle, and the concrete post-change
+watchlist. It distinguishes historical evidence and future hypotheses from the
+normative lifecycle contract in the installed skills and references.
+
 ## Final Outcome
 
 - Accepted. One Lead owns each major unit across serial slices; Workers return
