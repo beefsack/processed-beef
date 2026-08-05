@@ -67,6 +67,15 @@ Codex supports nested subagent delegation through custom agent definitions. The
 available nesting depth is version- and configuration-sensitive; verify the
 `[agents]` settings in `config.toml` for the running version.
 
+Workers never delegate by portable policy, but this guide establishes no Codex
+delegation-denial configuration: the agent TOML files above carry no task or
+spawn-restriction syntax, and none is verified for the installed host. Do not
+invent a deny key for `developer_instructions` or the agent TOML here. If your
+installed Codex supports a spawn deny-list or a tool-exclusion mechanism,
+verify it on the installed host and document it separately; until then,
+enforcement is process policy only and must be verified from the installed
+host.
+
 ## Context-Limit Reality
 
 Codex does not provide a per-agent hard context ceiling that the process relies

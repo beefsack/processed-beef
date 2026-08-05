@@ -196,6 +196,37 @@ check_process_conventions() {
     done
 }
 
+# Contract for the Lead-owned major-unit lifecycle (2026-08-05-lead-lifecycle).
+# Focused literal phrase checks against the canonical role skills and
+# orchestration references. Deliberately not a full-document snapshot. The
+# archived 2026-08-02-terminal-handover-boundaries record is guarded separately
+# by Git inspection, not a hard-coded commit hash.
+check_lifecycle_contract() {
+    while IFS='|' read -r file phrase; do
+        case $file in '') continue ;; esac
+        if ! grep -Fq "$phrase" "$repo_root/$file"; then
+            error "lifecycle: '$phrase' not found in $file"
+        fi
+    done <<EOF
+skills/processed-beef-orchestrate/SKILL.md|succession only, never ordinary scheduling for a plan
+skills/processed-beef-orchestrate/references/scheduling.md|A brief that conflicts with any of them is not dispatched
+skills/processed-beef-orchestrate/references/scheduling.md|ephemeral attempt ID (\`unit-01/attempt-02\`); attempts never rename the semantic
+skills/processed-beef-work-unit/SKILL.md|This Worker never delegates
+skills/processed-beef-orchestrate/SKILL.md|exactly one same-scope correction round
+skills/processed-beef-orchestrate/references/scheduling.md|counted, non-resumable host attempts
+skills/processed-beef-orchestrate/references/scheduling.md|\`host-unknown reconciliation\`
+skills/processed-beef-orchestrate/references/scheduling.md|Commit groups are independent from Workers and semantic units: the Lead
+skills/processed-beef-orchestrate/references/verification.md|security, authorization, migration, destructive behavior, public contracts
+skills/processed-beef-orchestrate/SKILL.md|actual selected role against its configured role
+docs/integrations/opencode.md|injects a \`task: deny\` default
+skills/processed-beef-orchestrate/references/scheduling.md|\`Status\` as its first field
+EOF
+
+    if grep -Fq '`complete`' "$repo_root/skills/processed-beef-work-unit/SKILL.md"; then
+        error "lifecycle: work-unit skill presents \`complete\` as a report status"
+    fi
+}
+
 for skill in "$skills_dir"/*/; do
     skill_name=$(basename "$skill")
     file=$skill/SKILL.md
@@ -218,6 +249,7 @@ done
 
 check_invariants
 check_process_conventions
+check_lifecycle_contract
 
 if ! node "$repo_root/tests/opencode-plugin.mjs"; then
     error "OpenCode plugin contract failed"

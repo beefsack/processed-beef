@@ -7,9 +7,12 @@ rule overrides any generic recommendation to parallelize independent work, and
 no mode, including autonomous mode, overrides it. Parallel Leads or Workers are
 deferred to a later release.
 
-Work units carry stable IDs (for example `unit-01`) used consistently across
-the plan, log, and state. Only the Lead mutates plans and state, preserving a
-clean upgrade path to future worktree-backed concurrency.
+Work units carry stable semantic IDs (for example `unit-01`) used consistently
+across the plan, log, and state. Execution slices pair a stable unit with an
+ephemeral attempt ID (`unit-01/attempt-02`); attempts never rename the semantic
+unit, and a new attempt does not amend the plan unless semantic scope,
+acceptance, dependencies, or governance change. Only the Lead mutates plans and
+state, preserving a clean upgrade path to future worktree-backed concurrency.
 
 ## Context Limits
 
@@ -42,6 +45,15 @@ The replacement brief is compressed to the unresolved objective, relevant
 constraints, current evidence pointers, and the specific reason the prior unit
 stopped; it does not replay policy or raw transcripts.
 
+## Pre-Dispatch Reconciliation
+
+Before every dispatch, the Lead reconciles the brief against the objective,
+allowed scope, acceptance criteria, constraints, dependencies, and stop
+conditions. A brief that conflicts with any of them is not dispatched; it
+returns to the Lead. Dispatch packets stay compact: they state the unresolved
+objective, relevant constraints, current evidence pointers, and the
+stop-on-surprise instruction, without replaying policy or raw transcripts.
+
 ## Worker Brief
 
 Every dispatch includes:
@@ -62,19 +74,47 @@ follows its own active instructions and available tools, and an inherited
 parent-only restriction can make a child non-functional.
 
 Workers execute, verify every completion claim, checkpoint the log when one
-exists, and return one of `complete`, `blocked`, or `decision-needed`.
-Workers do not independently read `docs/backlog.md`, unrelated plans, or the
-wider project context. They read `docs/backlog.md` only when their assigned work
-involves prioritization, selecting or ordering work, cross-change coordination,
-or otherwise needs current priorities.
+exists, and return one of `review-ready`, `blocked`, `decision-needed`, or
+`host-unknown`. `review-ready` is a review input, not acceptance or completion,
+and the Lead inspects the diff and evidence before accepting. Workers never
+delegate: no subagent or task invocation. Workers do not independently read
+`docs/backlog.md`, unrelated plans, or the wider project context. They read
+`docs/backlog.md` only when their assigned work involves prioritization,
+selecting or ordering work, cross-change coordination, or otherwise needs
+current priorities.
+
+## Lifecycle Statuses and Transitions
+
+Every report and handover starts with `Status` as its first field, then
+objective, changed files, evidence per claim, risks, and blockers or decisions
+needed. Lifecycle statuses transition as follows:
+
+| Status | Produced by | Meaning | Next |
+|---|---|---|---|
+| `review-ready` | Worker | Unit done with evidence; a review input, not acceptance or completion | `accepted` or `rejected`, decided only by Lead inspection |
+| `blocked` | any role | Pause report, not a handover | resume the same unfinished unit after the concrete condition resolves |
+| `decision-needed` | any role | Pause report, not a handover; a specific answer is required | resume the same unfinished unit after the Lead or user answers |
+| `host-unknown` | Worker | Root or host cannot be verified; an unsuccessful, counted, non-resumable host attempt | `host-unknown reconciliation` |
+| `host-unknown reconciliation` | Lead | Lead reconciles diff, Git, log, and evidence after a failed host attempt | `accepted`, a fresh compressed recovery Worker, or abandon |
+| `accepted` | Lead | Lead inspected the diff and evidence and accepted the unit | next unit, or terminal accepted completion |
+| `rejected` | Lead | Lead inspected and returned the unit | one same-scope correction round, or a fresh Worker after approval |
+| `terminal-handover` | any role | Chat or `handover.md` handover; ends the outgoing role | a fresh subagent |
+
+Terminal handovers and terminal accepted completion remain preserved.
 
 ## Terminal Reports, Handovers, and Resumption
 
-- `complete` is terminal and ends that Worker. Every actual handover is also
-  terminal and ends the outgoing Worker or role: a curated chat handover, or a
-  `handover.md` transfer at a top-level session transfer or a boundary without
-  a live parent. Fresh subagents are required after completion, handover,
-  changed scope, corrections, or further work.
+- `review-ready` is not terminal: it returns the unit to the Lead for
+  inspection and acceptance. The same Worker may receive exactly one same-scope
+  correction round, and only after Lead inspection with semantic scope and
+  context unchanged; changed scope requires a fresh Worker after approval.
+  Every actual handover is terminal and ends the outgoing Worker or role: a
+  curated chat handover, or a `handover.md` transfer at a top-level session
+  transfer or a boundary without a live parent. Fresh subagents are required
+  after handover, changed scope, corrections, or further work.
+- `host-unknown`, missing, malformed, and cancelled results are unsuccessful,
+  counted, non-resumable host attempts, never evidence. The Lead runs
+  `host-unknown reconciliation`; these results never count as evidence.
 - An ordinary `blocked` or `decision-needed` return is a pause report, not a
   handover: it does not end the Worker. The same Worker may resume only its
   same unfinished unit, and only after the Lead answers a specific
@@ -108,7 +148,16 @@ receive raw implementation material by default.
 ## Recovery
 
 - Treat `log.md` and Git as recovery truth after abrupt quota or session loss.
-- End verified coherent units in atomic commits when repository policy permits.
+- Missing, malformed, cancelled, and `host-unknown` results are unsuccessful,
+  counted attempts and terminal, non-resumable host attempts. The Lead runs
+  `host-unknown reconciliation`: reconcile the diff, Git status and history,
+  log, and verification evidence, then accept usable work, dispatch a fresh
+  compressed recovery Worker, or abandon the attempt.
+- Commit groups are independent from Workers and semantic units: the Lead
+  directly commits coherent accepted groups, possibly spanning several accepted
+  units, when repository policy permits. Workers are never dispatched only to
+  stage or commit and may commit only when substantive scope explicitly includes
+  it.
 - A replacement agent reconciles the plan, log, Git status and history, and
   verification evidence before making changes.
 - A deliberate top-level session transfer without a live parent uses
@@ -145,7 +194,7 @@ receive raw implementation material by default.
 8. Orchestrator checks project alignment and evidence without repeating code
    review or tests.
 9. User approves the result unless autonomous mode was requested.
-10. A Worker performs the completion transaction.
+10. The Lead performs the completion transaction.
 
 Failed gates return concrete findings to the responsible role; they do not
 restart the lifecycle.

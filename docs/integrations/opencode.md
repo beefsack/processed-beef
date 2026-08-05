@@ -43,7 +43,30 @@ Project `opencode.json`:
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "subagent_depth": 2
+  "subagent_depth": 2,
+  "agent": {
+    "processed-beef-orchestrator": {
+      "mode": "primary",
+      "permission": {
+        "task": {
+          "*": "deny",
+          "processed-beef-lead": "allow"
+        }
+      }
+    },
+    "processed-beef-lead": {
+      "mode": "subagent",
+      "permission": {
+        "task": {
+          "*": "deny",
+          "processed-beef-worker": "allow"
+        }
+      }
+    },
+    "processed-beef-worker": {
+      "mode": "subagent"
+    }
+  }
 }
 ```
 
@@ -52,6 +75,10 @@ Project `opencode.json`:
 ---
 description: Orchestrator for the processed-beef process. Use as the primary session for processed-beef work.
 mode: primary
+permission:
+  task:
+    "*": deny
+    processed-beef-lead: allow
 ---
 You are the processed-beef Orchestrator. Load the processed-beef skill and
 follow it exactly. You perform no implementation work yourself.
@@ -62,6 +89,10 @@ follow it exactly. You perform no implementation work yourself.
 ---
 description: Lead for the processed-beef process. Plans, dispatches Workers serially, and inspects evidence.
 mode: subagent
+permission:
+  task:
+    "*": deny
+    processed-beef-worker: allow
 ---
 You are the processed-beef Lead. Load the processed-beef-orchestrate skill and
 follow it exactly.
@@ -70,12 +101,24 @@ follow it exactly.
 `.opencode/agents/processed-beef-worker.md`
 ```markdown
 ---
-description: Worker for the processed-beef process. Executes one bounded unit from a Lead brief and returns evidence.
+description: Worker for the processed-beef process. Executes one bounded unit from a Lead brief and returns evidence. Never delegates.
 mode: subagent
 ---
 You are the processed-beef Worker. Load the processed-beef-work-unit skill and
 follow it exactly.
 ```
+
+`permission.task` matches the subagent type with glob patterns; rules are
+evaluated in order and the last matching rule wins, so the deny-all rule is
+listed first and the single allowed child after it. The Orchestrator may spawn
+only the Lead, and the Lead only the Worker. The Worker declares no `task`
+permission at all: OpenCode injects a `task: deny` default into a subagent that
+has no task rule in its own permission ruleset, so the Worker's subagent session
+denies the Task tool. Do not add an explicit deny object to the Worker instead -
+leaving the rule out is what the default catches, and some versions treat the
+presence of any task rule as permission to run the tool. Users can always invoke
+any subagent directly from the `@` menu regardless of task permissions, so this
+restricts model-driven delegation, not manual invocation.
 
 ## Model Selection
 
@@ -107,8 +150,11 @@ tools.
 default is `1` (primary agents can launch subagents, but those subagents cannot
 launch more). Set it to `2` for one additional nested level, which covers the
 Orchestrator to Lead to Worker depth. Set `0` to disable subagent launches.
-Full operation also requires task permission for the Orchestrator and Lead,
-which is what lets them dispatch subagents.
+Full operation requires both `subagent_depth: 2` and a `permission.task` rule
+for the Orchestrator and Lead: the depth setting lets a subagent spawn at all,
+and the task rule names which subagent types it may spawn. The Worker carries no
+task rule, so its subagent session receives the documented default `task: deny`
+and cannot dispatch anything.
 
 ## Context-Limit Reality
 
@@ -149,3 +195,13 @@ unavailable until the agent files exist; the entry skill reports that mismatch.
 - Without `subagent_depth: 2` and task permission for the Orchestrator and
   Lead, they cannot dispatch subagents, so both are mandatory for full
   operation.
+- The `permission.task` configuration above is not tested in this repository.
+  The syntax is current per OpenCode documentation as of 2026-07, but
+  task-permission behavior has changed across releases (for example, explicit
+  task-deny objects on a subagent have not always been honored); verify the
+  effective behavior on the installed version.
+- Plugin and skill configuration is process policy only: the plugin registers
+  skills but does not activate the workflow, create role agents, or set
+  `subagent_depth` and permissions. The actual selected role, model, and limit
+  may mismatch the configured role; the entry skill reports the mismatch rather
+  than silently applying it.

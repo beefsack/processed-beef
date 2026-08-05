@@ -51,11 +51,18 @@ follow it exactly.
 ```markdown
 ---
 name: processed-beef-worker
-description: Worker for the processed-beef process. Executes one bounded unit from a Lead brief and returns evidence.
+description: Worker for the processed-beef process. Executes one bounded unit from a Lead brief and returns evidence. Never delegates.
 ---
 You are the processed-beef Worker. Load the processed-beef-work-unit skill and
 follow it exactly.
 ```
+
+Workers never delegate by portable policy, and VS Code enforces the denial
+directly: the Worker file declares neither the `agent` tool nor an `agents`
+allowlist, so it cannot spawn any subagent. The Orchestrator holds
+`tools: ['agent']` with `agents: [processed-beef-lead]` and the Lead holds
+`tools: ['agent']` with `agents: [processed-beef-worker]`, so each delegating
+role can spawn only its single child.
 
 ## Model Selection
 

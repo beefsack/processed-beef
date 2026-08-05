@@ -49,13 +49,22 @@ follow it exactly.
 ```markdown
 ---
 name: processed-beef-worker
-description: Worker for the processed-beef process. Executes one bounded unit from a Lead brief and returns evidence.
+description: Worker for the processed-beef process. Executes one bounded unit from a Lead brief and returns evidence. Never delegates.
+tools: Read, Glob, Grep, Edit, Write, Bash, WebFetch, WebSearch, Skill
 model: inherit
 ---
 
 You are the processed-beef Worker. Load the processed-beef-work-unit skill and
 follow it exactly.
 ```
+
+The Worker's `tools` list is an allowlist that deliberately omits `Agent`: a
+subagent with no `Agent` entry cannot spawn any subagents. Keep the other
+entries because the list replaces the inherited tool pool; add any tool the
+Worker needs for its bounded unit. The Orchestrator and Lead files above have no
+`tools` field, so they inherit every tool available to subagents, including
+`Agent`, and can spawn; restricting which types they may spawn is covered under
+Nested Subagents below.
 
 ## Model Selection
 
@@ -77,9 +86,26 @@ falls back to the inherited model.
 Supported by default. A subagent can spawn its own subagents up to three layers
 below the main conversation, which covers the Orchestrator to Lead to Worker
 depth. The default can be changed with `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`
-(version-sensitive, 2.1.217+). The `tools` frontmatter can restrict which
-subagents may be spawned via `Agent(...)` syntax; omitting `Agent` prevents
-spawning entirely.
+(version-sensitive, 2.1.217+).
+
+Workers never delegate by portable policy. Claude Code enforces the denial only
+through the existing `tools`/`Agent(...)` mechanism:
+
+- Omitting `Agent` from a role's `tools` list prevents it from spawning any
+  subagent with the Agent tool. The Worker file above does this.
+- `Agent(agent_type)` in a `tools` list is an allowlist that restricts which
+  subagent types may be spawned. This applies only to an agent running as the
+  main thread via `claude --agent <name>`; in a subagent definition, listing
+  `Agent` lets that subagent spawn while the depth limit allows it, but any type
+  list inside the parentheses is ignored.
+- So the Orchestrator, launched as the top-level session with
+  `claude --agent processed-beef-orchestrator`, can be restricted to spawn only
+  the Lead with `tools: Agent(processed-beef-lead), ...`. The Lead is a subagent,
+  so Claude Code does not host-enforce which types it spawns: the Lead's
+  dispatch of only Workers is enforced by process policy, not by this
+  configuration.
+- The exact behavior is version-sensitive; verify the effective nesting depth
+  and spawn restrictions against the installed CLI.
 
 ## Context-Limit Reality
 

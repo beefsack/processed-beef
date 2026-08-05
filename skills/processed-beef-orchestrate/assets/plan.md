@@ -15,7 +15,8 @@ Ownership and approval:
 | unit-01 | <objective> | - | <scope> | <command or observation> |
 | unit-02 | <objective> | unit-01 | <scope> | <command or observation> |
 
-Only the Lead mutates plans and state.
+Only the Lead mutates plans and state. Semantic unit IDs are stable; execution
+slices use `unit-<n>/attempt-<n>`.
 
 ## Progress
 

@@ -19,6 +19,23 @@ before it happens, including during autonomous mode for plan adjustments and
 clear spec corrections. The user owns principles, decisions, and the initial
 specification approval gate.
 
+## Correction Rules
+
+- A `review-ready` Worker result is a review input, not acceptance. It is
+  accepted or rejected only by Lead inspection of the actual diff and evidence;
+  the Worker's report never completes or accepts itself.
+- The same Worker receives exactly one correction round, and only when semantic
+  scope and context are unchanged. A correction that changes semantic scope
+  requires a fresh Worker after approval.
+- `host-unknown`, missing, malformed, and cancelled attempts are unsuccessful,
+  counted, non-resumable host attempts, never evidence. The Lead runs
+  `host-unknown reconciliation`: reconcile the diff, Git, log, and evidence,
+  then accept usable work, dispatch a fresh compressed recovery Worker, or
+  abandon.
+- Terminal handovers and terminal accepted completion remain terminal.
+- Unresolved serious review findings escalate rather than starting an
+  open-ended correction loop.
+
 ## User-Owned Governance
 
 `docs/principles.md` and `docs/decisions.md` are user-controlled:

@@ -64,11 +64,21 @@ approve every edit before it is made.
 Template: `assets/log.md`.
 
 Append-only checkpoint log for crash recovery. Append after a meaningful
-checkpoint: a completed work unit, verified partial result, consequential
-discovery, blocker, commit, or approved plan change. Each entry records
-timestamp, role and work unit, result, changed files or commit, verification,
-and any discovery, blocker, or required decision. No tool-by-tool narration,
-copied output, speculation, or information obvious from the diff.
+checkpoint: an accepted semantic unit, verified partial result, blocker,
+pending user decision, unsuccessful host attempt, context handover, semantic or
+governance change, independent review finding, commit, or approved plan change.
+Each entry records timestamp, role and work unit, result, changed files or
+commit, verification, and any discovery, blocker, or required decision. No
+tool-by-tool narration, copied output, speculation, or information obvious from
+the diff.
+
+## Artifact Update Cadence
+
+Batch full plan, log, and state updates for ordinary same-scope corrections.
+Record immediately, never batched: an accepted semantic unit, a blocker, a
+pending user decision, a `host-unknown` or otherwise unsuccessful host attempt,
+a context handover, a semantic or governance change, an independent review
+finding, and any commit.
 
 ## Conditional Artifacts
 
@@ -86,17 +96,19 @@ copied output, speculation, or information obvious from the diff.
 
 ## Completion Transaction
 
-One delegated Worker transaction, never run while governance conflicts, pending
-user decisions, or acceptance gaps remain:
+One Lead-owned transaction, never run while governance conflicts, pending user
+decisions, or acceptance gaps remain. Workers return `review-ready`; they are
+never dispatched only to stage or commit, may commit only when substantive
+scope explicitly includes it, and never administer completion:
 
 1. Lead produces the acceptance-evidence map and residual-risk summary.
 2. Orchestrator approves alignment or returns concrete gaps.
 3. User approves the result unless autonomous mode delegated result approval.
-4. Worker promotes approved lasting documentation and governance edits.
-5. Worker removes transient log, state, handover, and low-value research.
-6. Worker moves the change to `docs/changes/archive/YYYY-MM-DD-<change>/`.
-7. The same Worker removes the linked one-line backlog entry.
-8. Worker verifies links and repository status and reports evidence.
+4. Lead promotes approved lasting documentation and governance edits.
+5. Lead removes transient log, state, handover, and low-value research.
+6. Lead moves the change to `docs/changes/archive/YYYY-MM-DD-<change>/`.
+7. Lead removes the linked one-line backlog entry.
+8. Lead verifies links and repository status and reports evidence.
 
 The archive retains `spec.md`, `plan.md`, and only research with lasting
 standalone value.

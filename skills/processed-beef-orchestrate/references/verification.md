@@ -21,8 +21,15 @@ observation appropriate to the behavior.
 Worker output is never accepted without Lead inspection. The Lead:
 
 - inspects the actual diff and files, not the summary;
+- treats `review-ready` as a review input requiring acceptance, never as
+  completion evidence;
+- accepts or rejects a `review-ready` result only by that inspection;
 - checks that every completion claim has current evidence;
 - treats the diff and evidence as ground truth when a report looks wrong;
+- treats `host-unknown`, missing, malformed, and cancelled results as
+  unsuccessful, counted, non-resumable host attempts, never evidence; after
+  `host-unknown reconciliation` it accepts usable work, dispatches a fresh
+  compressed recovery Worker, or abandons;
 - does not revert or discard a suspicious result before inspecting the real
   changes.
 

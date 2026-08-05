@@ -21,14 +21,21 @@ repeating implementation review or tests; performs no implementation work. It
 maintains current backlog, priority, active-governance, role-configuration, and
 cross-change-dependency context, not implementation detail.
 
-**Lead** - feature SME, tech lead, and project manager; owns one major unit:
+**Lead** - feature SME, tech lead, and project manager; owns one major unit
+through serial Worker slices until it is accepted, externally blocked, or hits
+its 85% context boundary. Leads do not normally write production
+implementation: Workers implement or independently review bounded slices. The
+Lead performs scoping, pre-dispatch reconciliation, plan, log, and state
+maintenance, diff and evidence review, checkpoint verification, host
+reconciliation, coherent commits, and completion and archive administration;
 creates precise Worker briefs; dispatches Workers serially; distrusts Worker
 reports and inspects the actual diff, files, and evidence before accepting
-anything; maintains the plan, log, and state; proposes spec or plan corrections
-to the Orchestrator; escalates product, governance, and consequential
-decisions. The responsible Lead deeply reads the active change's relevant
-specification and plan before implementation or review, along with governing
-clauses and implementation evidence as needed.
+anything. A fresh Lead is succession only, never ordinary scheduling for a plan
+unit, correction, or commit. It proposes spec or plan corrections to the
+Orchestrator and escalates product, governance, and consequential decisions.
+The responsible Lead deeply reads the active change's relevant specification
+and plan before implementation or review, along with governing clauses and
+implementation evidence as needed.
 
 At startup, every role reads `docs/principles.md` when present. The Orchestrator
 also reads `docs/backlog.md` and `docs/decisions.md` when present to maintain
@@ -38,9 +45,13 @@ prioritization, selecting or ordering work, cross-change coordination, or
 otherwise needs current priorities.
 
 Effective role configuration resolves in order: explicit user instruction,
-project `docs/agent-process.md`, user-level host agent definition, inherited
-defaults. Report resolved agent names, model preferences, and `150000` limits,
-and report any host mismatch rather than claiming it was applied.
+project `docs/agent-process.md`, host agent definitions at project and user
+scope, inherited defaults. Which host scope wins is decided by the host
+adapter, so precedence is host-resolved and must be verified against the
+installed host. Report resolved agent names, model preferences, and `150000`
+limits, and report any host mismatch rather than claiming it was applied. Each
+role reports its actual selected role against its configured role; a mismatch
+is reported, never concealed.
 
 ## Route the Work
 
@@ -72,8 +83,10 @@ Upgrade triggers and routing details: `references/artifacts.md`.
 
 - Exactly one subagent is active at a time across the whole hierarchy. Never
   parallelize. No mode, including autonomous mode, overrides this rule.
-- Every work unit carries a stable ID (for example `unit-01`) used across
-  plan, log, and state. Only the Lead mutates plans and state.
+- Every work unit carries a stable semantic ID (for example `unit-01`) used
+  across plan, log, and state. Execution slices pair the stable unit with an
+  ephemeral attempt ID (`unit-01/attempt-02`); attempts never change the unit's
+  semantic ID. Only the Lead mutates plans and state.
 - Every role uses its effective configured context limit, default `150000`,
   enforced by process. Near 85% of that limit, or when the next unit may exceed
   the remaining budget, the role stops and returns a terminal curated report
@@ -109,22 +122,34 @@ Upgrade triggers and routing details: `references/artifacts.md`.
 
 Every Worker brief contains one bounded objective, required inputs and
 constraints, allowed scope, expected evidence, output and checkpoint location,
-and a stop-on-surprise instruction. The Lead inspects actual changes and
-evidence, never a summary. A suspicious Worker result is not reverted before
-the actual changes are inspected; the diff decides. Brief contents:
-`references/scheduling.md`.
+and a stop-on-surprise instruction. Before dispatch, the Lead reconciles the
+brief against objective, scope, acceptance criteria, constraints, dependencies,
+and stop conditions; a conflicting brief is not dispatched. Dispatch packets
+stay compact: they link evidence and never replay policy or raw transcripts.
+The Lead inspects actual changes and evidence, never a summary. A suspicious
+Worker result is not reverted before the actual changes are inspected; the diff
+decides. Brief contents: `references/scheduling.md`.
 
-A `complete` Worker report and every actual handover are terminal: the Worker
-or role ends, and fresh subagents are required after completion, handover,
-changed scope, corrections, or further work. An ordinary `blocked` or
-`decision-needed` Worker return is a pause report, not a handover: a Worker may
-resume only its same unfinished unit, and only after the Lead answers a
-specific `decision-needed` report or resolves its concrete `blocked` condition
-within the Worker's context budget. A context-ceiling return is a terminal chat
-handover even if its status is `blocked`: the outgoing role stops for
-succession and does not resume. Worker-to-Lead and Lead-to-Orchestrator reports
+A `review-ready` Worker report is a review input, not acceptance or
+completion: the Lead inspects the actual diff and evidence, then accepts or
+returns exactly one same-scope correction round. That single correction is
+permitted only with unchanged semantic scope and context; changed scope
+requires a fresh Worker after approval. `host-unknown` results, like missing,
+malformed, and cancelled attempts, are unsuccessful, counted, non-resumable
+host attempts: the Lead runs `host-unknown reconciliation` - reconciles the
+diff, Git, log, and evidence, then accepts, dispatches a fresh compressed
+recovery Worker, or abandons - and they are never evidence. An ordinary
+`blocked` or `decision-needed` Worker return is a pause report, not a
+handover: a Worker may resume only its same unfinished unit, and only after the
+Lead answers a specific `decision-needed` report or resolves its concrete
+`blocked` condition within the Worker's context budget. A context-ceiling
+return is a terminal chat handover even if its status is `blocked`: the
+outgoing role stops for succession and does not resume. Worker-to-Lead and Lead-to-Orchestrator reports
 and handovers return through chat, curated and comprehensive, without
-exhaustive transcripts or persisted report files.
+exhaustive transcripts or persisted report files. Every report starts with
+`Status` as its first field, then objective, changed files, evidence per claim,
+risks, and blockers or decisions needed. Lifecycle statuses and transitions:
+`references/scheduling.md`.
 
 ## Verify and Review
 
@@ -136,11 +161,11 @@ review only when a bounded trigger applies. Triggers and review protocol:
 
 ## Complete
 
-Completion is one delegated transaction: acceptance-evidence map and
+Completion is one Lead-owned transaction: acceptance-evidence map and
 residual-risk summary, Orchestrator alignment approval, user result approval
-unless autonomous, then a single Worker promotes lasting documentation,
-removes transient artifacts, archives the change, removes its backlog entry,
-and verifies links and repository status. Transaction steps:
+unless autonomous, then the Lead promotes lasting documentation, removes
+transient artifacts, archives the change, removes its backlog entry, and
+verifies links and repository status. Transaction steps:
 `references/artifacts.md`.
 
 ## Load References by Condition

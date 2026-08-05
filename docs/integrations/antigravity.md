@@ -72,6 +72,15 @@ Orchestrator to Lead to Worker requirement. Nested invocation happens through
 the runtime's subagent mechanism, not through file configuration alone; verify
 the effective limit in the installed version.
 
+Workers never delegate by portable policy, but this guide establishes no
+Antigravity delegation-denial configuration: the agent files above carry no
+spawn or task restriction, the `tools` allowlist described under Model Selection
+is a tool filter, not a verified delegation-denial mechanism, and no exact
+denial syntax is verified for the installed host. Do not invent one here. If
+your installed Antigravity supports a spawn or task restriction, verify it on
+the installed host and document it separately; until then, enforcement is
+process policy only and must be verified from the installed host.
+
 ## Context-Limit Reality
 
 Antigravity does not provide a per-agent hard context ceiling in v1. The

@@ -1,10 +1,13 @@
 # Agent Process
 
 Effective role configuration resolves in order: explicit user instruction, this
-file, user-level host agent definition, inherited defaults. Agents report the
+file, host agent definitions at project and user scope, inherited defaults.
+Which host scope wins is decided by the host adapter, so precedence is
+host-resolved and must be verified against the installed host. Agents report the
 resolved Orchestrator, Lead, and Worker agent names, model preferences, and
 context limits, and report any host mismatch rather than claiming the values
-were applied.
+were applied. Each role reports its actual selected role against its configured
+role; a mismatch is reported, never concealed.
 
 ## Roles
 
