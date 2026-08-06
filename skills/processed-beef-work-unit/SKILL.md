@@ -19,9 +19,10 @@ otherwise needs current priorities.
 ## Required Brief Fields
 
 The brief states one bounded objective plus required inputs and constraints,
-allowed scope, expected evidence, output and checkpoint location, and a
-stop-on-surprise instruction. A missing or contradictory field stops work; never
-fill the gap yourself.
+allowed scope, expected evidence, output and checkpoint location, review
+points if any (each stating the group that completes it and the evidence
+expected at it), and a stop-on-surprise instruction. A missing or contradictory
+field stops work; never fill the gap yourself.
 
 ## Scope
 
@@ -61,6 +62,7 @@ Return exactly one status:
 | Status | Use when |
 |---|---|
 | `review-ready` | objective done, every claim evidenced, nothing awaits a decision. It is a review input, not acceptance or completion |
+| `checkpoint` | a review point named in the brief is reached: a coherent group of edits is complete and verified, and scoped work remains |
 | `blocked` | stopped by a condition the brief cannot resolve; state it and why |
 | `decision-needed` | brief ambiguous, competing readings, or an unrequested decision |
 | `host-unknown` | the repository root or host cannot be verified; the attempt is unsuccessful |
@@ -70,6 +72,11 @@ Return exactly one status:
   and evidence. This Worker may then receive exactly one same-scope correction
   round, and only with unchanged semantic scope and context; changed scope
   requires a fresh Worker after approval.
+- A `checkpoint` return is a pause report, not a handover: it does not end this
+  Worker. Report the group completed, the files changed since the previous
+  checkpoint, and the evidence for each claim. Resume the same unit only after
+  the Lead returns `continue` or one same-scope correction. The correction
+  budget is per checkpoint, not per unit.
 - `host-unknown` is an unsuccessful, counted, non-resumable attempt: it is not
   evidence, and the Lead runs `host-unknown reconciliation` - reconcile the
   diff, Git, log, and evidence, then accept usable work, dispatch a fresh

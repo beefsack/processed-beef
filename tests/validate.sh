@@ -215,7 +215,7 @@ skills/processed-beef-work-unit/SKILL.md|This Worker never delegates
 skills/processed-beef-orchestrate/SKILL.md|exactly one same-scope correction round
 skills/processed-beef-orchestrate/references/scheduling.md|counted, non-resumable host attempts
 skills/processed-beef-orchestrate/references/scheduling.md|\`host-unknown reconciliation\`
-skills/processed-beef-orchestrate/references/scheduling.md|Commit groups are independent from Workers and semantic units: the Lead
+skills/processed-beef-orchestrate/references/scheduling.md|A unit is never fragmented into a separate commit-only Worker
 skills/processed-beef-orchestrate/references/verification.md|security, authorization, migration, destructive behavior, public contracts
 skills/processed-beef-orchestrate/SKILL.md|actual selected role against its configured role
 docs/integrations/opencode.md|injects a \`task: deny\` default
@@ -225,6 +225,28 @@ EOF
     if grep -Fq '`complete`' "$repo_root/skills/processed-beef-work-unit/SKILL.md"; then
         error "lifecycle: work-unit skill presents \`complete\` as a report status"
     fi
+}
+
+# Contract for delegation economics (2026-08-07-delegation-economics).
+# Focused literal phrase checks against the canonical role skills and
+# orchestration references. Deliberately not a full-document snapshot.
+check_delegation_economics_contract() {
+    while IFS='|' read -r file phrase; do
+        case $file in '') continue ;; esac
+        if ! grep -Fq "$phrase" "$repo_root/$file"; then
+            error "delegation-economics: '$phrase' not found in $file"
+        fi
+    done <<EOF
+skills/processed-beef-orchestrate/references/scheduling.md|Decide delegation for a unit before loading any of its material
+skills/processed-beef-orchestrate/references/scheduling.md|has forfeited that unit's
+skills/processed-beef-orchestrate/references/scheduling.md|the rejection leaves the cost unpaid
+skills/processed-beef-orchestrate/references/scheduling.md|correction budget is per checkpoint, not per unit
+skills/processed-beef-orchestrate/references/scheduling.md|A unit is never fragmented into a separate commit-only Worker
+skills/processed-beef-work-unit/SKILL.md|A \`checkpoint\` return is a pause report, not a handover
+skills/processed-beef-orchestrate/references/verification.md|independent review was not possible
+skills/processed-beef-orchestrate/SKILL.md|does not perform raw extraction
+skills/processed-beef-orchestrate/references/artifacts.md|never fragmented into a separate commit-only Worker
+EOF
 }
 
 for skill in "$skills_dir"/*/; do
@@ -250,6 +272,7 @@ done
 check_invariants
 check_process_conventions
 check_lifecycle_contract
+check_delegation_economics_contract
 
 if ! node "$repo_root/tests/opencode-plugin.mjs"; then
     error "OpenCode plugin contract failed"

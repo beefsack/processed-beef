@@ -33,6 +33,13 @@ Worker output is never accepted without Lead inspection. The Lead:
 - does not revert or discard a suspicious result before inspecting the real
   changes.
 
+## Production-Diff Review Boundary
+
+Production changes the Lead cannot state completely in the brief are made by a
+Worker, so that the Lead's inspection remains an independent review of a diff
+it did not write. A Lead that writes production code itself records why
+independent review was not possible.
+
 ## Review Triggers
 
 Dispatch one independent review when any of these applies:

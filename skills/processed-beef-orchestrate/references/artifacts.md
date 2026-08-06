@@ -97,9 +97,10 @@ finding, and any commit.
 ## Completion Transaction
 
 One Lead-owned transaction, never run while governance conflicts, pending user
-decisions, or acceptance gaps remain. Workers return `review-ready`; they are
-never dispatched only to stage or commit, may commit only when substantive
-scope explicitly includes it, and never administer completion:
+decisions, or acceptance gaps remain. Workers return `review-ready`; a unit is
+never fragmented into a separate commit-only Worker, mechanical staging within
+a unit is ordinary delegable work, the Lead performs the commit itself, and
+Workers never administer completion:
 
 1. Lead produces the acceptance-evidence map and residual-risk summary.
 2. Orchestrator approves alignment or returns concrete gaps.

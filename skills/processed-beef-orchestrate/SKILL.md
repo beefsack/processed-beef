@@ -33,9 +33,10 @@ reports and inspects the actual diff, files, and evidence before accepting
 anything. A fresh Lead is succession only, never ordinary scheduling for a plan
 unit, correction, or commit. It proposes spec or plan corrections to the
 Orchestrator and escalates product, governance, and consequential decisions.
-The responsible Lead deeply reads the active change's relevant specification
-and plan before implementation or review, along with governing clauses and
-implementation evidence as needed.
+Before implementation or review, the responsible Lead reads the specification,
+plan, and governing clauses it must hold to scope, decide, and accept;
+implementation evidence is reviewed as diffs and curated reports, not by
+reloading the material that produced them.
 
 At startup, every role reads `docs/principles.md` when present. The Orchestrator
 also reads `docs/backlog.md` and `docs/decisions.md` when present to maintain
@@ -117,6 +118,11 @@ Upgrade triggers and routing details: `references/artifacts.md`.
 - Before each new work package, reassess remaining context, evidence scope, and
   cross-change dependencies. Cancellations, retries, and failed units require
   the same reassessment and a compressed replacement brief.
+- The Orchestrator does not perform raw extraction - log greps, diff dumps, test
+  output, file surveys - even when a single command appears cheaper than a
+  dispatch. A single command can load more than an entire dispatch would have
+  cost. Triage that requires reading output is delegated, and the Orchestrator
+  consumes the curated result.
 
 ## Delegate to Workers
 

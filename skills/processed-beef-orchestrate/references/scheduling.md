@@ -45,6 +45,65 @@ The replacement brief is compressed to the unresolved objective, relevant
 constraints, current evidence pointers, and the specific reason the prior unit
 stopped; it does not replay policy or raw transcripts.
 
+## Delegation Decision
+
+Decide delegation for a unit before loading any of its material. The test is
+specifiability: a unit is delegated unless the Lead can already state, in the
+brief itself, what changes and what the result must be. If stating the work
+requires loading the material first, the Worker owns it.
+
+Delegate whenever any of these holds at scoping time:
+
+- the work to be done must be discovered rather than stated;
+- producing the change requires loading material the Lead does not already
+  hold, or material whose extent it cannot bound in advance;
+- the unit contains an iterate-until-green loop such as build, test, lint, or
+  format, whose output volume is not known before running it;
+- its acceptance is checkable from the returned diff plus a command result.
+
+The Lead executes a unit directly only when all of these hold: it can already
+state the work completely; the work is judgement, reconciliation, approval, or
+dispatch rather than change; and it can be applied and verified without loading
+further material. Cost is context volume, not the number of reads or commands:
+one read of a large document or one command with unbounded output can exceed
+many small ones. Judge the material, not the call count.
+
+## Corpus Ownership and Forfeit
+
+Every unit names exactly one role that holds its material, and that role
+acquires it once. When the Worker holds it, the Lead scopes from paths, greps,
+specifications, and prior reports, then reviews the returned diff and evidence
+rather than re-reading the files. When the Lead holds it, the brief must be
+complete enough that the Worker never reopens the same material.
+
+A Lead that has already loaded a unit's material has forfeited that unit's
+dispatch: it finishes the unit itself and records the forfeit. Mid-unit
+delegation after the loading is done duplicates cost without recovering it.
+
+## Late Size Discovery
+
+Some material cannot be sized in advance. When a read or a command's output is
+rejected, truncated, or paginated by the host because of its size, that material
+is unbounded in practice and its loading and processing are delegated. Do not
+page through it, re-run the command with narrower filters, or sample it
+repeatedly: each attempt pays again for the same discovery and, in aggregate,
+costs more than the single dispatch it was avoiding. Dispatch a Worker whose
+objective is to load the material, process it, and return the curated result.
+
+This reactive trigger is permitted because the rejection leaves the cost unpaid:
+the content is still outside the role's context. It is the opposite of
+dispatching after the material is already loaded, which recovers nothing and is
+a forfeit. The governing distinction is whether the triggering event leaves the
+cost unpaid.
+
+Partially loaded material follows the same rule for its remainder: what is
+loaded stays, and the rest is delegated rather than paged in.
+
+A Worker that hits this trigger does not dispatch itself: Workers never
+delegate. It stops and reports the rejected or truncated material as a
+`blocked` or `decision-needed` pause report, and the Lead dispatches the
+Worker that loads and curates it.
+
 ## Pre-Dispatch Reconciliation
 
 Before every dispatch, the Lead reconciles the brief against the objective,
@@ -65,6 +124,8 @@ Every dispatch includes:
 - allowed scope;
 - expected evidence;
 - output and checkpoint location;
+- review points, if any, each stating the group that completes it and the
+  evidence expected at it;
 - an instruction to stop on surprises or decisions not covered by the brief.
 
 A brief may specify tool constraints only when they are intrinsic to the project
@@ -74,14 +135,27 @@ follows its own active instructions and available tools, and an inherited
 parent-only restriction can make a child non-functional.
 
 Workers execute, verify every completion claim, checkpoint the log when one
-exists, and return one of `review-ready`, `blocked`, `decision-needed`, or
-`host-unknown`. `review-ready` is a review input, not acceptance or completion,
-and the Lead inspects the diff and evidence before accepting. Workers never
-delegate: no subagent or task invocation. Workers do not independently read
-`docs/backlog.md`, unrelated plans, or the wider project context. They read
-`docs/backlog.md` only when their assigned work involves prioritization,
-selecting or ordering work, cross-change coordination, or otherwise needs
-current priorities.
+exists, and return one of `review-ready`, `checkpoint`, `blocked`,
+`decision-needed`, or `host-unknown`. `review-ready` is a review input, not
+acceptance or completion, and the Lead inspects the diff and evidence before
+accepting. Workers never delegate: no subagent or task invocation. Workers do
+not independently read `docs/backlog.md`, unrelated plans, or the wider project
+context. They read `docs/backlog.md` only when their assigned work involves
+prioritization, selecting or ordering work, cross-change coordination, or
+otherwise needs current priorities.
+
+## Review Points
+
+Review points are named in the brief before dispatch, and only where an error
+would be expensive to unwind - a schema or interface change other edits build
+on, a mechanical sweep whose pattern must be right before it is repeated, or a
+group whose verification cost rises sharply if defects accumulate. A unit with
+no named review point returns once, at completion.
+
+At a checkpoint the Lead inspects the incremental diff since the previous
+checkpoint, not the unit's whole material and not the files themselves. It
+returns `continue` or exactly one same-scope correction for that checkpoint. The
+correction budget is per checkpoint, not per unit.
 
 ## Lifecycle Statuses and Transitions
 
@@ -92,6 +166,8 @@ needed. Lifecycle statuses transition as follows:
 | Status | Produced by | Meaning | Next |
 |---|---|---|---|
 | `review-ready` | Worker | Unit done with evidence; a review input, not acceptance or completion | `accepted` or `rejected`, decided only by Lead inspection |
+| `checkpoint` | Worker | A named review point is reached: a coherent group of edits is complete and verified, and scoped work remains | `continue` or one same-scope correction for that checkpoint, decided only by Lead inspection |
+| `continue` | Lead | Lead inspected the incremental diff at a checkpoint and accepts it | Worker resumes the same unit toward the next review point or completion |
 | `blocked` | any role | Pause report, not a handover | resume the same unfinished unit after the concrete condition resolves |
 | `decision-needed` | any role | Pause report, not a handover; a specific answer is required | resume the same unfinished unit after the Lead or user answers |
 | `host-unknown` | Worker | Root or host cannot be verified; an unsuccessful, counted, non-resumable host attempt | `host-unknown reconciliation` |
@@ -120,6 +196,10 @@ Terminal handovers and terminal accepted completion remain preserved.
   same unfinished unit, and only after the Lead answers a specific
   `decision-needed` report or resolves its concrete `blocked` condition, and
   only while the Worker remains within its context budget.
+- A `checkpoint` return is a pause report, not a handover: it does not end the
+  Worker. Resume the same unit only after the Lead returns `continue` or one
+  same-scope correction for that checkpoint. The correction budget is per
+  checkpoint, not per unit.
 - A context-ceiling return is a terminal chat handover even if its status is
   `blocked`: the outgoing Worker or role stops for succession and does not
   resume, and a fresh subagent takes over. It is not an ordinary resumable
@@ -136,14 +216,15 @@ decision: do not revert, rewrite, or discard it until the real changes are read
 and the evidence checked. The diff decides what happened; the report only
 points at it.
 
-Before implementation or review, the Lead deeply reads the active change's
-relevant specification and plan, governing clauses, implementation evidence,
-and Worker results enough to accept or reject work. It reads `docs/backlog.md`
-only when its assigned work involves prioritization, selecting or ordering work,
-cross-change coordination, or otherwise needs current priorities. It returns
-the Orchestrator a concise evidence map, acceptance status, governance
-conflicts, material risks, and decisions needed. The Orchestrator does not
-receive raw implementation material by default.
+Before implementation or review, the Lead reads the specification, plan, and
+governing clauses it must hold to scope, decide, and accept. Implementation
+evidence is reviewed as diffs and curated reports, not by reloading the
+material that produced them. It reads `docs/backlog.md` only when its assigned
+work involves prioritization, selecting or ordering work, cross-change
+coordination, or otherwise needs current priorities. It returns the
+Orchestrator a concise evidence map, acceptance status, governance conflicts,
+material risks, and decisions needed. The Orchestrator does not receive raw
+implementation material by default.
 
 ## Recovery
 
@@ -153,11 +234,11 @@ receive raw implementation material by default.
   `host-unknown reconciliation`: reconcile the diff, Git status and history,
   log, and verification evidence, then accept usable work, dispatch a fresh
   compressed recovery Worker, or abandon the attempt.
-- Commit groups are independent from Workers and semantic units: the Lead
-  directly commits coherent accepted groups, possibly spanning several accepted
-  units, when repository policy permits. Workers are never dispatched only to
-  stage or commit and may commit only when substantive scope explicitly includes
-  it.
+- A unit is never fragmented into a separate commit-only Worker. The Lead
+  decides commit composition and performs the commit itself; the mechanical
+  staging within a unit - hunk selection, patch construction, application,
+  verification of what was staged - is ordinary delegable work, delegated under
+  the same test as any other work.
 - A replacement agent reconciles the plan, log, Git status and history, and
   verification evidence before making changes.
 - A deliberate top-level session transfer without a live parent uses
@@ -178,8 +259,9 @@ receive raw implementation material by default.
    propose a spec and plan without writing them. The Lead, not the
    Orchestrator, ensures relevant active-change material is read before
    implementation.
-2. Lead uses serial Workers for focused investigation only when direct reads
-   are insufficient.
+2. Lead delegates investigation whose findings require loading material, and
+   loads directly only what it must hold in order to decide, approve, or
+   reconcile.
 3. Lead returns a concise proposal summary, approval-relevant sections, and
    acceptance and verification map; Orchestrator reviews alignment, ambiguity,
    scope, and verification without loading complete proposed documents by
