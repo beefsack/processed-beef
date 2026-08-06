@@ -53,3 +53,21 @@ of behavior.
 |---|---|
 | RED | Observed 2026-08-06/07 in a brdgme session, under the skills as they read before this change: a Lead loaded a tracker corpus to plan work and then its dispatched Worker independently loaded the same corpus again to perform the edit, duplicating the load cost instead of the Lead scoping from paths and reviewing the returned diff, with the Lead doing 22 reads of the corpus and the Worker doing 18 reads and 16 greps of the same corpus. |
 | GREEN | Pending future observation under the delegation-economics guidance. |
+
+Note: a related but distinct variant - the Lead skipping delegation entirely
+rather than duplicating a Worker's load (0 Task calls, 158,473 bytes read
+directly) - was observed RED on 2026-08-07; see Scenario 8.
+
+## Scenario 8 - Lead Direct-Read Ownership of a Read-Only Corpus (processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed 2026-08-07 in a brdgme session: a Lead briefed to audit two large tracker files (186,611 and 162,677 bytes) under the skills as they read after the delegation-economics guidance landed made 0 child-session dispatches (task tool calls: 0) and instead self-paginated 11 direct reads totalling at least 158,473 bytes, exceeding the skill's own 127,500-byte ceiling, driving cache_read to 2,069,716 tokens and cost to $0.9238 versus a same-session Orchestrator baseline of 230,314 cache_read tokens and $0.8042 for comparable oversight work. |
+| GREEN | Pending future observation under the specifiability test, corpus-ownership, and Late Size Discovery extensions above. |
+
+## Scenario 9 - Direct Test-Run Execution Instead of Delegation (processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed 2026-08-07 in a brdgme session: both the Lead and the Orchestrator ran `sh tests/validate.sh` directly via the Bash tool multiple times across the session instead of dispatching a Worker, despite `references/scheduling.md`'s delegation-decision list naming build, test, lint, and format iterate-until-green loops as a mandatory delegation trigger. |
+| GREEN | Pending future observation under the delegable-categories clause and cost-tier rationale added in this follow-up. |

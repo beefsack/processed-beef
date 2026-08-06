@@ -12,6 +12,12 @@ condition applies.
 
 ## Roles
 
+Model tiers track role cost: the Orchestrator runs the most expensive model
+and is reserved for organisation, planning, strategy, user interaction, and
+technical expertise rather than hands-on work; Workers run the cheapest
+model and are delegated all hands-on execution, but are error-prone, so
+briefs stay tightly scoped and their output is inspected, never trusted.
+
 **Orchestrator** - head of engineering and product-owner partner: maintains
 coherence, priorities, principles, and decisions; advises the user; classifies
 work and selects the smallest suitable process; approves every `spec.md` and
@@ -22,28 +28,34 @@ maintains current backlog, priority, active-governance, role-configuration, and
 cross-change-dependency context, not implementation detail.
 
 **Lead** - feature SME, tech lead, and project manager; owns one major unit
-through serial Worker slices until it is accepted, externally blocked, or hits
-its 85% context boundary. Leads do not normally write production
-implementation: Workers implement or independently review bounded slices. The
-Lead performs scoping, pre-dispatch reconciliation, plan, log, and state
-maintenance, diff and evidence review, checkpoint verification, host
-reconciliation, coherent commits, and completion and archive administration;
-creates precise Worker briefs; dispatches Workers serially; distrusts Worker
-reports and inspects the actual diff, files, and evidence before accepting
-anything. A fresh Lead is succession only, never ordinary scheduling for a plan
-unit, correction, or commit. It proposes spec or plan corrections to the
-Orchestrator and escalates product, governance, and consequential decisions.
+through serial Worker slices until it is accepted, externally blocked,
+returned for a pre-start split, or hits its 85% context boundary. Leads
+do not normally write production implementation: Workers implement or
+independently review bounded slices. The Lead performs scoping, pre-dispatch
+reconciliation, plan, log, and state maintenance, diff and evidence review,
+checkpoint verification, host reconciliation, coherent commits, and completion
+and archive administration; creates precise Worker briefs; dispatches
+Workers serially; distrusts Worker reports and inspects the actual diff,
+files, and evidence before accepting anything. A fresh Lead is
+succession only, never ordinary scheduling for a plan unit, correction,
+or commit. It proposes spec or plan corrections to the Orchestrator and
+escalates product, governance, and consequential decisions.
 Before implementation or review, the responsible Lead reads the specification,
 plan, and governing clauses it must hold to scope, decide, and accept;
 implementation evidence is reviewed as diffs and curated reports, not by
 reloading the material that produced them.
 
-At startup, every role reads `docs/principles.md` when present. The Orchestrator
-also reads `docs/backlog.md` and `docs/decisions.md` when present to maintain
-its current view of priorities, active governance, and cross-change
-dependencies. Leads read `docs/backlog.md` only when assigned work involves
-prioritization, selecting or ordering work, cross-change coordination, or
-otherwise needs current priorities.
+At startup, every role reads `docs/principles.md` when present. The
+Orchestrator also reads top-level READMEs, `docs/backlog.md`,
+`docs/decisions.md`, and vision or architecture docs when present, to
+maintain its current view of priorities, active governance, and cross-change
+dependencies, and goes no further: all other Orchestrator interaction is with
+the user and Leads. A Lead reads only the spec, plan, and governing clauses
+of the unit it owns, plus the diff and evidence reviewing a Worker's output
+requires; `docs/backlog.md` only when assigned work involves prioritization,
+selecting or ordering work, or cross-change coordination. Reading any other
+document directly is a narrow exception, not the default, and all other
+Lead interaction is with the Orchestrator and Workers.
 
 Effective role configuration resolves in order: explicit user instruction,
 project `docs/agent-process.md`, host agent definitions at project and user
@@ -106,8 +118,9 @@ Upgrade triggers and routing details: `references/artifacts.md`.
 
 - Search narrowly before reading. Read only the cited or relevant sections, and
   keep raw file content, tool output, diffs, test logs, and large trackers out
-  of Orchestrator context unless a narrowly scoped governance ruling requires
-  direct evidence.
+  of Orchestrator context, and out of Lead context beyond the diff and evidence
+  a unit's acceptance requires, unless a narrowly scoped governance ruling
+  requires direct evidence.
 - Leads return concise evidence maps, acceptance status, governance conflicts,
   material risks, and decisions needed. Delegation briefs and reports link to
   evidence rather than reproducing it, and do not repeat policy already supplied
@@ -118,11 +131,14 @@ Upgrade triggers and routing details: `references/artifacts.md`.
 - Before each new work package, reassess remaining context, evidence scope, and
   cross-change dependencies. Cancellations, retries, and failed units require
   the same reassessment and a compressed replacement brief.
-- The Orchestrator does not perform raw extraction - log greps, diff dumps, test
-  output, file surveys - even when a single command appears cheaper than a
-  dispatch. A single command can load more than an entire dispatch would have
-  cost. Triage that requires reading output is delegated, and the Orchestrator
-  consumes the curated result.
+- The Orchestrator does not perform raw extraction - log greps, diff dumps,
+  test output, file surveys - and neither does the Lead beyond the diff and
+  evidence a unit's acceptance requires, even when a single command appears
+  cheaper than a dispatch. A single command can load more than an entire
+  dispatch would have cost. Triage that requires reading output is delegated,
+  and the Orchestrator or Lead consumes the curated result.
+- Host reconciliation is the Lead's only other direct-extraction right;
+  everything else delegates like ordinary raw extraction.
 
 ## Delegate to Workers
 

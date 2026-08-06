@@ -249,6 +249,37 @@ skills/processed-beef-orchestrate/references/artifacts.md|never fragmented into 
 EOF
 }
 
+# Contract for delegation economics follow-up (2026-08-07).
+# Focused literal phrase checks against the canonical role skills and
+# orchestration references. Deliberately not a full-document snapshot.
+check_delegation_economics_followup_contract() {
+    while IFS='|' read -r file phrase; do
+        case $file in '') continue ;; esac
+        if ! grep -Fq "$phrase" "$repo_root/$file"; then
+            error "delegation-economics-followup: '$phrase' not found in $file"
+        fi
+    done <<EOF
+skills/processed-beef-orchestrate/SKILL.md|out of Lead context beyond the diff and evidence
+skills/processed-beef-orchestrate/SKILL.md|and neither does the Lead beyond the diff and
+skills/processed-beef-orchestrate/references/scheduling.md|bound by the same rule as a host-triggered rejection
+skills/processed-beef-orchestrate/references/scheduling.md|the same as change units
+skills/processed-beef-orchestrate/references/scheduling.md|does not rediscover them
+skills/processed-beef-orchestrate/references/scheduling.md|a Lead's byte typically costs more than a Worker's
+skills/processed-beef-work-unit/SKILL.md|has no diff to fall back on
+skills/processed-beef-orchestrate/SKILL.md|Model tiers track role cost
+skills/processed-beef-orchestrate/SKILL.md|returned for a pre-start split
+skills/processed-beef-orchestrate/SKILL.md|all other Orchestrator interaction is with
+skills/processed-beef-orchestrate/SKILL.md|is a narrow exception, not the default
+skills/processed-beef-orchestrate/SKILL.md|Host reconciliation is the Lead's only other direct-extraction right
+skills/processed-beef-orchestrate/references/scheduling.md|judges a unit too large and cleanly separable
+skills/processed-beef-orchestrate/references/scheduling.md|This covers code and file changes, test and command runs, documentation
+skills/processed-beef-orchestrate/references/governance.md|Escalation tracks decision blast radius
+skills/processed-beef-orchestrate/references/governance.md|a project dependency such
+skills/processed-beef-orchestrate/references/governance.md|put a complex or ambiguous technical question to the
+skills/processed-beef-work-unit/SKILL.md|with the dispatching Lead only, never the Orchestrator or user directly
+EOF
+}
+
 for skill in "$skills_dir"/*/; do
     skill_name=$(basename "$skill")
     file=$skill/SKILL.md
@@ -273,6 +304,7 @@ check_invariants
 check_process_conventions
 check_lifecycle_contract
 check_delegation_economics_contract
+check_delegation_economics_followup_contract
 
 if ! node "$repo_root/tests/opencode-plugin.mjs"; then
     error "OpenCode plugin contract failed"

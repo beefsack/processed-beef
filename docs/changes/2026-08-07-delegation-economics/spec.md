@@ -125,3 +125,32 @@ Historical baseline evidence, decision rationale, and future-session desired
 outcomes and watchlist are recorded in
 [`rationale-and-watchlist.md`](rationale-and-watchlist.md). That record is
 non-normative; installed skills and references define the delegation contract.
+
+## Follow-up: Lead Direct-Read Falsification (2026-08-07)
+
+Scenario 7 ("Duplicated Corpus Loading") predicted GREEN: Pending future observation. Observed RED on 2026-08-07 for a related but distinct failure: a Lead read a large corpus directly (158,473+ bytes, 0 Worker dispatches) instead of delegating, exceeding the 127,500-byte ceiling. See `rationale-and-watchlist.md` for full detail and monitoring criteria.
+
+Acceptance criteria for the seven gap-closing edits:
+- AC1: `SKILL.md` Context Discipline names the Lead alongside the Orchestrator as excluded from holding raw content, carving out the diff and evidence a unit's acceptance requires.
+- AC2: `SKILL.md` raw-extraction prohibition names the Lead alongside the Orchestrator with the same acceptance-review carve-out, preserving the existing literal contract phrase `does not perform raw extraction`.
+- AC3: `scheduling.md` Late Size Discovery treats a Lead's own size/line-count check as bound by the same rule as a host-triggered rejection.
+- AC4: `scheduling.md` specifiability test explicitly binds read-only and investigation units.
+- AC5: `scheduling.md` Corpus Ownership requires a Lead-held brief to name specific facts, IDs, and prior findings already established in-session.
+- AC6: `work-unit/SKILL.md` Report Shape requires a read-only/investigation unit's report to itemize every requested fact rather than summarize.
+- AC7: `scheduling.md` records that a Lead's byte typically costs more than a Worker's under mixed model tiers, as a delegation reason distinct from context volume.
+
+## Follow-up: Role-Model Clarification (2026-08-07)
+
+Scenario 9 ("Direct Test-Run Execution Instead of Delegation") was observed RED on 2026-08-07: both the Lead and the Orchestrator ran `sh tests/validate.sh` directly instead of delegating, despite the test-run delegation trigger already in `references/scheduling.md`. A user-authored role-model audit of the delegation-economics guidance found ten clarification gaps, addressed below; the two deliberate scope decisions (no duration language, Orchestrator kept technical-consultation-only) are recorded in `rationale-and-watchlist.md`, not reopened here.
+
+Acceptance criteria for the ten role-model clarification items:
+- AC1: `SKILL.md` Lead role definition names a pre-start split for a unit judged too large and cleanly separable before starting; `scheduling.md` Recovery proposes the same split to the Orchestrator instead of starting or grinding through it.
+- AC2: `SKILL.md` Context Discipline names host reconciliation as the Lead's only other direct-extraction right, alongside the acceptance diff and evidence carve-out.
+- AC3: `scheduling.md` Delegation Decision names the delegable categories explicitly: code and file changes, test and command runs, documentation writing, documentation search and summarisation, and web research.
+- AC4: `SKILL.md` startup-reads paragraph limits a Lead to reading only the spec, plan, and governing clauses of the unit it owns plus the diff and evidence a Worker's output requires; any other direct read is a narrow exception, not the default.
+- AC5: `SKILL.md` startup-reads paragraph bounds the Orchestrator's direct reads to top-level READMEs, `docs/backlog.md`, `docs/decisions.md`, and vision or architecture docs, and no further.
+- AC6: `work-unit/SKILL.md` Worker role preamble states a Worker interacts only with its dispatching Lead, never the Orchestrator or user directly.
+- AC7: `governance.md` Escalation records the decision blast-radius ladder: a Worker decides an obvious choice within its own scope, a choice inside the backlog item returns to the Lead, and anything outside it escalates to the Orchestrator.
+- AC8: `governance.md` Escalation folds project dependencies (e.g. `package.json`) into the same blast-radius sentence as always escalating to the Orchestrator.
+- AC9: `SKILL.md` Roles section states the cost-tier rationale once: the Orchestrator runs the most expensive model and is reserved for organisation, planning, strategy, user interaction, and technical expertise; Workers run the cheapest model, are error-prone, stay tightly scoped, and are inspected, never trusted.
+- AC10: `governance.md` Escalation records a Lead's option to put a complex or ambiguous technical question to the Orchestrator, framed self-contained so it answers from expertise without loading the Lead's corpus.

@@ -112,3 +112,34 @@ targets from the normative contract in the installed skills and references.
   itself, consistent with "Workers never delegate." This record documents the
   eight approved wording items and the measurable desired outcomes for a future
   comparable session.
+
+## Follow-up Work Unit: Close Lead Delegation Gaps (2026-08-07)
+
+| Acceptance criterion | Evidence |
+|---|---|
+| AC1 | `skills/processed-beef-orchestrate/SKILL.md` Context Discipline bullet reads "out of Lead context beyond the diff and evidence"; `tests/validate.sh` `check_delegation_economics_followup_contract` asserts the phrase. |
+| AC2 | `skills/processed-beef-orchestrate/SKILL.md` raw-extraction paragraph reads "and neither does the Lead beyond the diff and", preserving "does not perform raw extraction"; asserted by both the pre-existing and new `validate.sh` contracts. |
+| AC3 | `skills/processed-beef-orchestrate/references/scheduling.md` Late Size Discovery contains "bound by the same rule as a host-triggered rejection"; asserted by `validate.sh`. |
+| AC4 | `scheduling.md` Delegation Decision contains "the same as change units"; asserted by `validate.sh`. |
+| AC5 | `scheduling.md` Corpus Ownership contains "does not rediscover them"; asserted by `validate.sh`. |
+| AC6 | `skills/processed-beef-work-unit/SKILL.md` Report Shape contains "has no diff to fall back on"; asserted by `validate.sh`. |
+| AC7 | `scheduling.md` Cost paragraph contains "a Lead's byte typically costs more than a Worker's"; asserted by `validate.sh`. |
+| Falsification recorded | `tests/behavioral.md` Scenario 8 (new) plus a cross-reference note below the Scenario 7 table; `rationale-and-watchlist.md` Falsification section. |
+| All checks pass | `sh tests/validate.sh` exits 0. |
+
+## Follow-up Work Unit: Role-Model Clarification (2026-08-07)
+
+| Acceptance criterion | Evidence |
+|---|---|
+| AC1 (pre-start split) | `skills/processed-beef-orchestrate/SKILL.md` Lead role definition ("returned for a pre-start split") and `references/scheduling.md` Recovery ("judges a unit too large and cleanly separable"); asserted by `validate.sh`. |
+| AC2 (host-reconciliation right) | `SKILL.md` Context Discipline ("Host reconciliation is the Lead's only other direct-extraction right"); asserted by `validate.sh`. |
+| AC3 (delegable categories) | `scheduling.md` Delegation Decision ("This covers code and file changes, test and command runs, documentation writing, documentation search and summarisation, and web research alike"); asserted by `validate.sh`. |
+| AC4 (Lead read whitelist) | `SKILL.md` startup-reads paragraph ("is a narrow exception, not the default"); asserted by `validate.sh`. |
+| AC5 (Orchestrator read boundary) | `SKILL.md` startup-reads paragraph ("all other Orchestrator interaction is with"); asserted by `validate.sh`. |
+| AC6 (Worker interaction boundary) | `skills/processed-beef-work-unit/SKILL.md` Worker role preamble ("with the dispatching Lead only, never the Orchestrator or user directly"); asserted by `validate.sh`. |
+| AC7 (blast-radius escalation ladder) | `governance.md` Escalation ("Escalation tracks decision blast radius"); asserted by `validate.sh`. |
+| AC8 (project dependencies escalate) | `governance.md` Escalation ("a project dependency such as"); asserted by `validate.sh`. |
+| AC9 (cost-tier rationale) | `SKILL.md` Roles section top ("Model tiers track role cost"); asserted by `validate.sh`. |
+| AC10 (Orchestrator technical consultation) | `governance.md` Escalation ("put a complex or ambiguous technical question to the"); asserted by `validate.sh`. |
+| Scenario 9 recorded | `tests/behavioral.md` Scenario 9 (new), RED observed 2026-08-07, GREEN pending. |
+| All checks pass | `sh tests/validate.sh` exits 0. |

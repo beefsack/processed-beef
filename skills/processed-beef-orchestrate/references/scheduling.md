@@ -50,7 +50,9 @@ stopped; it does not replay policy or raw transcripts.
 Decide delegation for a unit before loading any of its material. The test is
 specifiability: a unit is delegated unless the Lead can already state, in the
 brief itself, what changes and what the result must be. If stating the work
-requires loading the material first, the Worker owns it.
+requires loading the material first, the Worker owns it. This binds read-only
+and investigation units the same as change units: if the Lead cannot already
+state the specific facts a scan will return, the scan itself is delegated.
 
 Delegate whenever any of these holds at scoping time:
 
@@ -61,12 +63,17 @@ Delegate whenever any of these holds at scoping time:
   format, whose output volume is not known before running it;
 - its acceptance is checkable from the returned diff plus a command result.
 
+This covers code and file changes, test and command runs, documentation
+writing, documentation search and summarisation, and web research alike.
+
 The Lead executes a unit directly only when all of these hold: it can already
 state the work completely; the work is judgement, reconciliation, approval, or
 dispatch rather than change; and it can be applied and verified without loading
 further material. Cost is context volume, not the number of reads or commands:
 one read of a large document or one command with unbounded output can exceed
-many small ones. Judge the material, not the call count.
+many small ones. Judge the material, not the call count. When roles run
+different model tiers, a Lead's byte typically costs more than a Worker's;
+that asymmetry is a further reason to delegate, not just context volume.
 
 ## Corpus Ownership and Forfeit
 
@@ -74,21 +81,27 @@ Every unit names exactly one role that holds its material, and that role
 acquires it once. When the Worker holds it, the Lead scopes from paths, greps,
 specifications, and prior reports, then reviews the returned diff and evidence
 rather than re-reading the files. When the Lead holds it, the brief must be
-complete enough that the Worker never reopens the same material.
+complete enough that the Worker never reopens the same material: it names the
+specific facts, IDs, and prior findings already established in-session so the
+Worker does not rediscover them.
 
 A Lead that has already loaded a unit's material has forfeited that unit's
 dispatch: it finishes the unit itself and records the forfeit. Mid-unit
 delegation after the loading is done duplicates cost without recovering it.
+See Late Size Discovery below for the self-discovery exception.
 
 ## Late Size Discovery
 
 Some material cannot be sized in advance. When a read or a command's output is
 rejected, truncated, or paginated by the host because of its size, that material
-is unbounded in practice and its loading and processing are delegated. Do not
-page through it, re-run the command with narrower filters, or sample it
-repeatedly: each attempt pays again for the same discovery and, in aggregate,
-costs more than the single dispatch it was avoiding. Dispatch a Worker whose
-objective is to load the material, process it, and return the curated result.
+is unbounded in practice and its loading and processing are delegated. A role
+that checks a file's size or line count before reading it and finds it large is
+bound by the same rule as a host-triggered rejection: the check does not pay the
+loading cost, and delegating afterward is never a forfeit. Do not page through
+it, re-run the command with narrower filters, or sample it repeatedly: each
+attempt pays again for the same discovery and, in aggregate, costs more than the
+single dispatch it was avoiding. Dispatch a Worker whose objective is to load
+the material, process it, and return the curated result.
 
 This reactive trigger is permitted because the rejection leaves the cost unpaid:
 the content is still outside the role's context. It is the opposite of
@@ -246,8 +259,10 @@ implementation material by default.
   handovers with a live parent return curated reports through chat; those
   reports are terminal and end the outgoing role.
 - A failed Worker returns control instead of improvising.
-- Two unsuccessful attempts on one work unit force Orchestrator reassessment,
-  narrowing, splitting, or a changed approach.
+- A Lead that judges a unit too large and cleanly separable before starting
+  proposes a pre-start split to the Orchestrator instead of starting it. Two
+  unsuccessful attempts on a started unit force the same Orchestrator
+  reassessment: narrowing, splitting, or a changed approach.
 - A successor receives only its role skill, current brief, relevant project
   guidance, applicable spec and decision clauses, the necessary plan or state
   slice, and the latest curated report or handover as applicable. It does not

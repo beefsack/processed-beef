@@ -73,6 +73,15 @@ changing governance or implementing the contradiction.
 The Lead escalates to the Orchestrator, and the Orchestrator to the user,
 product and governance decisions, consequential technical decisions, and any
 change that is ambiguous, contentious, or outside approved constraints.
+Escalation tracks decision blast radius: a Worker decides an obvious choice
+tightly within its own scope; a choice inside the backlog item but outside
+that scope returns to the Lead, which decides and resumes the same Worker;
+anything outside the backlog item - another item, a project dependency such
+as `package.json`, or a product-level principle - escalates to the
+Orchestrator, which decides on user involvement before resuming the Lead. A
+Lead may also put a complex or ambiguous technical question to the
+Orchestrator, framed self-contained so it answers from expertise without
+loading the Lead's corpus.
 
 Delegating research, implementation, review, or evidence gathering does not
 delegate product or governance authority. Lead reports cite the relevant

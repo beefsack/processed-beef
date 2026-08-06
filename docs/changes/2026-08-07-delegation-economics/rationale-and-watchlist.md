@@ -188,3 +188,43 @@ revision or rollback when any of the following is established:
 Any such decision should use the captured aggregate evidence, identify the
 contributing attribution categories above, and preserve historical records
 unchanged.
+
+## Falsification
+
+Scenario 7 ("Duplicated Corpus Loading") was recorded GREEN: Pending future observation. On 2026-08-07 the predicted case was tested by a fresh Lead session auditing two large tracker files (186,611 and 162,677 bytes) under the delegation-economics guidance from ca2262a. The observation falsified the prediction for the Lead-direct-read variant: the Lead made 0 child-session dispatches (task tool calls: 0; bash 25, read 11, skill 1) and read at least 158,473 bytes directly across 11 self-paginated offset/limit reads, exceeding the skill's own 127,500-byte ceiling (already breached on this low, lower-bound estimate; the on-disk total across both files is 349,288 bytes). This is recorded as a new failure mode (Scenario 8), distinct from Scenario 7's original duplicated-loading pattern: rather than the Worker re-loading what the Lead already loaded, the Lead never delegated at all.
+
+## Follow-up Rationale (Including the Mechanism Finding)
+
+The dominant cost is not the raw bytes read but the compounding cache-read cost of carrying that content through every subsequent tool turn: the session drove cache_read to 2,069,716 tokens (cache_write 117,951) across roughly 36 tool turns, each of which re-sends the accumulated context, against a same-session Orchestrator baseline of 230,314 cache_read tokens for comparable oversight work with a single narrow read. The burn is therefore superlinear in what is read early, not linear - an early bulk load inflates every later turn's cost, not just its own. The seven edits close the specific gaps that let this happen:
+
+1. Context Discipline (SKILL.md) now names the Lead, not just the Orchestrator, as excluded from holding raw content, closing the gap that only bound the Orchestrator.
+2. The raw-extraction prohibition (SKILL.md) now covers the Lead's own reads, not only Orchestrator commands.
+3. Late Size Discovery (scheduling.md) now treats a Lead's own size/line-count check as equivalent to a host-triggered rejection, closing the gap that let self-chosen pagination dodge the reactive trigger.
+4. The specifiability test (scheduling.md) now explicitly binds read-only/investigation units, closing the gap that framed specifiability only around change units.
+5. Corpus Ownership (scheduling.md) now requires a Lead-held brief to carry forward already-established facts/IDs, addressing the counter-pressure that briefs must carry comprehensive context while still requiring delegation.
+6. Report Shape (work-unit/SKILL.md) now requires read-only/investigation Worker reports to itemize every requested fact rather than summarize, addressing the counter-pressure that read-only units have no diff safety net, so the report is the only evidence.
+7. The cost-asymmetry note (scheduling.md) records that a Lead's byte typically costs more than a Worker's under mixed model tiers (the failing session ran the Lead on a costlier model tier than the Worker), giving an explicit reason to delegate beyond raw context volume.
+
+## Monitoring Criteria for the Next Test Session
+
+Query `~/.local/share/opencode/opencode.db` for the next Lead session handling a large corpus (read-only audit, investigation, or similar) and check:
+
+- Lead `task` tool-call count is > 0 whenever the unit involves a corpus that cannot be fully specified without loading it (specifiability test, edit 4).
+- Lead direct-read bytes (summed across all `read` tool calls attributed to the Lead role) stay under the 127,500-byte ceiling; a Lead that self-checks a file's size and finds it large must delegate the load rather than proceed with self-paced pagination (edit 3).
+- Lead session `cache_read` tokens are compared against this session's 2,069,716-token baseline; a materially lower figure for comparable corpus size is the expected signal that delegation is compounding less cost per turn.
+- Regression is specifically: any Lead session with `task` tool-call count == 0 while its `read` tool calls sum past 127,500 bytes on files the Lead could not have fully specified in advance. That exact pattern is what this follow-up targets, and its recurrence means the edits did not close the gap.
+
+## Role-Model Clarification Follow-up (2026-08-07)
+
+A user-authored audit of the role models found ten gaps in the delegation-economics guidance as installed: the pre-start split option was missing from the Lead role definition and Recovery, host reconciliation was an unstated exception to the raw-extraction rule, the delegable categories were unnamed, the Lead and Orchestrator had no read whitelists, the Worker had no interaction boundary, the escalation ladder by decision blast radius was undefined, the cost-tier rationale was scattered, and there was no path for a Lead to consult the Orchestrator's technical expertise. These were closed in the ten items (A-J) recorded in `spec.md` and `plan.md`. Scenario 9 (direct `sh tests/validate.sh` runs by the Lead and Orchestrator despite the test-run delegation trigger) was observed RED on 2026-08-07 and is recorded in `tests/behavioral.md`.
+
+Two scope decisions were deliberate and are not open questions:
+
+- Duration language (hours-to-days / minutes-to-hours / minutes) was omitted: agents cannot measure elapsed time, and token boundaries already govern handovers.
+- The Orchestrator was kept a technical-consultation-only role (item J), not a general technical authority that reads code, preserving the days-long low-overhead Orchestrator the architecture depends on.
+
+Watchlist:
+
+- Whether the pre-start split path (item A) is actually used, or Leads still grind through oversized units and only hit the reactive two-failed-attempt trigger.
+- Whether the blast-radius escalation ladder (items G and H) is legible enough to change Worker and Lead behavior, or decisions still route to the wrong role.
+- Whether Scenario 9's direct test-run execution recurs: the test-run delegation trigger is already in `scheduling.md`, so any future Lead or Orchestrator running `sh tests/validate.sh` directly is a regression.

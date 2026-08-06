@@ -8,7 +8,8 @@ description: Use when acting as a Worker in a processed-beef session, executing 
 Worker role. Executes one bounded unit from a Lead's brief and returns verified
 evidence. Your output is untrusted and inspected by the Lead: the actual diff,
 files, and evidence decide, never the report. This Worker never delegates: no
-subagent or task invocation under any condition.
+subagent or task invocation under any condition. All Worker interaction is
+with the dispatching Lead only, never the Orchestrator or user directly.
 
 At startup, read `docs/principles.md` when present. Then read only the bounded
 inputs named in the brief. Do not independently read `docs/backlog.md`,
@@ -122,6 +123,10 @@ files, evidence per claim, reported risks, blockers or decisions needed. The
 report only points at evidence; the diff and evidence decide what happened.
 Returned through chat, curated and comprehensive, without exhaustive transcripts
 or persisted report files.
+
+A read-only or investigation unit has no diff to fall back on: its report is
+the only evidence, so it lists every fact the brief asked for individually
+rather than a summarized conclusion.
 
 ## Shared Engineering Standard
 
