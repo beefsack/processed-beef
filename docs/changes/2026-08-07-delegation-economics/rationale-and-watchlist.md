@@ -126,10 +126,18 @@ promises:
 |---|---|---|
 | Worker:Lead session ratio | At or above 2.0 | Session-store session count by role |
 | Orchestrator share of total session cost | Materially below the measured 43% | Session-store per-session cost attribution |
+| Orchestrator cost per dispatch | Track alongside cost share, not as a replacement: cost share alone conflates dispatch-driven cost with raw-extraction cost | Orchestrator total session cost divided by dispatch (`task`) tool-call count, from the session store |
 | Recorded dispatch forfeits | Zero (a Lead loading a unit's material and then dispatching a Worker for that same unit's remaining work, rather than finishing it itself) | Lead reports and log entries recording forfeits |
-| Same-material duplication events | Zero (Lead and Worker, or two Workers, independently loading the same corpus in one unit) | Comparing read and grep targets across roles within a unit in the session record |
+| Same-material duplication events | Zero, excluding a unit's `spec.md` and `plan.md`, which the owning Lead is required to hold fully to scope, decide, and accept the unit (Lead and Worker, or two Workers, independently loading the same corpus in one unit, is still zero) | Comparing read and grep targets across roles within a unit in the session record, excluding each unit's `spec.md` and `plan.md` |
 | Unreviewed Lead-written production changes | Zero (every Lead-authored production diff has an independent review or an explicit recorded reason review was not possible) | Lead reports and commit history |
 | Quality signals | Preserved: zero commit-only Workers, zero Worker task calls, zero `host-unknown`, and `decision-needed` still correctly returned on contradictory briefs | Session record status counts |
+
+Orchestrator cost share is driven by dispatch count and accumulated
+conversation length, not raw-extraction volume: one observed session reached
+49.3% Orchestrator cost share from dispatch and conversation overhead alone,
+with a single file read and zero raw extraction. Track Orchestrator cost per
+dispatch alongside cost share, and treat a rising share at a falling or flat
+per-dispatch cost as compatible with healthy delegation, not a regression.
 
 These targets depend on the current model assignment (Workers on a
 near-zero-cost model, Leads and Orchestrator on premium models) and must be
@@ -163,7 +171,7 @@ rather than copying huge transcripts, and must never include secrets.
 |---|---|---|
 | Delegation decision | Every unit's owner is chosen before its material is loaded | Any recorded dispatch forfeit, or any dispatch after the Lead loaded the unit's material |
 | Tier economics | Work sits in the cheapest tier that can do it correctly | A Lead unit consuming heavy context on self-executed change work, with no dispatch and no recorded forfeit |
-| Duplication | Each body of material is loaded by exactly one role per unit | Lead and Worker both loading the same material in one unit |
+| Duplication | Each body of material is loaded by exactly one role per unit, excluding a unit's `spec.md` and `plan.md`, which the owning Lead is required to hold | Lead and Worker both loading the same material in one unit, other than `spec.md` and `plan.md` |
 | Late size discovery | Size-rejected material is delegated on first rejection | Any repeated narrowing, paging, or resampling of size-rejected material by the rejecting role |
 | Checkpoint review | Review points are named before dispatch and reviewed incrementally | Any checkpoint review that reloads the unit's whole material, or a correction budget applied per unit instead of per checkpoint |
 | Orchestrator discipline | Zero raw extraction in the root session | Any raw log, diff, test-output, or file-survey extraction by the Orchestrator |
@@ -228,3 +236,56 @@ Watchlist:
 - Whether the pre-start split path (item A) is actually used, or Leads still grind through oversized units and only hit the reactive two-failed-attempt trigger.
 - Whether the blast-radius escalation ladder (items G and H) is legible enough to change Worker and Lead behavior, or decisions still route to the wrong role.
 - Whether Scenario 9's direct test-run execution recurs: the test-run delegation trigger is already in `scheduling.md`, so any future Lead or Orchestrator running `sh tests/validate.sh` directly is a regression.
+
+## Session Capture: 2026-08-08
+
+A brdgme production-incident session was measured against the desired
+outcomes above:
+
+- 33 sessions: 1 Orchestrator (claude-opus-5), 8 Leads (claude-sonnet-5, one
+  nested), 24 Workers (deepseek-v4-flash). Max depth 2. Worker:Lead ratio 3.0.
+- Cost $36.07: Orchestrator $17.78 (49.3%), Leads $18.01 (49.9%), Workers
+  $0.28 (0.8%).
+- Tool calls: Orchestrator 67 (29 bash, 1 read, 24 task); Leads 369 (187
+  bash, 79 edit, 54 read); Workers 627 (421 bash, 104 read, 48 edit). Leads
+  made more edit calls (79) than Workers (48).
+- Tokens: Orchestrator 4,097,574 cache-read / 82,530 output; Leads 44,652,892
+  cache-read / 372,873 output; Workers 28,287,616 cache-read / 150,977
+  output.
+- Span 20.71 wall hours, about 3.21 active hours. Most expensive session: the
+  root Orchestrator, $17.78.
+- Incidents: one nested-Lead role confusion (a Lead loaded this skill,
+  misidentified itself as Orchestrator, and dispatched a nested Lead past
+  supported subagent depth); one unasked deletion of a 31 MB production
+  database dump by a Worker during read-only recon.
+
+Measured against the targets above:
+
+- Hit: Worker:Lead ratio 3.0 (target at or above 2.0). Zero `host-unknown`,
+  zero commit-only Workers. About 9 `decision-needed` escalations, every one
+  correct, catching real production defects.
+- Missed: Orchestrator cost share 49.3% (target: materially below 43%).
+  Same-material duplication: 9 overlaps across 4 Leads, of which only the
+  overlaps outside `spec.md`/`plan.md`/`log.md` (a `deny.toml`, a `ci.yml`,
+  and both tracker files in one unit) count as waste under the corrected
+  target above; the rest were a Lead correctly holding its own unit's spec
+  and plan. Orchestrator raw extraction: 29 bash calls.
+- Failed completely: the context ceiling. Peak single-request context reached
+  306,523 tokens (a Lead), more than double the `150000` limit; four sessions
+  exceeded it (306,523 / 225,278 / 176,832 / 154,843); 190 assistant messages
+  tree-wide reached or exceeded 150,000 tokens; zero handovers occurred all
+  session. Root cause: the `wc -c` rule counted file bytes read only,
+  overcounting reads by 3-4x while ignoring the conversation, tool outputs,
+  subagent reports, and skill text where context actually accumulates - the
+  Orchestrator did one file read yet reached 4,097,574 cache-read tokens.
+  This is the direct motivation for replacing byte counting with the
+  countable-proxy thresholds recorded in the installed skills and
+  references.
+
+Comparability caveat: the delegation-economics baseline above was a
+commit-and-cleanup session; this session was a production data repair with a
+live incident, so the two are not directly comparable on cost or duration.
+
+PII handling in agent output was raised during this follow-up and explicitly
+rejected by the user as out of scope: it is a project- or user-owned data
+concern, not agent-structure guidance, and should not be reproposed here.

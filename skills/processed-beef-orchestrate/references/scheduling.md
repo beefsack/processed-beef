@@ -16,34 +16,39 @@ state, preserving a clean upgrade path to future worktree-backed concurrency.
 
 ## Context Limits
 
-Every Orchestrator, Lead, and Worker uses its effective configured context limit,
-default `150000`, process-enforced because hosts do not consistently provide
-per-agent ceilings. Near 85% of that limit, or whenever the next unit may exceed
-the remaining budget, the role must:
+Every Orchestrator, Lead, and Worker has an effective configured context
+budget, default `150000`. `150000` is a documented budget, not a quantity any
+role can measure about itself: no role can observe its own token usage
+mid-session, which is why self-policing it directly does not work. Prefer
+exact host token telemetry wherever a host exposes it. Otherwise, return on a
+countable proxy from the role's own history, which needs no shell access and
+no telemetry: completed work units, dispatches made, and its own tool calls.
+
+These thresholds are provisional, derived from one session's measurements, and
+are due for revalidation over the next 2-3 sessions:
+
+- Worker: return after about 30 of its own tool calls.
+- Lead: return after 3 completed work units, or about 50 of its own tool
+  calls, whichever comes first.
+- Orchestrator: hand over after about 20 dispatches.
+
+Reaching a threshold is the normal end of a bounded stint, not an emergency: it
+hands a fresh, focused successor the next unit of work. The role must:
 
 1. stop accepting work;
 2. return through the boundary's channel: a curated chat report when a live
    parent exists, or `handover.md` at a top-level session transfer or a
    boundary without a live parent.
 
-No role continues past its configured limit. Approaching it means returning the
-report and stopping; the chat return is a terminal handover even when reported
-as `blocked`, and the outgoing role does not resume. It never means scheduling
-more tasks to make use of the remaining budget.
+No role continues past its threshold. Reaching it means returning the report
+and stopping; the chat return is a terminal handover even when reported as
+`blocked`, and the outgoing role does not resume. It never means scheduling
+more tasks to make use of remaining budget instead of returning.
 
-Before starting each new work package, the responsible role checks remaining
-context against the package's expected evidence and report. It stops scheduling
-new packages before the ceiling when that work may not fit, rather than using
-the remaining budget opportunistically. Without exact host token telemetry, use
-`wc -c` or equivalent before each raw read to maintain a cumulative count of
-raw bytes loaded into the role from source, diffs, reviews, trackers, and test
-logs. Count one byte as one token and return before a read or package reaches
-85% of the effective limit (`127500` bytes by default).
-
-A cancellation, retry, or failed unit triggers this same context reassessment.
-The replacement brief is compressed to the unresolved objective, relevant
-constraints, current evidence pointers, and the specific reason the prior unit
-stopped; it does not replay policy or raw transcripts.
+A cancellation, retry, or failed unit triggers this same reassessment against
+these thresholds. The replacement brief is compressed to the unresolved
+objective, relevant constraints, current evidence pointers, and the specific
+reason the prior unit stopped; it does not replay policy or raw transcripts.
 
 ## Delegation Decision
 
@@ -137,6 +142,8 @@ Every dispatch includes:
 - allowed scope;
 - expected evidence;
 - output and checkpoint location;
+- explicit authorization for any destructive action the unit may require,
+  naming exactly what may be deleted, moved, truncated, or overwritten;
 - review points, if any, each stating the group that completes it and the
   evidence expected at it;
 - an instruction to stop on surprises or decisions not covered by the brief.
@@ -156,6 +163,23 @@ not independently read `docs/backlog.md`, unrelated plans, or the wider project
 context. They read `docs/backlog.md` only when their assigned work involves
 prioritization, selecting or ordering work, cross-change coordination, or
 otherwise needs current priorities.
+
+## Destructive Actions
+
+A role performs a destructive action - deleting, moving, truncating, or
+overwriting a file or resource - only where its brief explicitly authorizes it.
+An unauthorized destructive action is a stop-and-report, identical to any other
+out-of-scope surprise: it is never taken because it seems necessary or
+convenient. This applies at every level: Orchestrator-to-Lead and Lead-to-Worker
+briefs alike.
+
+Destruction of tracked files is recoverable from Git, so brief authorization is
+sufficient on its own. Irreversible destruction outside version control -
+deleting or overwriting untracked data, acting on a production system, or
+discarding external state Git cannot restore - escalates rather than
+proceeding on brief authorization alone: the Lead escalates to the
+Orchestrator, and the Orchestrator decides, involving the user when the data is
+the user's.
 
 ## Review Points
 

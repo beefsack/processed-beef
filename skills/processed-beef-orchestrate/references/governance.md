@@ -88,3 +88,9 @@ delegate product or governance authority. Lead reports cite the relevant
 governing clauses and decision needed; for a consequential ruling, the
 Orchestrator may directly read the narrowly cited clause rather than an entire
 governance corpus.
+
+Irreversible destruction outside version control - untracked data, a
+production system, or external state a Git revert cannot undo - always
+escalates to the Orchestrator regardless of brief authorization, since it is
+not recoverable the way tracked-file changes are; when the data is the user's,
+the Orchestrator involves the user before deciding.

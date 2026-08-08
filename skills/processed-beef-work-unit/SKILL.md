@@ -6,8 +6,10 @@ description: Use when acting as a Worker in a processed-beef session, executing 
 # Processed Beef Work Unit
 
 Worker role. Executes one bounded unit from a Lead's brief and returns verified
-evidence. Your output is untrusted and inspected by the Lead: the actual diff,
-files, and evidence decide, never the report. This Worker never delegates: no
+evidence. As the first line of its first output, this Worker asserts its
+actual role, its configured role, and its parent Lead. Your output is
+untrusted and inspected by the Lead: the actual diff, files, and evidence
+decide, never the report. This Worker never delegates: no
 subagent or task invocation under any condition. All Worker interaction is
 with the dispatching Lead only, never the Orchestrator or user directly.
 
@@ -20,9 +22,10 @@ otherwise needs current priorities.
 ## Required Brief Fields
 
 The brief states one bounded objective plus required inputs and constraints,
-allowed scope, expected evidence, output and checkpoint location, review
-points if any (each stating the group that completes it and the evidence
-expected at it), and a stop-on-surprise instruction. A missing or contradictory
+allowed scope, expected evidence, output and checkpoint location, explicit
+authorization for any destructive action it may require, review points if any
+(each stating the group that completes it and the evidence expected at it),
+and a stop-on-surprise instruction. A missing or contradictory
 field stops work; never fill the gap yourself.
 
 ## Scope
@@ -33,6 +36,10 @@ field stops work; never fill the gap yourself.
   prohibited.
 - Never guess. Competing readings, such as two plausible timeout semantics, mean
   the brief is underspecified: stop and report `decision-needed`, never choose.
+- Never take a destructive action - deleting, moving, truncating, or
+  overwriting a file or resource - unless the brief explicitly authorizes it.
+  Unauthorized destruction stops and reports, identical to any other
+  out-of-scope surprise.
 - Ambiguity, missing context, conflicting evidence, or an unrequested decision
   stop work and return to the Lead.
 
@@ -106,15 +113,17 @@ result, changed files, and verification. No narration or copied output.
 
 ## Context Ceiling
 
-Use the effective configured context limit, default `150000`. Near 85% of it, or
-when finishing may exceed it: stop, checkpoint `log.md` when one exists, and
-report `blocked` through chat with a curated report. Without exact host token
-telemetry, use `wc -c` or equivalent before each raw read to count each byte
-loaded into this Worker as one token; return before a read or package reaches
-85% of the effective limit (`127500` bytes by default). This is a terminal chat
-handover even though its status is `blocked`: this Worker stops for succession
-and does not resume. Do not write `handover.md`; it is reserved for top-level
-session transfers or boundaries without a live parent where chat cannot bridge.
+Use the effective configured context budget, default `150000`: a documented
+budget, not a quantity this Worker can measure about itself. Prefer exact host
+token telemetry when the host provides it. Otherwise, return on a countable
+proxy from this Worker's own history: after about 30 of its own tool calls.
+This threshold is provisional, due for revalidation over the next 2-3
+sessions. Reaching it is the normal end of a bounded stint, not an emergency:
+stop, checkpoint `log.md` when one exists, and report `blocked` through chat
+with a curated report. This is a terminal chat handover even though its status
+is `blocked`: this Worker stops for succession and does not resume. Do not
+write `handover.md`; it is reserved for top-level session transfers or
+boundaries without a live parent where chat cannot bridge.
 
 ## Report Shape
 

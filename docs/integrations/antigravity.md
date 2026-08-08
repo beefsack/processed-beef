@@ -84,20 +84,26 @@ process policy only and must be verified from the installed host.
 ## Context-Limit Reality
 
 Antigravity does not provide a per-agent hard context ceiling in v1. The
-`150000` limit is skill-enforced: near 85% of the effective limit, or when the
+`150000` limit is skill-enforced: nearing its return threshold, or when the
 next unit may exceed the remaining budget, a role with a live parent returns a
 terminal curated report through chat and stops; the return is a terminal chat
 handover even when reported as `blocked`, and the outgoing role does not
 resume. Only a top-level session or a boundary without a live parent writes a
 terminal `handover.md`.
 
-Before each new work package, the role checks whether its expected evidence and
-report fit remaining context and stops scheduling when they do not. Without
-exact host token telemetry, use `wc -c` or equivalent before each raw read to
-count each byte loaded into the role as one token; return before a read or
-package reaches 85% of the effective limit (`127500` bytes by default).
-Cancellations, retries, and failed units trigger reassessment and a compressed
-replacement brief.
+Before each new work package, the role checks whether it is nearing its return
+point and stops scheduling when it is. `150000` is a documented budget, not a
+quantity any role can measure about itself. Prefer exact host token telemetry
+wherever the host provides it; otherwise return on a countable proxy from the
+role's own history: completed work units, dispatches made, and its own tool
+calls. These are provisional thresholds, due for revalidation over the next
+2-3 sessions: a Worker returns after about 30 of its own tool calls; a Lead
+returns after 3 completed work units or about 50 of its own tool calls,
+whichever comes first; the Orchestrator hands over after about 20 dispatches.
+Reaching a threshold is the normal end of a bounded stint, not an emergency:
+it hands a fresh, focused successor the next unit of work. Cancellations,
+retries, and failed units trigger reassessment and a compressed replacement
+brief.
 
 ## Zero-Config Fallback
 

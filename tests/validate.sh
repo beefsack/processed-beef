@@ -190,8 +190,9 @@ check_process_conventions() {
         "$repo_root/docs/integrations/codex.md" \
         "$repo_root/docs/integrations/opencode.md" \
         "$repo_root/docs/integrations/vscode.md"; do
-        if ! grep -Fq 'wc -c' "$file" || ! grep -Fq 'one token' "$file" || ! grep -Fq '127500' "$file"; then
-            error "${file#"$repo_root"/}: missing reproducible context fallback"
+        normalized=$(tr '\n' ' ' < "$file" | tr -s ' ')
+        if ! printf '%s' "$normalized" | grep -Fq 'a documented budget, not a quantity' || ! printf '%s' "$normalized" | grep -Fq 'normal end of a bounded stint'; then
+            error "${file#"$repo_root"/}: missing countable-proxy context fallback"
         fi
     done
 }
@@ -280,6 +281,26 @@ skills/processed-beef-work-unit/SKILL.md|with the dispatching Lead only, never t
 EOF
 }
 
+# Contract for context and safety hardening (2026-08-08-context-and-safety-hardening).
+# Focused literal phrase checks against the canonical role skills and
+# orchestration references. Deliberately not a full-document snapshot.
+check_context_and_safety_hardening_contract() {
+    while IFS='|' read -r file phrase; do
+        case $file in '') continue ;; esac
+        if ! tr '\n' ' ' < "$repo_root/$file" | tr -s ' ' | grep -Fq "$phrase"; then
+            error "context-and-safety-hardening: '$phrase' not found in $file"
+        fi
+    done <<EOF
+skills/processed-beef-orchestrate/SKILL.md|dispatches only the tier directly below it
+skills/processed-beef-orchestrate/SKILL.md|explicit authorization for any destructive action it may require
+skills/processed-beef-work-unit/SKILL.md|asserts its actual role, its configured role, and its parent Lead
+skills/processed-beef-work-unit/SKILL.md|Never take a destructive action
+skills/processed-beef-orchestrate/references/scheduling.md|A role performs a destructive action
+skills/processed-beef-orchestrate/references/scheduling.md|Irreversible destruction outside version control
+skills/processed-beef-orchestrate/references/governance.md|Irreversible destruction outside version control
+EOF
+}
+
 for skill in "$skills_dir"/*/; do
     skill_name=$(basename "$skill")
     file=$skill/SKILL.md
@@ -305,6 +326,7 @@ check_process_conventions
 check_lifecycle_contract
 check_delegation_economics_contract
 check_delegation_economics_followup_contract
+check_context_and_safety_hardening_contract
 
 if ! node "$repo_root/tests/opencode-plugin.mjs"; then
     error "OpenCode plugin contract failed"

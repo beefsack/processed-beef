@@ -35,18 +35,20 @@ increased to parallelize independent work.
 
 ## Context Limits
 
-The process enforces these limits even when the host cannot. Host enforcement is
-an additional safeguard where available. Near 85% of the effective limit, or
-when the next unit may exceed the remaining budget, a role stops. A role with a
-live parent returns a terminal curated report through chat; the chat return is
-a terminal handover even when reported as `blocked`, and the outgoing role does
-not resume. A top-level session or a boundary without a live parent writes a
-terminal `handover.md`. No role continues past its configured limit.
+`150000` is a documented budget, not a quantity any role can measure about
+itself. Prefer exact host token telemetry wherever a host exposes it; host
+enforcement is an additional safeguard where available. Otherwise, return on a
+countable proxy from the role's own history: completed work units, dispatches
+made, and its own tool calls. These are provisional thresholds, due for
+revalidation over the next 2-3 sessions: a Worker returns after about 30 of its
+own tool calls; a Lead returns after 3 completed work units or about 50 of its
+own tool calls, whichever comes first; the Orchestrator hands over after about
+20 dispatches.
 
-Before each new work package, check whether its expected evidence and report
-fit the remaining context; stop scheduling before the ceiling when they do not.
-Without exact host token telemetry, use `wc -c` or equivalent before each raw
-read to count each byte loaded into the role as one token; return before a read
-or package reaches 85% of the effective limit (`127500` bytes by default).
-Reassess after cancellations, retries, and failed units, and use a compressed
-replacement brief.
+Reaching a threshold is the normal end of a bounded stint, not an emergency: a
+role with a live parent returns a terminal curated report through chat; the
+chat return is a terminal handover even when reported as `blocked`, and the
+outgoing role does not resume. A top-level session or a boundary without a
+live parent writes a terminal `handover.md`. No role continues past its
+threshold. Reassess after cancellations, retries, and failed units, and use a
+compressed replacement brief.

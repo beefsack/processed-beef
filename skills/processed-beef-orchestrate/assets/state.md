@@ -2,7 +2,7 @@
 
 Added only when the change needs successive Leads. A fresh Lead is succession
 only: it continues the same major unit until accepted, externally blocked, or
-its 85% context boundary, never ordinary scheduling for a plan unit,
+its return threshold, never ordinary scheduling for a plan unit,
 correction, or commit.
 
 - Current major unit / attempt: <unit-id/attempt-id>

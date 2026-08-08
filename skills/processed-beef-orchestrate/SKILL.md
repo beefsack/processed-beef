@@ -29,7 +29,7 @@ cross-change-dependency context, not implementation detail.
 
 **Lead** - feature SME, tech lead, and project manager; owns one major unit
 through serial Worker slices until it is accepted, externally blocked,
-returned for a pre-start split, or hits its 85% context boundary. Leads
+returned for a pre-start split, or reaches its return threshold. Leads
 do not normally write production implementation: Workers implement or
 independently review bounded slices. The Lead performs scoping, pre-dispatch
 reconciliation, plan, log, and state maintenance, diff and evidence review,
@@ -64,7 +64,10 @@ adapter, so precedence is host-resolved and must be verified against the
 installed host. Report resolved agent names, model preferences, and `150000`
 limits, and report any host mismatch rather than claiming it was applied. Each
 role reports its actual selected role against its configured role; a mismatch
-is reported, never concealed.
+is reported, never concealed. As the first line of its first output in a
+session, a role asserts its actual role, its configured role, and its parent
+role; it dispatches only the tier directly below it - the Orchestrator
+dispatches Leads, a Lead dispatches Workers, and a Worker dispatches nothing.
 
 ## Route the Work
 
@@ -100,17 +103,21 @@ Upgrade triggers and routing details: `references/artifacts.md`.
   across plan, log, and state. Execution slices pair the stable unit with an
   ephemeral attempt ID (`unit-01/attempt-02`); attempts never change the unit's
   semantic ID. Only the Lead mutates plans and state.
-- Every role uses its effective configured context limit, default `150000`,
-  enforced by process. Near 85% of that limit, or when the next unit may exceed
-  the remaining budget, the role stops and returns a terminal curated report
-  through chat when a live parent exists; only a top-level session or a
-  boundary without a live parent writes a terminal `handover.md`. The chat
-  return is a terminal handover even when reported as `blocked`, and the
-  outgoing role does not resume. Without exact host token telemetry, use
-  `wc -c` or equivalent before each raw read to count each byte loaded into the
-  role as one token; return before a read or package reaches 85% of the
-  effective limit (`127500` bytes by default). It never schedules more tasks to
-  fit.
+- Every role uses its effective configured context budget, default `150000`, a
+  documented budget, not a quantity any role can measure about itself. Prefer
+  exact host token telemetry wherever a host provides it; otherwise return on
+  a countable proxy from the role's own history that needs no shell access and
+  no telemetry: completed work units, dispatches made, and its own tool calls.
+  These are provisional thresholds, due for revalidation over the next 2-3
+  sessions: a Worker returns after about 30 of its own tool calls; a Lead
+  returns after 3 completed work units or about 50 of its own tool calls,
+  whichever comes first; the Orchestrator hands over after about 20 dispatches.
+  Reaching the threshold is the normal end of a bounded stint, not an
+  emergency: the role returns a terminal curated report through chat when a
+  live parent exists; only a top-level session or a boundary without a live
+  parent writes a terminal `handover.md`. The chat return is a terminal
+  handover even when reported as `blocked`, and the outgoing role does not
+  resume. It never schedules more tasks to fit.
 - Work-unit IDs, brief format, context limits, and handovers:
   `references/scheduling.md`.
 
@@ -144,7 +151,8 @@ Upgrade triggers and routing details: `references/artifacts.md`.
 
 Every Worker brief contains one bounded objective, required inputs and
 constraints, allowed scope, expected evidence, output and checkpoint location,
-and a stop-on-surprise instruction. Before dispatch, the Lead reconciles the
+explicit authorization for any destructive action it may require, and a
+stop-on-surprise instruction. Before dispatch, the Lead reconciles the
 brief against objective, scope, acceptance criteria, constraints, dependencies,
 and stop conditions; a conflicting brief is not dispatched. Dispatch packets
 stay compact: they link evidence and never replay policy or raw transcripts.

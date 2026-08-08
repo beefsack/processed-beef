@@ -133,19 +133,22 @@ Process context limits are always skill-enforced and optionally host-enforced.
 
 - The target hosts do not consistently provide per-agent hard context
   ceilings, so v1 enforces the `150000` limit at the process level.
-- Near 85% of the effective limit, or when the next unit may exceed the
+- Nearing its return threshold, or when the next unit may exceed the
   remaining budget, a role with a live parent returns a terminal curated
   report through chat and stops; a top-level session or a boundary without a
   live parent writes a terminal `handover.md`. No role continues past its
-  limit.
-- Before each new work package, the responsible role checks whether the
-  remaining context can accommodate its evidence and report, and stops
-  scheduling before the ceiling when it cannot. Without exact host token
-  telemetry, use `wc -c` or equivalent before each raw read to count each byte
-  loaded into the role as one token; return before a read or package reaches
-  85% of the effective limit (`127500` bytes by default). Cancellations,
-  retries, and failed units trigger a reassessment and a compressed replacement
-  brief.
+  threshold.
+- `150000` is a documented budget, not a quantity any role can measure about
+  itself. Prefer exact host token telemetry wherever a host exposes it;
+  otherwise return on a countable proxy from the role's own history:
+  completed work units, dispatches made, and its own tool calls. These are
+  provisional thresholds, due for revalidation over the next 2-3 sessions: a
+  Worker returns after about 30 of its own tool calls; a Lead returns after 3
+  completed work units or about 50 of its own tool calls, whichever comes
+  first; the Orchestrator hands over after about 20 dispatches. Reaching a
+  threshold is the normal end of a bounded stint, not an emergency.
+  Cancellations, retries, and failed units trigger a reassessment and a
+  compressed replacement brief.
 - Where a host offers a per-agent limit, treat it as an additional safeguard,
   not as the enforcement mechanism.
 
