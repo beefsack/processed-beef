@@ -150,10 +150,6 @@ check_invariants() {
 }
 
 check_process_conventions() {
-    if grep -R -E -q --exclude-dir=.git --exclude-dir=node_modules 'VISION[.]md' "$repo_root"; then
-        error "process guidance still references an obsolete startup document"
-    fi
-
     for file in \
         "$repo_root/README.md" \
         "$repo_root/docs/architecture.md" \
@@ -196,14 +192,6 @@ check_process_conventions() {
             error "${file#"$repo_root"/}: restates single-sourced return thresholds"
         fi
     done
-
-    # `blocked` must not be overloaded with a terminal meaning: `handover` is
-    # the only terminal status.
-    if grep -rEl "handover even (if|when) its status is|handover even when reported as" \
-        "$repo_root/skills" "$repo_root/docs" "$repo_root/README.md" \
-        --exclude-dir=archive >/dev/null 2>&1; then
-        error "a document still describes \`blocked\` as a terminal handover"
-    fi
 }
 
 
@@ -214,59 +202,17 @@ check_process_conventions() {
 # impossible to simplify: the checks for 2026-08-05-lead-lifecycle,
 # 2026-08-07-delegation-economics and its follow-up, and
 # 2026-08-08-context-and-safety-hardening were retired under this rule on
-# 2026-08-17. Structural checks above are permanent.
-
-# Contract for circuit breakers and revised return thresholds
-# (2026-08-17-circuit-breakers) and process overhead reduction
-# (2026-08-17-overhead-reduction).
-check_circuit_breakers_contract() {
-    while IFS='|' read -r file phrase; do
-        case $file in '') continue ;; esac
-        if ! tr '\n' ' ' < "$repo_root/$file" | tr -s ' ' | grep -Fq "$phrase"; then
-            error "circuit-breakers: '$phrase' not found in $file"
-        fi
-    done <<EOF
-skills/processed-beef-orchestrate/SKILL.md|Attempt accounting belongs to the semantic unit, not to the agent
-skills/processed-beef-orchestrate/SKILL.md|a third attempt on one unit
-skills/processed-beef-orchestrate/SKILL.md|is not a reset and does not clear the breaker
-skills/processed-beef-orchestrate/SKILL.md|Fix-forward covers defects discovered after an honest acceptance
-skills/processed-beef-orchestrate/references/scheduling.md|A threshold is a scheduling boundary, not an evidence-validity boundary
-skills/processed-beef-orchestrate/references/scheduling.md|a relabeled brief for the same objective does not start a new count
-skills/processed-beef-orchestrate/references/verification.md|One independent review per unit
-skills/processed-beef-orchestrate/references/verification.md|A rising test count is not acceptance progress
-skills/processed-beef-orchestrate/references/verification.md|the classification comes from what the command does, not from its name
-skills/processed-beef-orchestrate/references/artifacts.md|once a second Lead succession occurs on the change or any Expanded trigger
-skills/processed-beef-work-unit/SKILL.md|leave the same failure class
-skills/processed-beef-work-unit/SKILL.md|Do not attempt a third variation
-skills/processed-beef-orchestrate/references/governance.md|It does not approve plan record-keeping
-skills/processed-beef-orchestrate/references/artifacts.md|The plan has two surfaces
-skills/processed-beef-orchestrate/references/scheduling.md|\`handover\` is the only terminal one
-skills/processed-beef-work-unit/SKILL.md|\`handover\` is the only terminal status
-skills/processed-beef-orchestrate/references/scheduling.md|the applicable \`docs/principles.md\` clauses stated in the brief
-skills/processed-beef-work-unit/SKILL.md|The brief states the applicable \`docs/principles.md\` clauses
-skills/processed-beef-orchestrate/SKILL.md|once one of those counts exceeds 1
-EOF
-
-    # The revised thresholds must be stated identically everywhere they appear.
-    for file in \
-        "$repo_root/README.md" \
-        "$repo_root/docs/architecture.md" \
-        "$repo_root/skills/processed-beef/SKILL.md" \
-        "$repo_root/skills/processed-beef-orchestrate/SKILL.md" \
-        "$repo_root/skills/processed-beef-work-unit/SKILL.md" \
-        "$repo_root/skills/processed-beef-orchestrate/assets/agent-process.md" \
-        "$repo_root/skills/processed-beef-orchestrate/references/scheduling.md" \
-        "$repo_root/docs/integrations/antigravity.md" \
-        "$repo_root/docs/integrations/claude-code.md" \
-        "$repo_root/docs/integrations/codex.md" \
-        "$repo_root/docs/integrations/opencode.md" \
-        "$repo_root/docs/integrations/vscode.md"; do
-        normalized=$(tr '\n' ' ' < "$file" | tr -s ' ')
-        if printf '%s' "$normalized" | grep -Eq 'about 30 of its own tool calls|about 50 of its own tool calls|hands over after about 20 dispatches'; then
-            error "${file#"$repo_root"/}: stale return threshold wording"
-        fi
-    done
-}
+# 2026-08-17, followed by 2026-08-17-circuit-breakers and
+# 2026-08-17-overhead-reduction (recorded as Scenarios 13-16) when the skill set
+# was condensed.
+#
+# The same rule retires a tripwire that guards a phrasing rather than a
+# structure: the VISION.md grep and the `blocked`-as-terminal-handover regex
+# were removed on 2026-08-17 because each matched only historical wording that
+# no longer appears and that any rewrite would evade. Structural checks above -
+# frontmatter, size, ASCII, link resolution, harness-token portability, and
+# single-sourced paths and thresholds - are permanent. Meaning is verified in
+# tests/behavioral.md, never here.
 
 for skill in "$skills_dir"/*/; do
     skill_name=$(basename "$skill")
@@ -290,7 +236,6 @@ done
 
 check_invariants
 check_process_conventions
-check_circuit_breakers_contract
 
 if ! node "$repo_root/tests/opencode-plugin.mjs"; then
     error "OpenCode plugin contract failed"
