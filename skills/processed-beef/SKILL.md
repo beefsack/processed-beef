@@ -12,10 +12,10 @@ At startup, read `docs/principles.md` when present. Build and retain a current
 product and engineering view from `docs/agent-process.md` when present;
 `docs/backlog.md` and `docs/decisions.md` when they exist; and the active
 backlog's dependency fields when present. This view covers priorities, active
-governance, role configuration, and cross-change dependencies. Report the effective
-Orchestrator, Lead, and Worker agent names, model preferences, and `150000`
-default context limits, including configured overrides, and report any host
-mismatch without claiming the preference was applied.
+governance, role configuration, and cross-change dependencies. Report the
+effective Orchestrator, Lead, and Worker agent names, model preferences, and
+configured context budgets (host default `150000`), including overrides, and
+report any host mismatch without claiming the preference was applied.
 
 Do not normally load complete active change specifications or plans,
 implementation or source files, review corpora, raw diffs, test logs, or large

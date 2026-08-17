@@ -133,22 +133,15 @@ Process context limits are always skill-enforced and optionally host-enforced.
 
 - The target hosts do not consistently provide per-agent hard context
   ceilings, so v1 enforces the `150000` limit at the process level.
-- Nearing its return threshold, or when the next unit may exceed the
-  remaining budget, a role with a live parent returns a terminal curated
-  report through chat and stops; a top-level session or a boundary without a
-  live parent writes a terminal `handover.md`. No role continues past its
-  threshold.
-- `150000` is a documented budget, not a quantity any role can measure about
-  itself. Prefer exact host token telemetry wherever a host exposes it;
-  otherwise return on a countable proxy from the role's own history:
-  completed work units, dispatches made, and its own tool calls. These are
-  provisional thresholds, due for revalidation over the next 2-3 sessions: a
-  Worker returns after about 30 of its own tool calls; a Lead returns after 3
-  completed work units or about 50 of its own tool calls, whichever comes
-  first; the Orchestrator hands over after about 20 dispatches. Reaching a
-  threshold is the normal end of a bounded stint, not an emergency.
-  Cancellations, retries, and failed units trigger a reassessment and a
-  compressed replacement brief.
+- Nearing its return threshold, or when the next unit may exceed the remaining
+  budget, a role reports `handover` and stops - through chat when a live parent
+  exists, otherwise as `handover.md`. No role continues past its threshold.
+- `150000` is a host configuration value, not a quantity any role can observe
+  about itself, so behavior is driven by host token telemetry where available
+  and otherwise by countable proxies from the role's own history. A threshold
+  is a scheduling boundary, not an evidence-validity boundary. The current
+  numbers are stated once, in `references/scheduling.md` under Context Limits,
+  and are provisional pending revalidation.
 - Where a host offers a per-agent limit, treat it as an additional safeguard,
   not as the enforcement mechanism.
 
@@ -181,17 +174,40 @@ configuration supports it, by the host. A Worker returns
   result, or a consequential design choice introduced by the Lead - and routine
   work does not receive duplicated independent reviews.
 
+## Circuit Breakers
+
+Every other bound in this process is counted inside one agent's context, so
+Worker replacement, Lead succession, and a relabeled brief silently reset it.
+That is how a unit can stay unaccepted while attempts, corrections, and review
+findings accumulate indefinitely - effort without state progress.
+
+Attempt accounting therefore belongs to the semantic unit rather than the
+agent, is recorded against the unit in `plan.md`, and is inherited by
+successors. A breaker trips on a third attempt on one unit, a second correction
+round on one unit or checkpoint, a second independent review of the same unit,
+failures that change location but not class, or growing verification volume
+while no acceptance criterion moves to met. A trip stops implementation on that
+unit, preserves the work and evidence, and escalates one tier with a loop
+report; in normal mode the Orchestrator freezes a changed path with the user
+before any further dispatch.
+
+A reset changes kind - reduced or split scope, changed approach, frozen partial
+acceptance, or a parked unit. Another patch, another Worker, another review
+pass, or the same objective under a new brief label is not a reset. Breakers
+are counters on artifacts that already exist, not new phases or files: process
+weight is itself a cost this process is trying to avoid.
+
 ## Handover Boundaries
 
-Every actual handover is terminal: it ends the reporting or handing-off agent,
-and a fresh subagent is required after acceptance, handover, changed scope,
-corrections, or further work. An ordinary `blocked` or `decision-needed` return
-is a pause report, not a handover: the sole resumption exception is the same
-unfinished Worker unit after the parent answers a specific `decision-needed`
-report or resolves its concrete `blocked` condition, and only while the Worker
-remains within its context budget. A context-ceiling return is a terminal chat
-handover even if its status is `blocked`: the outgoing agent stops for
-succession and does not resume.
+`handover` is the only terminal status: it ends the reporting agent, and a
+fresh subagent is required after it, and after acceptance, changed scope,
+corrections, or further work. Every other status is a pause report. The sole
+resumption is the same unfinished Worker unit after the parent answers a
+specific `decision-needed` report or resolves a concrete `blocked` condition,
+and only while the Worker remains within its context budget. Keeping the
+terminal case in its own status is deliberate: an earlier design overloaded
+`blocked` with both meanings and had to restate the distinction in eight
+places.
 
 Worker-to-Lead and Lead-to-Orchestrator reports and actual handovers return
 through chat as curated, comprehensive reports, never as persisted report files
@@ -206,9 +222,21 @@ the whole hierarchy, in every mode including autonomous mode. It is never
 increased to parallelize independent work. V1 does not expose a concurrency
 setting.
 
-Parallel Leads or Workers require worktree isolation, conflict ownership,
-per-unit recovery logs, deterministic merge order, quota accounting, and
-changed review semantics. Those are a separate design and release.
+This process is optimised for subscription quotas, not large API spends, and
+serialization is a quota-management control before it is a state-safety one.
+Concurrent agents burn quota in parallel and hit the ceiling without warning,
+and recovery from that is expensive: work in flight across several agents is
+lost at once, mid-unit, with no clean handover. One agent at a time makes
+consumption observable, makes the stopping point a unit boundary, and keeps a
+quota exhaustion recoverable from `log.md` and Git.
+
+Serialization therefore costs wall-clock latency by design, and that cost is
+accepted. Do not propose relaxing it as an efficiency measure - including for
+read-only work on disjoint paths - without the quota accounting that would make
+parallel consumption predictable. Parallel Leads or Workers additionally
+require worktree isolation, conflict ownership, per-unit recovery logs,
+deterministic merge order, and changed review semantics. Those are a separate
+design and release.
 
 ## Documents
 

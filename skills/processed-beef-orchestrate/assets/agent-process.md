@@ -19,13 +19,14 @@ role; a mismatch is reported, never concealed.
 
 ## Startup Context
 
-Every role reads `docs/principles.md` when present. The Orchestrator also reads
-`docs/backlog.md` and `docs/decisions.md` when present to maintain current
-priorities, active governance, and cross-change dependencies. Leads and Workers
-read `docs/backlog.md` only when assigned work involves prioritization,
-selecting or ordering work, cross-change coordination, or otherwise needs
-current priorities. Workers read only their brief's bounded inputs beyond the
-universal files.
+The Orchestrator and Lead read `docs/principles.md` when present. The
+Orchestrator also reads `docs/backlog.md` and `docs/decisions.md` when present
+to maintain current priorities, active governance, and cross-change
+dependencies. A Worker reads only its brief's bounded inputs: the brief states
+the applicable principles clauses. Leads and Workers read `docs/backlog.md`,
+and a Worker reads `docs/principles.md`, only when assigned work involves
+prioritization, ordering work, cross-change coordination, or a governance
+question the brief did not resolve.
 
 ## Concurrency
 
@@ -35,20 +36,13 @@ increased to parallelize independent work.
 
 ## Context Limits
 
-`150000` is a documented budget, not a quantity any role can measure about
-itself. Prefer exact host token telemetry wherever a host exposes it; host
-enforcement is an additional safeguard where available. Otherwise, return on a
-countable proxy from the role's own history: completed work units, dispatches
-made, and its own tool calls. These are provisional thresholds, due for
-revalidation over the next 2-3 sessions: a Worker returns after about 30 of its
-own tool calls; a Lead returns after 3 completed work units or about 50 of its
-own tool calls, whichever comes first; the Orchestrator hands over after about
-20 dispatches.
+The `150000` in the table above is a host configuration value, not a quantity
+any role can observe about itself. The return thresholds that govern behavior
+are stated once in `references/scheduling.md` under Context Limits; do not
+restate them here.
 
-Reaching a threshold is the normal end of a bounded stint, not an emergency: a
-role with a live parent returns a terminal curated report through chat; the
-chat return is a terminal handover even when reported as `blocked`, and the
-outgoing role does not resume. A top-level session or a boundary without a
-live parent writes a terminal `handover.md`. No role continues past its
-threshold. Reassess after cancellations, retries, and failed units, and use a
-compressed replacement brief.
+Record only this project's overrides:
+
+- Project return thresholds, if they differ from the skill defaults: `<none>`
+- Earlier handover warning for this project, if any: `<none>`
+- Host token telemetry available: `<yes | no>`

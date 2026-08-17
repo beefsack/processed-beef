@@ -16,6 +16,13 @@ observation appropriate to the behavior.
 - Orchestrators inspect alignment and the evidence map, not the implementation
   again.
 
+Each verification command in `plan.md` is typed static or live. Live means it
+mutates the host, external state, or a running system; the classification comes
+from what the command does, not from its name. Static commands run under
+ordinary test authorization and are never skipped because their name resembles
+a live one. Live commands name prerequisites, approval, cleanup, and the
+evidence to capture before the first run.
+
 ## Worker Results
 
 Worker output is never accepted without Lead inspection. The Lead:
@@ -63,3 +70,15 @@ not the implementation narrative. It returns only concrete, evidenced findings.
 The Lead classifies each finding as fix, defer with reason, or reject with
 reason. One bounded correction pass follows. Unresolved serious findings
 escalate rather than starting an open-ended review loop.
+
+One independent review per unit. Its findings are that unit's finding set: each
+is fixed, deferred with reason, or rejected with reason, in that single
+correction pass. A confirmation pass verifies only that those findings were
+addressed. New issues it raises become backlog items or a new unit under
+Orchestrator approval, never additional in-unit rounds - unless they are
+regressions introduced by the correction itself. A second independent review of
+the same unit trips a circuit breaker.
+
+New tests trace to an acceptance criterion. A rising test count is not
+acceptance progress, and review that repeatedly requires another proof is a
+loop signal, not diligence.

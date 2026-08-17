@@ -7,6 +7,13 @@ rule overrides any generic recommendation to parallelize independent work, and
 no mode, including autonomous mode, overrides it. Parallel Leads or Workers are
 deferred to a later release.
 
+The process targets subscription quotas rather than large API spends, so this
+is a quota control first: concurrent agents burn quota in parallel, hit the
+ceiling without warning, and lose several agents' in-flight work at once.
+Serial execution makes consumption observable and stops at a unit boundary that
+`log.md` and Git can recover. The latency cost is accepted deliberately and is
+not an inefficiency to optimise away.
+
 Work units carry stable semantic IDs (for example `unit-01`) used consistently
 across the plan, log, and state. Execution slices pair a stable unit with an
 ephemeral attempt ID (`unit-01/attempt-02`); attempts never rename the semantic
@@ -16,34 +23,38 @@ state, preserving a clean upgrade path to future worktree-backed concurrency.
 
 ## Context Limits
 
-Every Orchestrator, Lead, and Worker has an effective configured context
-budget, default `150000`. `150000` is a documented budget, not a quantity any
-role can measure about itself: no role can observe its own token usage
-mid-session, which is why self-policing it directly does not work. Prefer
-exact host token telemetry wherever a host exposes it. Otherwise, return on a
-countable proxy from the role's own history, which needs no shell access and
-no telemetry: completed work units, dispatches made, and its own tool calls.
+Each role has a configured context budget, default `150000`. That number is a
+host configuration value: no role can observe its own token usage mid-session,
+so it governs nothing on its own. What governs behavior is exact host token
+telemetry where a host exposes it, and otherwise the countable proxies below,
+taken from the role's own history and needing no shell access or telemetry.
 
-These thresholds are provisional, derived from one session's measurements, and
-are due for revalidation over the next 2-3 sessions:
+These thresholds are provisional, derived from session measurements, and are
+due for revalidation over the next 2-3 sessions:
 
-- Worker: return after about 30 of its own tool calls.
-- Lead: return after 3 completed work units, or about 50 of its own tool
+- Worker: target completion in about 12-16 of its own tool calls, leaving
+  handover reserve, and return by about 20.
+- Lead: return after 3 completed work units, or about 20 of its own tool
   calls, whichever comes first.
-- Orchestrator: hand over after about 20 dispatches.
+- Orchestrator: no fixed dispatch cap. It hands over deliberately, on host
+  context telemetry where available, otherwise on dispatch volume and the state
+  of the work, choosing a boundary where a compact successor packet is cheap.
+
+A threshold is a scheduling boundary, not an evidence-validity boundary. When
+an attempt exceeds one but returns usable work, the Lead reconciles it once -
+inspect the diff and evidence, then accept, correct, or abandon - rather than
+discarding it and redispatching the same scope. Repeated rejection of
+technically useful over-threshold work causes redispatch churn and pushes
+implementation back onto the Lead, which is worse than the breach. Report
+process compliance separately from technical acceptance: a reconciled diff can
+be technically sound while the attempt remains process-noncompliant.
 
 Reaching a threshold is the normal end of a bounded stint, not an emergency: it
-hands a fresh, focused successor the next unit of work. The role must:
-
-1. stop accepting work;
-2. return through the boundary's channel: a curated chat report when a live
-   parent exists, or `handover.md` at a top-level session transfer or a
-   boundary without a live parent.
-
-No role continues past its threshold. Reaching it means returning the report
-and stopping; the chat return is a terminal handover even when reported as
-`blocked`, and the outgoing role does not resume. It never means scheduling
-more tasks to make use of remaining budget instead of returning.
+hands a fresh, focused successor the next unit of work. The role stops
+accepting work and reports `handover` - through chat when a live parent exists,
+or as `handover.md` at a top-level session transfer or a boundary without a
+live parent. No role continues past its threshold, and it never schedules more
+tasks to use up remaining budget instead of returning.
 
 A cancellation, retry, or failed unit triggers this same reassessment against
 these thresholds. The replacement brief is compressed to the unresolved
@@ -52,75 +63,43 @@ reason the prior unit stopped; it does not replay policy or raw transcripts.
 
 ## Delegation Decision
 
-Decide delegation for a unit before loading any of its material. The test is
+Decide delegation before loading any of the unit's material. The test is
 specifiability: a unit is delegated unless the Lead can already state, in the
-brief itself, what changes and what the result must be. If stating the work
-requires loading the material first, the Worker owns it. This binds read-only
-and investigation units the same as change units: if the Lead cannot already
-state the specific facts a scan will return, the scan itself is delegated.
+brief itself, what changes and what the result must be. Read-only and
+investigation units bind the same as change units - if the Lead cannot already
+state the facts a scan will return, the scan is delegated - and so do
+iterate-until-green loops such as build, test, lint, and format, whose output
+volume is unknown before running. This covers code and file changes, command
+runs, documentation writing and search, and web research alike.
 
-Delegate whenever any of these holds at scoping time:
-
-- the work to be done must be discovered rather than stated;
-- producing the change requires loading material the Lead does not already
-  hold, or material whose extent it cannot bound in advance;
-- the unit contains an iterate-until-green loop such as build, test, lint, or
-  format, whose output volume is not known before running it;
-- its acceptance is checkable from the returned diff plus a command result.
-
-This covers code and file changes, test and command runs, documentation
-writing, documentation search and summarisation, and web research alike.
-
-The Lead executes a unit directly only when all of these hold: it can already
-state the work completely; the work is judgement, reconciliation, approval, or
-dispatch rather than change; and it can be applied and verified without loading
-further material. Cost is context volume, not the number of reads or commands:
-one read of a large document or one command with unbounded output can exceed
-many small ones. Judge the material, not the call count. When roles run
-different model tiers, a Lead's byte typically costs more than a Worker's;
-that asymmetry is a further reason to delegate, not just context volume.
+The Lead executes a unit directly only when it can already state the work
+completely, the work is judgement, reconciliation, approval, or dispatch rather
+than change, and it can be applied and verified without loading further
+material. Cost is context volume, not call count: one read of a large document
+can exceed many small ones. Under mixed model tiers a Lead's byte costs more
+than a Worker's, which is a further reason to delegate.
 
 ## Corpus Ownership and Forfeit
 
-Every unit names exactly one role that holds its material, and that role
-acquires it once. When the Worker holds it, the Lead scopes from paths, greps,
-specifications, and prior reports, then reviews the returned diff and evidence
-rather than re-reading the files. When the Lead holds it, the brief must be
-complete enough that the Worker never reopens the same material: it names the
-specific facts, IDs, and prior findings already established in-session so the
-Worker does not rediscover them.
+Every unit names one role that holds its material, and that role acquires it
+once. When the Worker holds it, the Lead scopes from paths, greps,
+specifications, and prior reports, then reviews the returned diff rather than
+re-reading the files. When the Lead holds it, the brief names the facts, IDs,
+and prior findings already established in-session so the Worker does not
+rediscover them. A Lead that has already loaded a unit's material has forfeited
+that unit's dispatch: it finishes the unit itself and records the forfeit,
+because delegating after the loading is done duplicates cost without recovering
+it.
 
-A Lead that has already loaded a unit's material has forfeited that unit's
-dispatch: it finishes the unit itself and records the forfeit. Mid-unit
-delegation after the loading is done duplicates cost without recovering it.
-See Late Size Discovery below for the self-discovery exception.
-
-## Late Size Discovery
-
-Some material cannot be sized in advance. When a read or a command's output is
-rejected, truncated, or paginated by the host because of its size, that material
-is unbounded in practice and its loading and processing are delegated. A role
-that checks a file's size or line count before reading it and finds it large is
-bound by the same rule as a host-triggered rejection: the check does not pay the
-loading cost, and delegating afterward is never a forfeit. Do not page through
-it, re-run the command with narrower filters, or sample it repeatedly: each
-attempt pays again for the same discovery and, in aggregate, costs more than the
-single dispatch it was avoiding. Dispatch a Worker whose objective is to load
-the material, process it, and return the curated result.
-
-This reactive trigger is permitted because the rejection leaves the cost unpaid:
-the content is still outside the role's context. It is the opposite of
-dispatching after the material is already loaded, which recovers nothing and is
-a forfeit. The governing distinction is whether the triggering event leaves the
-cost unpaid.
-
-Partially loaded material follows the same rule for its remainder: what is
-loaded stays, and the rest is delegated rather than paged in.
-
-A Worker that hits this trigger does not dispatch itself: Workers never
-delegate. It stops and reports the rejected or truncated material as a
-`blocked` or `decision-needed` pause report, and the Lead dispatches the
-Worker that loads and curates it.
+The exception is material that could not be sized in advance. When the host
+rejects, truncates, or paginates a read or command output because of its size -
+or a size check before reading shows the same - the cost is still unpaid, so
+delegating afterward is never a forfeit. Dispatch a Worker to load, process,
+and curate it. Do not page through it, re-run it with narrower filters, or
+sample it repeatedly: each attempt pays again for the same discovery and, in
+aggregate, exceeds the single dispatch it was avoiding. Partially loaded
+material follows the same rule for its remainder. A Worker that hits this
+returns `blocked` or `decision-needed`; it never delegates.
 
 ## Pre-Dispatch Reconciliation
 
@@ -136,9 +115,10 @@ stop-on-surprise instruction, without replaying policy or raw transcripts.
 Every dispatch includes:
 
 - one bounded objective;
-- `docs/principles.md` when present, plus only the bounded inputs needed for
-  the objective;
-- required inputs and relevant constraints;
+- only the bounded inputs needed for the objective;
+- required inputs and relevant constraints, including the applicable
+  `docs/principles.md` clauses stated in the brief rather than left to a
+  per-dispatch read;
 - allowed scope;
 - expected evidence;
 - output and checkpoint location;
@@ -156,13 +136,15 @@ parent-only restriction can make a child non-functional.
 
 Workers execute, verify every completion claim, checkpoint the log when one
 exists, and return one of `review-ready`, `checkpoint`, `blocked`,
-`decision-needed`, or `host-unknown`. `review-ready` is a review input, not
-acceptance or completion, and the Lead inspects the diff and evidence before
-accepting. Workers never delegate: no subagent or task invocation. Workers do
-not independently read `docs/backlog.md`, unrelated plans, or the wider project
-context. They read `docs/backlog.md` only when their assigned work involves
-prioritization, selecting or ordering work, cross-change coordination, or
-otherwise needs current priorities.
+`decision-needed`, `host-unknown`, or `handover`. `review-ready` is a review
+input, not acceptance or completion, and the Lead inspects the diff and
+evidence before accepting. Workers never delegate: no subagent or task
+invocation. Workers do not independently read `docs/principles.md`,
+`docs/backlog.md`, unrelated plans, or the wider project context: the brief
+carries the clauses and inputs the unit needs. A Worker reads `docs/backlog.md`
+or `docs/principles.md` directly only when its assigned work involves
+prioritization, ordering work, cross-change coordination, or a governance
+question the brief did not resolve.
 
 ## Destructive Actions
 
@@ -205,45 +187,59 @@ needed. Lifecycle statuses transition as follows:
 | `review-ready` | Worker | Unit done with evidence; a review input, not acceptance or completion | `accepted` or `rejected`, decided only by Lead inspection |
 | `checkpoint` | Worker | A named review point is reached: a coherent group of edits is complete and verified, and scoped work remains | `continue` or one same-scope correction for that checkpoint, decided only by Lead inspection |
 | `continue` | Lead | Lead inspected the incremental diff at a checkpoint and accepts it | Worker resumes the same unit toward the next review point or completion |
-| `blocked` | any role | Pause report, not a handover | resume the same unfinished unit after the concrete condition resolves |
-| `decision-needed` | any role | Pause report, not a handover; a specific answer is required | resume the same unfinished unit after the Lead or user answers |
+| `blocked` | any role | Pause report; a concrete external condition stops progress | resume the same unfinished unit after the condition resolves |
+| `decision-needed` | any role | Pause report; a specific answer is required | resume the same unfinished unit after the Lead or user answers |
 | `host-unknown` | Worker | Root or host cannot be verified; an unsuccessful, counted, non-resumable host attempt | `host-unknown reconciliation` |
 | `host-unknown reconciliation` | Lead | Lead reconciles diff, Git, log, and evidence after a failed host attempt | `accepted`, a fresh compressed recovery Worker, or abandon |
 | `accepted` | Lead | Lead inspected the diff and evidence and accepted the unit | next unit, or terminal accepted completion |
 | `rejected` | Lead | Lead inspected and returned the unit | one same-scope correction round, or a fresh Worker after approval |
-| `terminal-handover` | any role | Chat or `handover.md` handover; ends the outgoing role | a fresh subagent |
-
-Terminal handovers and terminal accepted completion remain preserved.
+| `handover` | any role | The role's stint is over: threshold reached, or a transfer. Always terminal | a fresh subagent |
 
 ## Terminal Reports, Handovers, and Resumption
 
-- `review-ready` is not terminal: it returns the unit to the Lead for
-  inspection and acceptance. The same Worker may receive exactly one same-scope
-  correction round, and only after Lead inspection with semantic scope and
-  context unchanged; changed scope requires a fresh Worker after approval.
-  Every actual handover is terminal and ends the outgoing Worker or role: a
-  curated chat handover, or a `handover.md` transfer at a top-level session
-  transfer or a boundary without a live parent. Fresh subagents are required
-  after handover, changed scope, corrections, or further work.
+Statuses divide cleanly. `handover` is the only terminal one: it ends the
+outgoing Worker or role, and a fresh subagent takes over. `review-ready`,
+`checkpoint`, `blocked`, and `decision-needed` are pause reports that do not
+end the reporting role. `host-unknown` ends the attempt, not by handover.
+
+- A role reaching its return threshold reports `handover`, never `blocked`.
+- `handover` returns through chat when a live parent exists; only a top-level
+  session transfer or a boundary without a live parent writes `handover.md`.
+- `review-ready` returns the unit to the Lead for inspection and acceptance.
+  The same Worker may receive exactly one same-scope correction round, and only
+  after Lead inspection with semantic scope and context unchanged; changed
+  scope requires a fresh Worker after approval.
+- `blocked` and `decision-needed` resume the same unfinished unit, and only
+  after the Lead answers the specific question or resolves the concrete
+  condition, and only while the Worker remains within its context budget.
+- A `checkpoint` resumes the same unit after the Lead returns `continue` or one
+  same-scope correction. The correction budget is per checkpoint, not per unit.
 - `host-unknown`, missing, malformed, and cancelled results are unsuccessful,
   counted, non-resumable host attempts, never evidence. The Lead runs
-  `host-unknown reconciliation`; these results never count as evidence.
-- An ordinary `blocked` or `decision-needed` return is a pause report, not a
-  handover: it does not end the Worker. The same Worker may resume only its
-  same unfinished unit, and only after the Lead answers a specific
-  `decision-needed` report or resolves its concrete `blocked` condition, and
-  only while the Worker remains within its context budget.
-- A `checkpoint` return is a pause report, not a handover: it does not end the
-  Worker. Resume the same unit only after the Lead returns `continue` or one
-  same-scope correction for that checkpoint. The correction budget is per
-  checkpoint, not per unit.
-- A context-ceiling return is a terminal chat handover even if its status is
-  `blocked`: the outgoing Worker or role stops for succession and does not
-  resume, and a fresh subagent takes over. It is not an ordinary resumable
-  `blocked` report.
-- Worker-to-Lead and Lead-to-Orchestrator reports and actual handovers return
-  through chat, curated and comprehensive, without exhaustive transcripts or
-  persisted report files.
+  `host-unknown reconciliation`.
+- A fresh subagent is required after a handover, changed scope, a correction,
+  or further work.
+- All reports and handovers return through chat, curated and comprehensive,
+  without exhaustive transcripts or persisted report files.
+
+## Attempt Accounting
+
+Attempts, correction rounds, and independent reviews are counted against the
+stable semantic unit, never against the agent working it. The count survives
+Worker replacement, Lead succession, correction rounds, context handovers, and
+malformed, missing, or cancelled reports, and a relabeled brief for the same
+objective does not start a new count. The Lead records a unit's counts in
+`plan.md` once one of them exceeds 1, so a successor inherits them instead of
+resetting them; a unit that completed first try needs no entry, and a successor
+Lead reads the table before its first dispatch on a listed unit.
+
+These counts drive the circuit breakers in the orchestrate skill: a third
+attempt on a unit, a second correction round on a unit or checkpoint, or a
+second independent review of the same unit trips a breaker rather than
+proceeding. A tripped breaker stops implementation on that unit and escalates
+one tier with a loop report; the next step is a reset that changes kind -
+reduced or split scope, changed approach, frozen partial acceptance, or a
+parked unit - not another attempt.
 
 ## Lead Inspection
 
@@ -279,9 +275,8 @@ implementation material by default.
 - A replacement agent reconciles the plan, log, Git status and history, and
   verification evidence before making changes.
 - A deliberate top-level session transfer without a live parent uses
-  `handover.md`; the transfer is terminal and ends the outgoing agent. Role
-  handovers with a live parent return curated reports through chat; those
-  reports are terminal and end the outgoing role.
+  `handover.md`; with a live parent, a `handover` returns through chat. Either
+  way it is terminal and ends the outgoing agent.
 - A failed Worker returns control instead of improvising.
 - A Lead that judges a unit too large and cleanly separable before starting
   proposes a pre-start split to the Orchestrator instead of starting it. Two
@@ -309,8 +304,8 @@ implementation material by default.
    Orchestrator approves both initial files and delegates their creation to the
    Lead.
 5. Lead dispatches one Worker per bounded plan unit, serially.
-6. Lead inspects diff and evidence and proposes progress updates and any
-   correction; Orchestrator signs off before the Lead edits either file.
+6. Lead inspects diff and evidence, records progress and evidence directly, and
+   proposes any semantic plan or spec change for Orchestrator sign-off.
 7. Lead returns a completion packet mapping acceptance criteria to evidence.
 8. Orchestrator checks project alignment and evidence without repeating code
    review or tests.

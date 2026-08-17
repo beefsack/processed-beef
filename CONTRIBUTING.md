@@ -10,6 +10,24 @@ sh tests/validate.sh
 
 The same gate runs in CI (`.github/workflows/validate.yml`) on every push and pull request. A failing gate blocks the release.
 
+### Contract checks retire
+
+A change may add a `check_<change>_contract` function of literal phrase
+assertions. Those checks guard the change for the current release cycle only.
+Once its behavior is recorded in `tests/behavioral.md`, delete the function.
+Phrase checks can detect wording, never behavior, and letting them accumulate
+locks the prose in place: the skill set then cannot be simplified without
+breaking tests that were defending old sentences rather than real controls. The
+structural checks - frontmatter, size, ASCII, links, harness tokens, canonical
+paths, single-sourcing - are permanent.
+
+### Policy prose is single-sourced
+
+A rule is stated in full in exactly one place: the role skill or reference that
+a working agent actually loads. README, `docs/architecture.md`, the
+`agent-process.md` template, and `docs/integrations/*` describe and link.
+Return thresholds are guarded this way by the validator.
+
 ## Behavioral Skill TDD
 
 Skill behavior is developed RED/GREEN. Each scenario in `tests/behavioral.md` is observed twice under pressure:

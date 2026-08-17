@@ -54,10 +54,19 @@ Template: `assets/plan.md`.
 
 Lead-owned and Orchestrator-approved. Contains technical approach, bounded work
 units with stable IDs and dependencies, file or subsystem scope, verification
-commands or observations, progress, pending user decisions, acceptance-criterion
-evidence, residual risks, and final outcome. The Lead may propose plan changes
-within the approved spec, principles, and decisions; the Orchestrator must
-approve every edit before it is made.
+commands or observations typed static or live, progress, per-unit attempt,
+correction, and independent-review counts, pending user decisions,
+acceptance-criterion evidence, residual risks, and final outcome. The counts
+belong to the semantic unit and are carried across Worker replacement and Lead
+succession rather than reset.
+
+The plan has two surfaces. Its semantic sections - technical approach, work
+units, dependencies, scope, and verification - are proposed by the Lead within
+the approved spec, principles, and decisions, and the Orchestrator approves
+each edit before it is made. Its record-keeping sections - progress, the
+acceptance-criterion evidence map, attempt counters, residual risks, and the
+final outcome - are Lead-owned, need no approval, and are reported in the
+Lead's normal return.
 
 ## log.md
 
@@ -82,9 +91,10 @@ finding, and any commit.
 
 ## Conditional Artifacts
 
-- `state.md` - template `assets/state.md`; added when the change needs successive
-  Leads; records current
-  major unit, completed units, blockers, and next dispatch.
+- `state.md` - template `assets/state.md`; created before the next dispatch
+  once a second Lead succession occurs on the change or any Expanded trigger
+  fires; records current major unit, completed units, blockers, next dispatch,
+  and the per-unit attempt, correction, and review counts a successor inherits.
 - `handover.md` - template `assets/handover.md`; written only at a top-level
   session transfer or a boundary without a live parent where chat cannot
   bridge; the handover is terminal and ends the outgoing agent. It records the
@@ -97,7 +107,10 @@ finding, and any commit.
 ## Completion Transaction
 
 One Lead-owned transaction, never run while governance conflicts, pending user
-decisions, or acceptance gaps remain. Workers return `review-ready`; a unit is
+decisions, or acceptance gaps remain. A commit or push requires every unit it
+contains to be `accepted` with no open blocker, acceptance gap, or unresolved
+serious review finding; fix-forward covers defects discovered after an honest
+acceptance, never known defects carried past a commit. Workers return `review-ready`; a unit is
 never fragmented into a separate commit-only Worker, mechanical staging within
 a unit is ordinary delegable work, the Lead performs the commit itself, and
 Workers never administer completion:

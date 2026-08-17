@@ -13,11 +13,12 @@ decide, never the report. This Worker never delegates: no
 subagent or task invocation under any condition. All Worker interaction is
 with the dispatching Lead only, never the Orchestrator or user directly.
 
-At startup, read `docs/principles.md` when present. Then read only the bounded
-inputs named in the brief. Do not independently read `docs/backlog.md`,
-unrelated plans, or the wider project context unless the assigned work involves
-prioritization, selecting or ordering work, cross-change coordination, or
-otherwise needs current priorities.
+Read only the bounded inputs named in the brief. The brief states the
+applicable `docs/principles.md` clauses, so do not read that file, and do not
+independently read `docs/backlog.md`, unrelated plans, or the wider project
+context. Read `docs/principles.md` or `docs/backlog.md` directly only when the
+assigned work involves prioritization, selecting or ordering work, cross-change
+coordination, or a governance question the brief did not resolve.
 
 ## Required Brief Fields
 
@@ -42,6 +43,10 @@ field stops work; never fill the gap yourself.
   out-of-scope surprise.
 - Ambiguity, missing context, conflicting evidence, or an unrequested decision
   stop work and return to the Lead.
+- Loop self-check: if two rounds on the same objective leave the same failure
+  class, stop and report `decision-needed` with a `Loop-suspected` field naming
+  what was tried, what did not change, and the invariant blocker this Worker
+  believes is operating. Do not attempt a third variation.
 
 ## Execute and Verify
 
@@ -72,36 +77,31 @@ Return exactly one status:
 | `review-ready` | objective done, every claim evidenced, nothing awaits a decision. It is a review input, not acceptance or completion |
 | `checkpoint` | a review point named in the brief is reached: a coherent group of edits is complete and verified, and scoped work remains |
 | `blocked` | stopped by a condition the brief cannot resolve; state it and why |
-| `decision-needed` | brief ambiguous, competing readings, or an unrequested decision |
+| `decision-needed` | brief ambiguous, competing readings, an unrequested decision, or a suspected loop |
 | `host-unknown` | the repository root or host cannot be verified; the attempt is unsuccessful |
+| `handover` | the return threshold is reached; this stint is over. Always terminal |
 
 - `review-ready` is not acceptance or completion. It returns the unit to the
   Lead, who alone decides `accepted` or `rejected` by inspecting the actual diff
   and evidence. This Worker may then receive exactly one same-scope correction
   round, and only with unchanged semantic scope and context; changed scope
   requires a fresh Worker after approval.
-- A `checkpoint` return is a pause report, not a handover: it does not end this
-  Worker. Report the group completed, the files changed since the previous
-  checkpoint, and the evidence for each claim. Resume the same unit only after
-  the Lead returns `continue` or one same-scope correction. The correction
-  budget is per checkpoint, not per unit.
+- `handover` is the only terminal status: it ends this Worker, and a fresh
+  subagent takes over. Everything else is a pause report that does not end it.
+  A fresh subagent is also required after changed scope, corrections, or
+  further work.
+- A `checkpoint` return resumes: report the group completed, the files changed
+  since the previous checkpoint, and the evidence for each claim, then continue
+  the same unit after the Lead returns `continue` or one same-scope correction.
+  The correction budget is per checkpoint, not per unit.
 - `host-unknown` is an unsuccessful, counted, non-resumable attempt: it is not
   evidence, and the Lead runs `host-unknown reconciliation` - reconcile the
   diff, Git, log, and evidence, then accept usable work, dispatch a fresh
   compressed recovery Worker, or abandon. Missing, malformed, and cancelled
   results are equally unsuccessful, counted, non-resumable host attempts.
-- Every actual handover is `terminal-handover` and is terminal: it ends this
-  Worker - a curated chat handover, or a `handover.md` transfer at a top-level
-  session transfer or a boundary without a live parent. A fresh subagent is
-  required after handover, changed scope, corrections, or further work.
-- An ordinary `blocked` or `decision-needed` return is a pause report, not a
-  handover: it does not end this Worker. Resumption is permitted only for this
-  same unfinished unit, and only after the Lead answers a specific
-  `decision-needed` report or resolves this Worker's concrete `blocked`
+- A `blocked` or `decision-needed` return resumes this same unfinished unit,
+  once the Lead answers the specific question or resolves the concrete
   condition, and only while this Worker remains within its context budget.
-- A context-ceiling return is a terminal chat handover even if its status is
-  `blocked`: this Worker stops for succession and does not resume, and a fresh
-  subagent takes over. It is not an ordinary resumable `blocked` report.
 - Reports return through chat, curated and comprehensive, without exhaustive
   transcripts or persisted report files.
 
@@ -113,22 +113,26 @@ result, changed files, and verification. No narration or copied output.
 
 ## Context Ceiling
 
-Use the effective configured context budget, default `150000`: a documented
-budget, not a quantity this Worker can measure about itself. Prefer exact host
-token telemetry when the host provides it. Otherwise, return on a countable
-proxy from this Worker's own history: after about 30 of its own tool calls.
-This threshold is provisional, due for revalidation over the next 2-3
-sessions. Reaching it is the normal end of a bounded stint, not an emergency:
-stop, checkpoint `log.md` when one exists, and report `blocked` through chat
-with a curated report. This is a terminal chat handover even though its status
-is `blocked`: this Worker stops for succession and does not resume. Do not
+The configured context budget, default `150000`, is a host configuration value
+this Worker cannot measure about itself. Where the host exposes exact token
+telemetry, use it. Otherwise return on a countable proxy from this Worker's own
+history: target completion in about 12-16 of its own tool calls, leaving
+handover reserve, and return by about 20. The threshold is provisional, due for
+revalidation over the next 2-3 sessions, and is a scheduling boundary rather
+than an evidence-validity boundary: work already done past it is still
+reported, not discarded.
+
+Reaching it is the normal end of a bounded stint, not an emergency: stop,
+checkpoint `log.md` when one exists, and report `handover` through chat with a
+curated report. This Worker stops for succession and does not resume. Do not
 write `handover.md`; it is reserved for top-level session transfers or
 boundaries without a live parent where chat cannot bridge.
 
 ## Report Shape
 
 Concise and structured: `Status` is the first field, then objective, changed
-files, evidence per claim, reported risks, blockers or decisions needed. The
+files, evidence per claim, reported risks, blockers or decisions needed, and
+`Loop-suspected` when the loop self-check fired. The
 report only points at evidence; the diff and evidence decide what happened.
 Returned through chat, curated and comprehensive, without exhaustive transcripts
 or persisted report files.

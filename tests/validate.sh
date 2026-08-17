@@ -178,9 +178,80 @@ check_process_conventions() {
         fi
     done
 
+    # Return thresholds are single-sourced. Only the two role skills and the
+    # scheduling reference may state the numbers; every other document
+    # describes and links, so a threshold change is a three-file edit rather
+    # than a twelve-file sweep with drift risk.
     for file in \
         "$repo_root/README.md" \
         "$repo_root/docs/architecture.md" \
+        "$repo_root/skills/processed-beef-orchestrate/assets/agent-process.md" \
+        "$repo_root/docs/integrations/antigravity.md" \
+        "$repo_root/docs/integrations/claude-code.md" \
+        "$repo_root/docs/integrations/codex.md" \
+        "$repo_root/docs/integrations/opencode.md" \
+        "$repo_root/docs/integrations/vscode.md"; do
+        normalized=$(tr '\n' ' ' < "$file" | tr -s ' ')
+        if printf '%s' "$normalized" | grep -Eq 'own tool calls, whichever comes first|targets completion in about'; then
+            error "${file#"$repo_root"/}: restates single-sourced return thresholds"
+        fi
+    done
+
+    # `blocked` must not be overloaded with a terminal meaning: `handover` is
+    # the only terminal status.
+    if grep -rEl "handover even (if|when) its status is|handover even when reported as" \
+        "$repo_root/skills" "$repo_root/docs" "$repo_root/README.md" \
+        --exclude-dir=archive >/dev/null 2>&1; then
+        error "a document still describes \`blocked\` as a terminal handover"
+    fi
+}
+
+
+# Per-change contract checks retire by rule. A change's literal phrase checks
+# guard it for the current release cycle only; once its behavior is recorded in
+# tests/behavioral.md, the function is deleted rather than kept. These checks
+# can detect wording, never behavior, and accumulating them makes the skill set
+# impossible to simplify: the checks for 2026-08-05-lead-lifecycle,
+# 2026-08-07-delegation-economics and its follow-up, and
+# 2026-08-08-context-and-safety-hardening were retired under this rule on
+# 2026-08-17. Structural checks above are permanent.
+
+# Contract for circuit breakers and revised return thresholds
+# (2026-08-17-circuit-breakers) and process overhead reduction
+# (2026-08-17-overhead-reduction).
+check_circuit_breakers_contract() {
+    while IFS='|' read -r file phrase; do
+        case $file in '') continue ;; esac
+        if ! tr '\n' ' ' < "$repo_root/$file" | tr -s ' ' | grep -Fq "$phrase"; then
+            error "circuit-breakers: '$phrase' not found in $file"
+        fi
+    done <<EOF
+skills/processed-beef-orchestrate/SKILL.md|Attempt accounting belongs to the semantic unit, not to the agent
+skills/processed-beef-orchestrate/SKILL.md|a third attempt on one unit
+skills/processed-beef-orchestrate/SKILL.md|is not a reset and does not clear the breaker
+skills/processed-beef-orchestrate/SKILL.md|Fix-forward covers defects discovered after an honest acceptance
+skills/processed-beef-orchestrate/references/scheduling.md|A threshold is a scheduling boundary, not an evidence-validity boundary
+skills/processed-beef-orchestrate/references/scheduling.md|a relabeled brief for the same objective does not start a new count
+skills/processed-beef-orchestrate/references/verification.md|One independent review per unit
+skills/processed-beef-orchestrate/references/verification.md|A rising test count is not acceptance progress
+skills/processed-beef-orchestrate/references/verification.md|the classification comes from what the command does, not from its name
+skills/processed-beef-orchestrate/references/artifacts.md|once a second Lead succession occurs on the change or any Expanded trigger
+skills/processed-beef-work-unit/SKILL.md|leave the same failure class
+skills/processed-beef-work-unit/SKILL.md|Do not attempt a third variation
+skills/processed-beef-orchestrate/references/governance.md|It does not approve plan record-keeping
+skills/processed-beef-orchestrate/references/artifacts.md|The plan has two surfaces
+skills/processed-beef-orchestrate/references/scheduling.md|\`handover\` is the only terminal one
+skills/processed-beef-work-unit/SKILL.md|\`handover\` is the only terminal status
+skills/processed-beef-orchestrate/references/scheduling.md|the applicable \`docs/principles.md\` clauses stated in the brief
+skills/processed-beef-work-unit/SKILL.md|The brief states the applicable \`docs/principles.md\` clauses
+skills/processed-beef-orchestrate/SKILL.md|once one of those counts exceeds 1
+EOF
+
+    # The revised thresholds must be stated identically everywhere they appear.
+    for file in \
+        "$repo_root/README.md" \
+        "$repo_root/docs/architecture.md" \
+        "$repo_root/skills/processed-beef/SKILL.md" \
         "$repo_root/skills/processed-beef-orchestrate/SKILL.md" \
         "$repo_root/skills/processed-beef-work-unit/SKILL.md" \
         "$repo_root/skills/processed-beef-orchestrate/assets/agent-process.md" \
@@ -191,114 +262,10 @@ check_process_conventions() {
         "$repo_root/docs/integrations/opencode.md" \
         "$repo_root/docs/integrations/vscode.md"; do
         normalized=$(tr '\n' ' ' < "$file" | tr -s ' ')
-        if ! printf '%s' "$normalized" | grep -Fq 'a documented budget, not a quantity' || ! printf '%s' "$normalized" | grep -Fq 'normal end of a bounded stint'; then
-            error "${file#"$repo_root"/}: missing countable-proxy context fallback"
+        if printf '%s' "$normalized" | grep -Eq 'about 30 of its own tool calls|about 50 of its own tool calls|hands over after about 20 dispatches'; then
+            error "${file#"$repo_root"/}: stale return threshold wording"
         fi
     done
-}
-
-# Contract for the Lead-owned major-unit lifecycle (2026-08-05-lead-lifecycle).
-# Focused literal phrase checks against the canonical role skills and
-# orchestration references. Deliberately not a full-document snapshot. The
-# archived 2026-08-02-terminal-handover-boundaries record is guarded separately
-# by Git inspection, not a hard-coded commit hash.
-check_lifecycle_contract() {
-    while IFS='|' read -r file phrase; do
-        case $file in '') continue ;; esac
-        if ! grep -Fq "$phrase" "$repo_root/$file"; then
-            error "lifecycle: '$phrase' not found in $file"
-        fi
-    done <<EOF
-skills/processed-beef-orchestrate/SKILL.md|succession only, never ordinary scheduling for a plan
-skills/processed-beef-orchestrate/references/scheduling.md|A brief that conflicts with any of them is not dispatched
-skills/processed-beef-orchestrate/references/scheduling.md|ephemeral attempt ID (\`unit-01/attempt-02\`); attempts never rename the semantic
-skills/processed-beef-work-unit/SKILL.md|This Worker never delegates
-skills/processed-beef-orchestrate/SKILL.md|exactly one same-scope correction round
-skills/processed-beef-orchestrate/references/scheduling.md|counted, non-resumable host attempts
-skills/processed-beef-orchestrate/references/scheduling.md|\`host-unknown reconciliation\`
-skills/processed-beef-orchestrate/references/scheduling.md|A unit is never fragmented into a separate commit-only Worker
-skills/processed-beef-orchestrate/references/verification.md|security, authorization, migration, destructive behavior, public contracts
-skills/processed-beef-orchestrate/SKILL.md|actual selected role against its configured role
-docs/integrations/opencode.md|injects a \`task: deny\` default
-skills/processed-beef-orchestrate/references/scheduling.md|\`Status\` as its first field
-EOF
-
-    if grep -Fq '`complete`' "$repo_root/skills/processed-beef-work-unit/SKILL.md"; then
-        error "lifecycle: work-unit skill presents \`complete\` as a report status"
-    fi
-}
-
-# Contract for delegation economics (2026-08-07-delegation-economics).
-# Focused literal phrase checks against the canonical role skills and
-# orchestration references. Deliberately not a full-document snapshot.
-check_delegation_economics_contract() {
-    while IFS='|' read -r file phrase; do
-        case $file in '') continue ;; esac
-        if ! grep -Fq "$phrase" "$repo_root/$file"; then
-            error "delegation-economics: '$phrase' not found in $file"
-        fi
-    done <<EOF
-skills/processed-beef-orchestrate/references/scheduling.md|Decide delegation for a unit before loading any of its material
-skills/processed-beef-orchestrate/references/scheduling.md|has forfeited that unit's
-skills/processed-beef-orchestrate/references/scheduling.md|the rejection leaves the cost unpaid
-skills/processed-beef-orchestrate/references/scheduling.md|correction budget is per checkpoint, not per unit
-skills/processed-beef-orchestrate/references/scheduling.md|A unit is never fragmented into a separate commit-only Worker
-skills/processed-beef-work-unit/SKILL.md|A \`checkpoint\` return is a pause report, not a handover
-skills/processed-beef-orchestrate/references/verification.md|independent review was not possible
-skills/processed-beef-orchestrate/SKILL.md|does not perform raw extraction
-skills/processed-beef-orchestrate/references/artifacts.md|never fragmented into a separate commit-only Worker
-EOF
-}
-
-# Contract for delegation economics follow-up (2026-08-07).
-# Focused literal phrase checks against the canonical role skills and
-# orchestration references. Deliberately not a full-document snapshot.
-check_delegation_economics_followup_contract() {
-    while IFS='|' read -r file phrase; do
-        case $file in '') continue ;; esac
-        if ! grep -Fq "$phrase" "$repo_root/$file"; then
-            error "delegation-economics-followup: '$phrase' not found in $file"
-        fi
-    done <<EOF
-skills/processed-beef-orchestrate/SKILL.md|out of Lead context beyond the diff and evidence
-skills/processed-beef-orchestrate/SKILL.md|and neither does the Lead beyond the diff and
-skills/processed-beef-orchestrate/references/scheduling.md|bound by the same rule as a host-triggered rejection
-skills/processed-beef-orchestrate/references/scheduling.md|the same as change units
-skills/processed-beef-orchestrate/references/scheduling.md|does not rediscover them
-skills/processed-beef-orchestrate/references/scheduling.md|a Lead's byte typically costs more than a Worker's
-skills/processed-beef-work-unit/SKILL.md|has no diff to fall back on
-skills/processed-beef-orchestrate/SKILL.md|Model tiers track role cost
-skills/processed-beef-orchestrate/SKILL.md|returned for a pre-start split
-skills/processed-beef-orchestrate/SKILL.md|all other Orchestrator interaction is with
-skills/processed-beef-orchestrate/SKILL.md|is a narrow exception, not the default
-skills/processed-beef-orchestrate/SKILL.md|Host reconciliation is the Lead's only other direct-extraction right
-skills/processed-beef-orchestrate/references/scheduling.md|judges a unit too large and cleanly separable
-skills/processed-beef-orchestrate/references/scheduling.md|This covers code and file changes, test and command runs, documentation
-skills/processed-beef-orchestrate/references/governance.md|Escalation tracks decision blast radius
-skills/processed-beef-orchestrate/references/governance.md|a project dependency such
-skills/processed-beef-orchestrate/references/governance.md|put a complex or ambiguous technical question to the
-skills/processed-beef-work-unit/SKILL.md|with the dispatching Lead only, never the Orchestrator or user directly
-EOF
-}
-
-# Contract for context and safety hardening (2026-08-08-context-and-safety-hardening).
-# Focused literal phrase checks against the canonical role skills and
-# orchestration references. Deliberately not a full-document snapshot.
-check_context_and_safety_hardening_contract() {
-    while IFS='|' read -r file phrase; do
-        case $file in '') continue ;; esac
-        if ! tr '\n' ' ' < "$repo_root/$file" | tr -s ' ' | grep -Fq "$phrase"; then
-            error "context-and-safety-hardening: '$phrase' not found in $file"
-        fi
-    done <<EOF
-skills/processed-beef-orchestrate/SKILL.md|dispatches only the tier directly below it
-skills/processed-beef-orchestrate/SKILL.md|explicit authorization for any destructive action it may require
-skills/processed-beef-work-unit/SKILL.md|asserts its actual role, its configured role, and its parent Lead
-skills/processed-beef-work-unit/SKILL.md|Never take a destructive action
-skills/processed-beef-orchestrate/references/scheduling.md|A role performs a destructive action
-skills/processed-beef-orchestrate/references/scheduling.md|Irreversible destruction outside version control
-skills/processed-beef-orchestrate/references/governance.md|Irreversible destruction outside version control
-EOF
 }
 
 for skill in "$skills_dir"/*/; do
@@ -323,10 +290,7 @@ done
 
 check_invariants
 check_process_conventions
-check_lifecycle_contract
-check_delegation_economics_contract
-check_delegation_economics_followup_contract
-check_context_and_safety_hardening_contract
+check_circuit_breakers_contract
 
 if ! node "$repo_root/tests/opencode-plugin.mjs"; then
     error "OpenCode plugin contract failed"

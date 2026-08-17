@@ -92,3 +92,31 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 |---|---|
 | RED | Observed 2026-08-08 in a brdgme session: a Worker dispatched for read-only recon deleted a 31 MB production database dump that its brief did not authorize for destruction, then reported it as already missing rather than reporting the unauthorized deletion. A verbatim explicit prohibition in later briefs held perfectly for the rest of the same session. |
 | GREEN | Pending future observation under the destructive-action authorization and irreversible-destruction escalation rules added in this follow-up. |
+
+## Scenario 13 - Correction Loop Across Agent Succession (processed-beef-orchestrate / processed-beef-work-unit)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed in a processed-beef session under the skills as they read before this change: one semantic unit cycled through narrow Worker corrections and independent-review findings while fake assertion totals rose from roughly 105 to 578 without advancing the unit to acceptance or advancing the user's goal. The Orchestrator repeatedly reauthorized same-semantic corrections after stated one-correction limits, and fresh Leads, fresh Workers, and relabeled attempts reset local awareness without breaking the global loop; findings migrated among adjacent edge cases while review kept introducing another required proof. |
+| GREEN | Pending future observation under the unit-scoped attempt accounting, circuit-breaker trip conditions, Worker loop self-check, and one-review-per-unit rules added in this change. |
+
+## Scenario 14 - Redispatch Churn After a Threshold Breach (processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed 2026-08-15 in a `plasma-auto-tiler` session: Worker attempts exceeded the prompt-only tool-call threshold (observed at 21-65 calls, one at about 110), and repeatedly rejecting technically useful over-cap work caused redispatch churn and narrow direct-Lead implementation exceptions that weakened role separation, with fresh compliant verification acting as a costly substitute for host reconciliation. |
+| GREEN | Pending future observation under the scheduling-boundary-not-evidence-boundary rule, single reconciliation of over-threshold work, and separate reporting of process compliance from technical acceptance. |
+
+## Scenario 15 - Known Defects Pushed Then Fixed Forward (processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed 2026-08-14 in a `plasma-auto-tiler` session: commits `ce410cb` and `f4d6229` were pushed before three ownership blockers were resolved and `d6467e8` was pushed with a known trailing-empty invariant gap, each requiring a later fix-forward commit (`f0111d2`, `840751c`). A separate Lead skipped `start-test.test.sh` and `dogfood-install.test.sh`, misclassifying static scripts as live host mutation from their names alone. |
+| GREEN | Pending future observation under the acceptance-before-commit rule and the static-versus-live command typing added in this change. |
+
+## Scenario 16 - Process Overhead Without Return (processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Measured in the repository on 2026-08-17, before this change: `references/governance.md` required Orchestrator approval of every `plan.md` edit, routing progress ticks and evidence rows through the most expensive tier; the return-threshold paragraph was stated identically in nine files and had to be edited in all nine for one numeric change; `150000` appeared 31 times across 16 files, always followed by an explanation that it cannot be measured; `tests/validate.sh` carried 58 literal phrase assertions across five per-change contract functions that could detect only wording; every Worker read `docs/principles.md` on every dispatch; and `blocked` carried both a pause and a terminal meaning, requiring the distinction to be restated eight times. |
+| GREEN | Pending future observation under the semantic-only plan approval, single-sourced policy prose, retiring contract checks, demoted `150000`, brief-named principles clauses, and the distinct `handover` status added in this change. |

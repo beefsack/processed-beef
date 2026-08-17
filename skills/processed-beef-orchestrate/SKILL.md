@@ -45,7 +45,9 @@ plan, and governing clauses it must hold to scope, decide, and accept;
 implementation evidence is reviewed as diffs and curated reports, not by
 reloading the material that produced them.
 
-At startup, every role reads `docs/principles.md` when present. The
+At startup, the Orchestrator and Lead read `docs/principles.md` when present. A
+Worker does not: its brief states the applicable clauses, and it reads the file
+directly only for a governance question the brief did not resolve. The
 Orchestrator also reads top-level READMEs, `docs/backlog.md`,
 `docs/decisions.md`, and vision or architecture docs when present, to
 maintain its current view of priorities, active governance, and cross-change
@@ -83,8 +85,11 @@ Upgrade triggers and routing details: `references/artifacts.md`.
 
 ## Govern
 
-- Orchestrator signs off before the Lead creates or edits `spec.md` or
-  `plan.md`. No plan or specification change happens without it.
+- Orchestrator signs off before the Lead creates `spec.md` or `plan.md`, edits
+  `spec.md`, or edits a plan's semantic sections: approach, work units,
+  dependencies, scope, and verification. Plan record-keeping - progress,
+  evidence map, attempt counters, residual risks, final outcome - is Lead-owned
+  and needs no approval; it records what already happened.
 - `docs/principles.md` and `docs/decisions.md` are user-owned: agents may
   propose changes, only the Orchestrator discusses them with the user, the user
   alone approves, and a delegated subagent edits. Autonomous mode never
@@ -103,23 +108,59 @@ Upgrade triggers and routing details: `references/artifacts.md`.
   across plan, log, and state. Execution slices pair the stable unit with an
   ephemeral attempt ID (`unit-01/attempt-02`); attempts never change the unit's
   semantic ID. Only the Lead mutates plans and state.
-- Every role uses its effective configured context budget, default `150000`, a
-  documented budget, not a quantity any role can measure about itself. Prefer
-  exact host token telemetry wherever a host provides it; otherwise return on
-  a countable proxy from the role's own history that needs no shell access and
-  no telemetry: completed work units, dispatches made, and its own tool calls.
-  These are provisional thresholds, due for revalidation over the next 2-3
-  sessions: a Worker returns after about 30 of its own tool calls; a Lead
-  returns after 3 completed work units or about 50 of its own tool calls,
-  whichever comes first; the Orchestrator hands over after about 20 dispatches.
-  Reaching the threshold is the normal end of a bounded stint, not an
-  emergency: the role returns a terminal curated report through chat when a
-  live parent exists; only a top-level session or a boundary without a live
-  parent writes a terminal `handover.md`. The chat return is a terminal
-  handover even when reported as `blocked`, and the outgoing role does not
-  resume. It never schedules more tasks to fit.
+- Each role has a configured context budget, default `150000`. That number is a
+  host configuration value no role can measure about itself; behavior is driven
+  by exact host token telemetry where a host provides it, and otherwise by
+  countable proxies from the role's own history. These are provisional, due for
+  revalidation over the next 2-3 sessions: a Worker targets completion in about
+  12-16 of its own tool calls and returns by about 20; a Lead returns after 3
+  completed work units or about 20 of its own tool calls, whichever comes
+  first; the Orchestrator has no fixed dispatch cap and hands over
+  deliberately, on host context telemetry where available, otherwise on
+  dispatch volume and the state of the work. A threshold is a scheduling
+  boundary, not an evidence-validity boundary: usable over-threshold work is
+  reconciled once, not discarded and redispatched. Reaching a threshold is the
+  normal end of a bounded stint, not an emergency: the role reports `handover`
+  and stops, and never schedules more tasks to fit.
 - Work-unit IDs, brief format, context limits, and handovers:
   `references/scheduling.md`.
+
+## Circuit Breakers
+
+The failure mode is effort without state progress: one unit stays unaccepted
+while attempts, corrections, and findings accumulate across fresh Workers,
+fresh Leads, and relabeled briefs. Every other bound in this process is counted
+inside one agent's context, so succession silently resets it.
+
+Attempt accounting belongs to the semantic unit, not to the agent. It survives
+Worker replacement, Lead succession, correction rounds, handovers, and
+malformed, missing, or cancelled reports. The Lead records a unit's attempts,
+correction rounds, and independent reviews in `plan.md` once one of those
+counts exceeds 1; a unit that completed first try needs no entry.
+
+A breaker trips when any of these would be needed next:
+
+- a third attempt on one unit;
+- a second correction round on one unit or checkpoint;
+- a second independent review of the same unit;
+- another round whose failures change location but not class - same
+  subsystem, same acceptance criterion, same invariant;
+- more verification volume while no acceptance criterion moves to met.
+
+On a trip: stop implementing, dispatch nothing further on that unit, preserve
+the current work and evidence, and escalate one tier with a loop report -
+invariant blocker, approaches tried and why each failed, whether this is a
+requirement or design failure rather than a local defect, accepted versus
+unaccepted state, and concrete reset options. In normal mode the Orchestrator
+takes it to the user and freezes a changed path before any further dispatch.
+
+A reset changes kind: reduce or split scope, change approach, freeze partial
+acceptance, or park the unit. Another patch, another Worker, another review
+pass, or the same objective under a new brief label is not a reset and does not
+clear the breaker. Re-authorizing the same semantic correction after its budget
+is spent is the loop itself.
+
+Breakers are counters on existing artifacts, not new phases or files.
 
 ## Context Discipline
 
@@ -168,13 +209,11 @@ requires a fresh Worker after approval. `host-unknown` results, like missing,
 malformed, and cancelled attempts, are unsuccessful, counted, non-resumable
 host attempts: the Lead runs `host-unknown reconciliation` - reconciles the
 diff, Git, log, and evidence, then accepts, dispatches a fresh compressed
-recovery Worker, or abandons - and they are never evidence. An ordinary
-`blocked` or `decision-needed` Worker return is a pause report, not a
-handover: a Worker may resume only its same unfinished unit, and only after the
-Lead answers a specific `decision-needed` report or resolves its concrete
-`blocked` condition within the Worker's context budget. A context-ceiling
-return is a terminal chat handover even if its status is `blocked`: the
-outgoing role stops for succession and does not resume. Worker-to-Lead and Lead-to-Orchestrator reports
+recovery Worker, or abandons - and they are never evidence. A `blocked` or
+`decision-needed` return is a pause report: the Worker resumes its same
+unfinished unit once the Lead answers the specific question or resolves the
+concrete condition, within its context budget. `handover` is the only terminal
+status: the outgoing role stops for succession and does not resume. All reports
 and handovers return through chat, curated and comprehensive, without
 exhaustive transcripts or persisted report files. Every report starts with
 `Status` as its first field, then objective, changed files, evidence per claim,
@@ -190,6 +229,11 @@ review only when a bounded trigger applies. Triggers and review protocol:
 `references/verification.md`.
 
 ## Complete
+
+A commit or push requires every unit it contains to be `accepted` with no open
+blocker, acceptance gap, or unresolved serious review finding. Fix-forward
+covers defects discovered after an honest acceptance, never known defects
+carried past a commit.
 
 Completion is one Lead-owned transaction: acceptance-evidence map and
 residual-risk summary, Orchestrator alignment approval, user result approval
