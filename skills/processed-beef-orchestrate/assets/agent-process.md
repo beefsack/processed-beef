@@ -4,10 +4,10 @@ Effective role configuration resolves in order: explicit user instruction, this
 file, host agent definitions at project and user scope, inherited defaults.
 Which host scope wins is decided by the host adapter, so precedence is
 host-resolved and must be verified against the installed host. Agents report the
-resolved Orchestrator, Lead, and Worker agent names, model preferences, and
-context limits, and report any host mismatch rather than claiming the values
-were applied. Each role reports its actual selected role against its configured
-role; a mismatch is reported, never concealed.
+resolved process roles and parent-recorded selectors, optional model
+preferences, host persona, and context limits. `process_role` and
+`parent_process_role` are the only blocking role fields; children cannot claim
+selector or model application.
 
 ## Roles
 
@@ -16,6 +16,25 @@ role; a mismatch is reported, never concealed.
 | Orchestrator | `<agent>` | `<model>` | 150000 |
 | Lead | `<agent>` | `<model>` | 150000 |
 | Worker | `<agent>` | `<model>` | 150000 |
+
+## Dispatch Preflight
+
+- Parent metadata present: `<yes | no>`
+- Required child skill available: `<yes | no>`
+- Host depth and task capability available: `<yes | no>`
+- Available tools satisfy the brief: `<yes | no>`
+- Implementation brief gate IDs match the plan evidence map: `<yes | no | n/a>`
+- Literal canonical commands and expected baselines match: `<yes | no | n/a>`
+- `dispatch-invalid` repair: one parent repair, then process/host escalation
+
+## VCS Policy
+
+- Agent commits: `<no>`
+- Agent pushes: `<no>`
+- Staging owner: `<Lead | user>`
+- User commit required: `<yes | no>`
+- Candidate preservation: `<one authorized bounded container>`
+- Cleanup owner: `<owner>`
 
 ## Startup Context
 

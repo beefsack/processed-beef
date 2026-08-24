@@ -65,18 +65,24 @@ two surfaces:
   spec, principles, and decisions; the Orchestrator approves each edit before it
   is made.
 - Record-keeping - progress, the acceptance-criterion evidence map, per-unit
-  attempt, correction, and independent-review counts, pending user decisions,
-  residual risks, and final outcome. Lead-owned, needs no approval, reported in
-  the Lead's normal return. The counts belong to the semantic unit and are
-  carried across Worker replacement and Lead succession rather than reset.
+  implementation-attempt, pre-review-correction, finding-fix-correction, and
+  independent-review counts, and deterministic change-wide implementation
+  dispatches, `dispatch-invalid` results, both correction classes, independent
+  reviews, changed-kind resets, broad-gate runs, Worker and Lead tool-call
+  proxies, acceptance criteria moved, and the no-progress streak. Lead-owned,
+  needs no approval, reported in the Lead's normal return. The counts belong to
+  the semantic unit and change and are carried across Worker replacement and
+  Lead succession rather than reset. Three implementation dispatches without a
+  criterion moving parks and escalates; one changed-kind reset is the maximum.
 
 ## log.md
 
 Template: `assets/log.md`. Append-only checkpoint log for crash recovery. Each
 entry records timestamp, role and work unit, result, changed files or commit,
-verification, and any discovery, blocker, or required decision. No
-tool-by-tool narration, copied output, speculation, or information obvious from
-the diff.
+verification, and any discovery, blocker, or required decision. Include the
+  dispatch status and deterministic change-wide telemetry when relevant. No
+  tool-by-tool narration, copied output, speculation, or information obvious from
+  the diff.
 
 ## Artifact Update Cadence
 
@@ -99,6 +105,18 @@ finding, an approved plan change, and any commit.
   Orchestrator handovers return curated reports through chat instead.
 - `research/` - conclusions and citations that must survive planning. Raw
   exploration transcripts are not retained.
+
+## Startup And Preservation
+
+At startup, record `agent_commits`, `agent_pushes`, `staging_owner`,
+`user_commit_required`, `candidate_preservation`, and `cleanup_owner` in the
+plan. Default policy is no agent commit or push. In user-owned commit mode,
+stage approved paths only and return one one-line commit message; do not dispatch
+a commit-only Worker.
+
+Rejected work uses exactly one authorized bounded preservation container. Its
+manifest records paths, reason, owner, retention, and cleanup disposition. A
+second container or accumulating stash is a stop-and-escalate condition.
 
 ## Completion Transaction
 

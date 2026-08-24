@@ -114,6 +114,62 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 | RED | Observed 2026-08-14 in a `plasma-auto-tiler` session: commits `ce410cb` and `f4d6229` were pushed before three ownership blockers were resolved and `d6467e8` was pushed with a known trailing-empty invariant gap, each requiring a later fix-forward commit (`f0111d2`, `840751c`). A separate Lead skipped `start-test.test.sh` and `dogfood-install.test.sh`, misclassifying static scripts as live host mutation from their names alone. |
 | GREEN | Pending future observation under the acceptance-before-commit rule and the static-versus-live command typing added in this change. |
 
+## Scenario 17 - Dispatch Metadata Versus Host Persona
+
+| Run | Observed behavior |
+|---|---|
+| RED | A child identified as `worker-openai` under an `OpenCode` host persona and treated the selector/persona difference as proof that its process role was wrong, without distinguishing host-owned routing. |
+| GREEN | The parent records `agent_selector: worker-openai`; the child reports `process_role: Worker` and `parent_process_role: Lead`. `OpenCode` is host persona text, not selector or model evidence, and the child makes no selector/model application claim. |
+
+## Scenario 18 - Missing Role Metadata
+
+| Run | Observed behavior |
+|---|---|
+| RED | A Worker with a missing role line started source work or treated the omission as an implementation failure. |
+| GREEN | The parent preflight returns `dispatch-invalid` before source work. It consumes no implementation, correction, or review budget; the parent repairs one dispatch once, then escalates. |
+
+## Scenario 19 - Wrong Verification Command
+
+| Run | Observed behavior |
+|---|---|
+| RED | A Worker ran `scripts/start-test.test.sh`, observed 255 assertions, and escalated the discrepancy instead of using the plan's canonical dogfood gate. |
+| GREEN | The plan names `bash scripts/dogfood-install.test.sh` as the canonical gate with 347 assertions. The Lead reruns and reconciles that gate locally; the command mismatch is not a user decision. |
+
+## Scenario 20 - Review Finding-Fix After Pre-Review Correction
+
+| Run | Observed behavior |
+|---|---|
+| RED | A pre-review implementation correction consumed the only correction conceptually, so an independent review finding could not be fixed without an illegal second review or an open-ended loop. |
+| GREEN | One pre-review implementation correction is tracked separately from one independent review finding-fix correction. Confirmation checks only the retained finding set and is neither review two nor another correction. |
+
+## Scenario 21 - Descendant Reset Budget
+
+| Run | Observed behavior |
+|---|---|
+| RED | Descendant units such as 03C and 03D were created after earlier resets and obtained fresh local budget for the same product objective, even though the acceptance mechanism had not materially changed. |
+| GREEN | The plan carries one change-wide reset-descendant count. A real reset changes the acceptance mechanism, evidence boundary, fixture/oracle, or ownership; a second changed-kind reset parks and escalates regardless of descendant names. |
+
+## Scenario 22 - Fixture Failure Parking
+
+| Run | Observed behavior |
+|---|---|
+| RED | A fixture failure was worked around in production integration, or repeated 03C/03D-style reset units were dispatched indefinitely while the fixture contract remained unaccepted. |
+| GREEN | The fixture or harness contract is an independently accepted bounded unit. A fixture failure permits no production workaround; repeated work without acceptance movement parks and escalates rather than creating endless 03C/03D descendants. |
+
+## Scenario 23 - Allowed-Scope Exclusion
+
+| Run | Observed behavior |
+|---|---|
+| RED | A brief allowed broad repository changes and forced the Worker to enumerate unrelated untracked paths to explain what it would not touch. |
+| GREEN | The brief names approved paths and says unrelated untracked paths are excluded without listing them. The Worker stops on a scope conflict and does not enumerate or modify excluded paths. |
+
+## Scenario 24 - User-Owned Stage-Only Commit Mode
+
+| Run | Observed behavior |
+|---|---|
+| RED | An agent committed or pushed during a user-owned commit workflow, or staged paths outside the approved scope and returned a verbose coordination report. |
+| GREEN | Startup VCS policy records no agent commit/push, user-owned commit, and approved-path-only staging. The agent stages only approved paths and returns one one-line commit message; the user owns commit and push. |
+
 ## Scenario 16 - Process Overhead Without Return (processed-beef-orchestrate)
 
 | Run | Observed behavior |

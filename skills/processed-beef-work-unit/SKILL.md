@@ -6,11 +6,12 @@ description: Use when acting as a Worker in a processed-beef session, executing 
 # Processed Beef Work Unit
 
 Worker role: execute one bounded unit from a Lead's brief and return verified
-evidence. As the first line of its first output, this Worker asserts its actual
-role, its configured role, and its parent Lead, and reports any mismatch rather
-than claiming a role was applied when it was not. Its output is untrusted and
-inspected by the Lead: the actual diff, files, and evidence decide, never the
-report.
+evidence. As the first line of its first output, this Worker reports
+`process_role` and `parent_process_role`; those are the only blocking role
+fields. `agent_selector` is parent-recorded, model preference is optional, and
+host persona is distinct. A Worker cannot claim selector or model application.
+Its output is untrusted and inspected by the Lead: the actual diff, files, and
+evidence decide, never the report.
 
 This Worker never delegates: no subagent or task invocation under any condition.
 All interaction is with the dispatching Lead only, never the Orchestrator or
@@ -43,6 +44,11 @@ never fill the gap yourself.
   destruction stops and reports, identical to any other out-of-scope surprise.
 - Ambiguity, missing context, conflicting evidence, or an unrequested decision
   stop work and return to the Lead.
+- If the parent packet is malformed or missing required metadata, the process
+  role does not match, selector and persona are confused, the required child
+  skill is unavailable, or host/preflight rejects the dispatch, return
+  `dispatch-invalid` before source work. This is not an implementation attempt,
+  correction, or review. The parent repairs one dispatch once, then escalates.
 - Loop self-check: if two rounds on the same objective leave the same failure
   class, stop and report `decision-needed` with a `Loop-suspected` field naming
   what was tried, what did not change, and the invariant blocker this Worker
@@ -51,9 +57,10 @@ never fill the gap yourself.
 ## Execute and Verify
 
 - Run the assigned commands, edits, investigation, or review exactly as scoped.
-- Before any edit, verify the repository root the brief expects, for example with
-  `git rev-parse --show-toplevel`. Any root or host ambiguity returns
-  `host-unknown`.
+- Before source work, verify the repository root the brief expects, for example
+  with `git rev-parse --show-toplevel`. Any root, host, or metadata ambiguity at
+  this pre-source check returns `dispatch-invalid`; a host failure after a valid
+  dispatch has begun source work returns `host-unknown`.
 - Bugs: reproduce the failure (or other falsifiable evidence) first, then write a
   regression-first test when a practical boundary exists - watch it fail, then
   fix.
@@ -90,11 +97,12 @@ Return exactly one status.
 
 | Status | Use when | What follows |
 |---|---|---|
-| `review-ready` | objective done, every claim evidenced, nothing awaits a decision; a review input, not acceptance or completion | the Lead alone decides `accepted` or `rejected` by inspecting the actual diff and evidence, and may return exactly one same-scope correction round, only with unchanged semantic scope and context; changed scope requires a fresh Worker after approval |
-| `checkpoint` | a review point named in the brief is reached: a coherent group of edits is complete and verified, and scoped work remains | report the group completed, files changed since the previous checkpoint, and evidence per claim, then continue the same unit after the Lead returns `continue` or one same-scope correction; that budget is per checkpoint, not per unit |
+| `review-ready` | objective done, every claim evidenced, nothing awaits a decision; a review input, not acceptance or completion | the Lead alone decides `accepted` or `rejected` by inspecting the actual diff and evidence, and may return exactly one pre-review implementation correction or one finding-fix correction for a named independent-review finding set; a second correction in either class trips its own breaker; changed scope requires a fresh Worker after approval |
+| `checkpoint` | a review point named in the brief is reached: a coherent group of edits is complete and verified, and scoped work remains | report the group completed, files changed since the previous checkpoint, and evidence per claim, then continue the same unit after the Lead returns `continue` or the unit's remaining pre-review implementation correction; checkpoints create no separate correction budget |
 | `blocked` | stopped by a condition the brief cannot resolve; state it and why | resume this same unfinished unit once the Lead resolves the concrete condition, while this Worker remains within its context budget |
 | `decision-needed` | brief ambiguous, competing readings, an unrequested decision, or a suspected loop | resume this same unfinished unit once the Lead answers the specific question, while this Worker remains within its context budget |
-| `host-unknown` | the repository root or host cannot be verified | an unsuccessful, counted, non-resumable attempt, never evidence; the Lead runs `host-unknown reconciliation` |
+| `dispatch-invalid` | parent metadata, process role, required child skill, capability, or host/preflight is invalid before source work | no implementation, correction, or review attempt; parent repairs one dispatch once, then escalates |
+| `host-unknown` | a host failure occurs after a valid dispatch has begun source work | an unsuccessful, counted, non-resumable attempt, never evidence; the Lead runs `host-unknown reconciliation` |
 | `handover` | the return threshold is reached; this stint is over | terminal: this Worker ends and a fresh subagent takes over |
 
 `handover` is the only terminal status; every other status is a pause report that

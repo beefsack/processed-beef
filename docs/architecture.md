@@ -26,8 +26,10 @@ way. The repository therefore separates two concerns:
   See the integration guides in `docs/integrations/`.
 
 A host adapter is the authority for whether an agent name or model can be
-selected. The process reports any mismatch explicitly instead of claiming the
-preference was applied.
+selected. `process_role` and `parent_process_role` are process metadata and the
+only blocking role fields. A parent records `agent_selector`; model preference is
+optional, host persona is distinct from both, and a child cannot claim that a
+selector or model was applied. The process reports host mismatches explicitly.
 
 ## Stable Role Names
 
@@ -87,12 +89,12 @@ the definition closest to the working directory, another merges project settings
 over global ones. Precedence is therefore host-resolved rather than a fixed
 user-level-only rule, and must be verified against the installed host.
 
-At session start, the `processed-beef` entry skill resolves and reports the
-effective agent names, model preferences, and context limits for all three
-roles, including configured overrides, and reports any host mismatch without
-claiming the preference was applied. Each role reports its actual selected role
-against its configured role, model preference, and context limit; a mismatch is
-reported, never concealed.
+At session start, the `processed-beef` entry skill reports the effective process
+roles and parent-recorded selectors, optional model preferences, and host
+persona. Before the first implementation dispatch, the parent preflights host
+capability, depth, tools, and required child-skill availability. A child reports
+only `process_role`, `parent_process_role`, and the capabilities it can observe;
+it does not claim selector or model application.
 
 `docs/agent-process.md` is an optional, ordinary Markdown file copied from the
 bundled template `skills/processed-beef-orchestrate/assets/agent-process.md`.
@@ -155,15 +157,19 @@ configuration supports it, by the host. A Worker returns
 `review-ready`, which is a review input, not acceptance or completion:
 
 - `review-ready` is accepted or rejected only by Lead inspection of the actual
-  diff, files, and evidence; a rejected result returns exactly one same-scope
-  correction round, and only with semantic scope and context unchanged. Changed
-  scope requires a fresh Worker after approval.
-- Missing, malformed, cancelled, and `host-unknown` Worker results are
-  unsuccessful, counted, non-resumable host attempts, never evidence. The Lead
-  runs `host-unknown reconciliation`: it reconciles the diff, Git, log, and
-  evidence, then accepts usable work, dispatches a fresh compressed recovery
-  Worker, or abandons the attempt. Two unsuccessful attempts on one work unit
-  force Orchestrator reassessment.
+  diff, files, and evidence; a rejected result returns exactly one pre-review
+  implementation correction, and only with semantic scope and context unchanged.
+  One independent review produces one finding set and exactly one finding-fix
+  correction. A second correction in either class trips that class's breaker;
+  confirmation checks only that set and is neither a review nor a correction.
+  Changed scope requires a fresh Worker after approval.
+- A malformed or missing parent metadata packet, process-role mismatch,
+  selector/persona confusion, unavailable required child skill, or host/preflight
+  rejection is `dispatch-invalid` before source work. It consumes no
+  implementation, correction, or review budget; the parent repairs one dispatch
+  once, then escalates the process or host failure. A missing, malformed,
+  cancelled, or `host-unknown` result after dispatch remains an unsuccessful,
+  non-resumable host attempt, never evidence.
 - The Lead, not the Worker, makes coherent commits of accepted groups (possibly
   spanning several accepted units) and performs archive/completion
   administration. Workers are never dispatched only to stage or commit and may
@@ -176,26 +182,33 @@ configuration supports it, by the host. A Worker returns
 
 ## Circuit Breakers
 
-Every other bound in this process is counted inside one agent's context, so
-Worker replacement, Lead succession, and a relabeled brief silently reset it.
-That is how a unit can stay unaccepted while attempts, corrections, and review
-findings accumulate indefinitely - effort without state progress.
+`plan.md` records deterministic change-wide implementation dispatches,
+`dispatch-invalid` results, pre-review corrections, finding-fix corrections,
+independent reviews, changed-kind resets, broad-gate runs, Worker and Lead
+tool-call proxies, acceptance criteria moved, and the no-progress streak.
+Implementation dispatches are source-work dispatches; `dispatch-invalid` is not
+one. The no-progress streak increments after an implementation dispatch moves
+zero acceptance criteria and resets when one moves. Three implementation
+dispatches without a criterion moving parks and escalates. A second pre-review
+correction trips the pre-review breaker, and a second finding-fix correction
+trips the finding-fix breaker. At most one changed-kind reset is allowed across
+all descendants of a change; a second parks and escalates. A real reset must
+change the acceptance mechanism, evidence boundary, fixture/oracle, or
+ownership. A new name, label, or brief is not a reset.
 
-Attempt accounting therefore belongs to the semantic unit rather than the
-agent, is recorded against the unit in `plan.md`, and is inherited by
-successors. A breaker trips on a third attempt on one unit, a second correction
-round on one unit or checkpoint, a second independent review of the same unit,
-failures that change location but not class, or growing verification volume
-while no acceptance criterion moves to met. A trip stops implementation on that
-unit, preserves the work and evidence, and escalates one tier with a loop
-report; in normal mode the Orchestrator freezes a changed path with the user
-before any further dispatch.
-
-A reset changes kind - reduced or split scope, changed approach, frozen partial
-acceptance, or a parked unit. Another patch, another Worker, another review
-pass, or the same objective under a new brief label is not a reset. Breakers
-are counters on artifacts that already exist, not new phases or files: process
-weight is itself a cost this process is trying to avoid.
+Rejected work is preserved in exactly one authorized bounded container with a
+manifest, retention reason, and cleanup owner. Every implementation brief cites
+plan-owned gate IDs, literal canonical commands, and expected baselines; the
+parent compares that packet with the plan evidence map before source work. A
+mismatch is `dispatch-invalid`; if a Worker runs a wrong local command, the Lead
+reruns and reconciles the canonical gate locally without a user decision. The
+plan records risk-tier gate IDs and literal commands: focused evidence runs per
+unit, while broad gates run once at a named risk or final checkpoint unless
+justified. A bounded fixture or harness-contract unit is accepted before
+production integration, with evidence for state ownership, recursive child
+behavior where relevant, re-decode and snapshot restoration, failure injection
+where relevant, and public-route constraints. A fixture failure never
+authorizes a production workaround.
 
 ## Handover Boundaries
 

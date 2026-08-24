@@ -2,9 +2,11 @@
 
 ## Evidence Standard
 
-Every acceptance criterion maps to reproducible evidence in `plan.md`. Evidence
-may be a focused test, check, inspection, screenshot, log, or other current
-observation appropriate to the behavior.
+Every acceptance criterion maps to reproducible evidence in `plan.md`. Each
+evidence row names a stable gate ID, its literal canonical command or
+observation, and the expected baseline. Evidence may be a focused test, check,
+inspection, screenshot, log, or other current observation appropriate to the
+behavior.
 
 - Bug work begins with a reproduced failure or other falsifiable evidence, and
   gets a regression-first test when a practical test boundary exists.
@@ -57,14 +59,29 @@ Routine work does not receive duplicated independent reviews.
 The review Worker receives approved constraints, the diff, and evidence, but not
 the implementation narrative. It returns only concrete, evidenced findings.
 
-One independent review per unit. Its findings are that unit's finding set: the
+One pre-review implementation correction is separate from one independent review
+finding-fix correction. One independent review produces one finding set: the
 Lead classifies each as fix, defer with reason, or reject with reason, all in a
-single bounded correction pass. A confirmation pass verifies only that those
-findings were addressed. New issues it raises become backlog items or a new unit
-under Orchestrator approval, never additional in-unit rounds - unless they are
-regressions introduced by the correction itself. Unresolved serious findings
-escalate rather than starting an open-ended review loop, and a second
-independent review of the same unit trips a circuit breaker.
+single bounded finding-fix pass. A second pre-review correction trips the
+pre-review breaker, and a second finding-fix correction for that set trips the
+finding-fix breaker. A confirmation pass verifies only that those findings were
+addressed; it is neither an independent review nor a correction.
+New issues it raises become backlog items or a new unit under Orchestrator
+approval, never additional in-unit rounds - unless they are regressions
+introduced by the correction itself. Unresolved serious findings escalate rather
+than starting an open-ended review loop, and a second independent review of the
+same unit trips a circuit breaker.
+
+Focused tests and typechecks run per unit. Full suite, dogfood, package, and
+deterministic build gates run once at a named risk or final integration
+checkpoint unless the plan records a changed risk that justifies another run.
+If a Worker runs the wrong local command, the Lead reruns the plan's canonical
+gate and reconciles the result locally; it is not a user decision. A bounded
+fixture or harness-contract unit is independently accepted before production
+integration, with plan evidence for state ownership, recursive child behavior
+where relevant, re-decode and snapshot restoration, failure injection where
+relevant, and public-route constraints. Fixture failures do not permit
+production workarounds and remain subject to unit and change-wide budgets.
 
 New tests trace to an acceptance criterion. A rising test count is not
 acceptance progress, and review that repeatedly requires another proof is a loop

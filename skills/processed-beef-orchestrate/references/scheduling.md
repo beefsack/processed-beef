@@ -85,12 +85,30 @@ Every dispatch includes:
   per-dispatch read;
 - allowed scope;
 - expected evidence;
+- for every implementation brief, plan-owned gate IDs, literal canonical
+  commands, and expected baselines;
 - output and checkpoint location;
 - explicit authorization for any destructive action the unit may require, naming
   exactly what may be deleted, moved, truncated, or overwritten;
 - review points, if any, each stating the group that completes it and the
   evidence expected at it;
 - an instruction to stop on surprises or decisions not covered by the brief.
+
+Before the first implementation dispatch, the parent records a capability
+preflight: `process_role`, `parent_process_role`, parent-recorded
+`agent_selector`, optional model preference, distinct host persona, available
+tools, host depth, and required child-skill availability. Only the two process
+role fields block role validity; a child cannot claim selector or model
+application. A malformed or missing metadata packet, process-role mismatch,
+selector/persona confusion, unavailable child skill, or host/preflight rejection
+  returns `dispatch-invalid` before source work. It is not an implementation
+  attempt, correction, or review. For implementation briefs, the parent also
+  compares every gate ID, literal canonical command, and expected baseline with
+  the plan evidence map; a mismatch is `dispatch-invalid` before source work.
+  If a Worker accidentally runs a wrong local command, the Lead reruns and
+  reconciles the canonical gate locally and does not request a user decision.
+  The parent repairs one dispatch once, then escalates the process or host
+  failure.
 
 A brief may specify tool constraints only when they are intrinsic to the project
 or objective. It never forwards or restates the parent role's model-specific or
@@ -132,8 +150,9 @@ no named review point returns once, at completion.
 
 At a checkpoint the Lead inspects the incremental diff since the previous
 checkpoint, not the unit's whole material and not the files themselves. It
-returns `continue` or exactly one same-scope correction for that checkpoint. The
-correction budget is per checkpoint, not per unit.
+returns `continue` or the unit's remaining pre-review implementation correction.
+Checkpoints create no separate correction budget: a second pre-review correction
+trips that class's breaker.
 
 ## Lifecycle Statuses and Transitions
 
@@ -147,30 +166,39 @@ top-level session transfer or a boundary without a live parent writes
 | Status | Produced by | Meaning | Next |
 |---|---|---|---|
 | `review-ready` | Worker | Unit done with evidence; a review input, not acceptance or completion | `accepted` or `rejected`, decided only by Lead inspection |
-| `checkpoint` | Worker | A named review point is reached: a coherent group of edits is complete and verified, and scoped work remains | `continue` or one same-scope correction for that checkpoint, decided only by Lead inspection |
+| `checkpoint` | Worker | A named review point is reached: a coherent group of edits is complete and verified, and scoped work remains | `continue` or the unit's remaining pre-review implementation correction, decided only by Lead inspection |
 | `continue` | Lead | Lead inspected the incremental diff at a checkpoint and accepts it | Worker resumes the same unit toward the next review point or completion |
+| `dispatch-invalid` | parent before source work | Parent metadata, process role, child skill, capability, or host/preflight is invalid | Parent repairs one dispatch once, then escalates the process or host failure; no implementation, correction, or review budget is consumed |
 | `blocked` | any role | Pause report; a concrete external condition stops progress | the same role resumes the same unfinished unit once the condition resolves, while within its context budget |
 | `decision-needed` | any role | Pause report; a specific answer is required | the same role resumes the same unfinished unit once the Lead or user answers, while within its context budget |
-| `host-unknown` | Worker | Root or host cannot be verified; an unsuccessful, counted, non-resumable host attempt, never evidence | `host-unknown reconciliation` |
+| `host-unknown` | Worker | A host failure occurs after a valid dispatch has begun source work; an unsuccessful, counted, non-resumable attempt, never evidence | `host-unknown reconciliation` |
 | `host-unknown reconciliation` | Lead | Lead reconciles diff, Git, log, and evidence after a failed host attempt | `accepted`, a fresh compressed recovery Worker, or abandon |
 | `accepted` | Lead | Lead inspected the diff and evidence and accepted the unit | next unit, or terminal accepted completion |
-| `rejected` | Lead | Lead inspected and returned the unit | one same-scope correction round, only with semantic scope and context unchanged, or a fresh Worker after approval |
+| `rejected` | Lead | Lead inspected and returned the unit | one same-scope pre-review implementation correction or one finding-fix correction for a named independent-review finding set, only with semantic scope and context unchanged, or a fresh Worker after approval |
 | `handover` | any role | The role's stint is over: threshold reached, or a transfer | a fresh subagent |
 
 `handover` is the only terminal one: it ends the outgoing role, and a fresh
 subagent takes over. `review-ready`, `checkpoint`, `blocked`, and
 `decision-needed` are pause reports that do not end the reporting role.
+`dispatch-invalid` is pre-source and does not end an implementation attempt.
 `host-unknown` ends the attempt, not by handover. A role reaching its return
 threshold reports `handover`, never `blocked`. Missing, malformed, and cancelled
-results are equally unsuccessful, counted, non-resumable host attempts, handled
-like `host-unknown`. A fresh subagent is required after a handover, changed
-scope, a correction, or further work.
+results after dispatch are equally unsuccessful, counted, non-resumable host
+attempts, handled like `host-unknown`. A fresh subagent is required after a
+handover, changed scope, a correction, or further work.
 
 ## Attempt Accounting
 
 Counts drive the circuit breakers in the orchestrate skill. A relabeled brief
 for the same objective does not start a new count. A successor Lead reads the
-`plan.md` count table before its first dispatch on a listed unit.
+`plan.md` unit and change-wide ledger before its first dispatch. Track
+implementation dispatches, `dispatch-invalid` results, pre-review corrections,
+finding-fix corrections, independent reviews, changed-kind resets, broad-gate
+runs, Worker and Lead tool-call proxies, acceptance criteria moved, and the
+no-progress streak. The streak increments after an implementation dispatch
+moves zero criteria and resets when one moves; three such dispatches without
+movement parks and escalates the change. A second changed-kind reset also parks
+and escalates.
 
 ## Recovery
 

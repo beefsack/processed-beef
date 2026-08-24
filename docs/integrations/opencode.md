@@ -133,6 +133,16 @@ a cheaper Worker than Lead. The Task tool accepts no model parameter, so
 per-invocation model switching is not available; role models come only from
 agent definitions.
 
+OpenCode's configured agent name is a host-owned `agent_selector`, not a child
+role assertion. The parent records the selector and optional model preference;
+the child reports only `process_role` and `parent_process_role`. The host persona
+or UI name is distinct from both and cannot establish selector or model
+application. Before the first implementation dispatch, the parent preflights
+the effective role, depth, task capability, and required child skill. Any
+failure is `dispatch-invalid`, not an implementation attempt. For implementation
+briefs, the parent also compares every plan-owned gate ID, literal canonical
+command, and expected baseline with the plan evidence map before dispatch.
+
 ## Tool Availability
 
 Role agents resolve to different models, and different models expose different
@@ -192,6 +202,9 @@ unavailable until the agent files exist; the entry skill reports that mismatch.
 - Without `subagent_depth: 2` and task permission for the Orchestrator and
   Lead, they cannot dispatch subagents, so both are mandatory for full
   operation.
+- The plugin only registers skills. It does not prove that a required child
+  skill is available to a dispatched agent; the parent must preflight that
+  capability before the first implementation dispatch.
 - The `permission.task` configuration above is not tested in this repository.
   The syntax is current per OpenCode documentation as of 2026-07, but
   task-permission behavior has changed across releases (for example, explicit

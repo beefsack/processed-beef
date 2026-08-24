@@ -11,11 +11,17 @@ correction, or commit.
 - Blockers: <blockers>
 - Next dispatch: <next Lead objective>
 
-Attempt counts belong to the semantic unit and are inherited, never reset by
-succession. A third attempt, a second correction round, or a second independent
-review on one unit trips a circuit breaker. List a unit only once one of its
-counts exceeds 1; absence means all counts are 1 or lower.
+Implementation-attempt and correction counts belong to the semantic unit and are
+inherited, never reset by succession. A third implementation attempt, second
+pre-review correction, second finding-fix correction for one finding set, or
+second independent review trips its class's breaker. The change-wide ledger also
+survives succession: a second changed-kind reset, or three implementation
+dispatches without an acceptance criterion moving, parks and escalates.
 
-| Unit | Attempts | Corrections | Independent reviews |
-|---|---|---|---|
-| <unit-id> | 2 | 1 | 0 |
+| Unit | Implementation attempts | Pre-review corrections | Finding-fix corrections | Independent reviews |
+|---|---:|---:|---:|---:|
+| <unit-id> | 2 | 1 | 0 | 0 |
+
+| Implementation dispatches | Dispatch-invalids | Changed-kind resets | Acceptance criteria moved | No-progress streak |
+|---:|---:|---:|---:|---:|
+| 0 | 0 | 0 | 0 | 0 |

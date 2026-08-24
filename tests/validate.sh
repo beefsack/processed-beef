@@ -194,7 +194,6 @@ check_process_conventions() {
     done
 }
 
-
 # Per-change contract checks retire by rule. A change's literal phrase checks
 # guard it for the current release cycle only; once its behavior is recorded in
 # tests/behavioral.md, the function is deleted rather than kept. These checks

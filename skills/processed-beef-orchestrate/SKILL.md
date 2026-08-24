@@ -54,8 +54,10 @@ clauses.
 Role configuration resolves in order: explicit user instruction, project
 `docs/agent-process.md`, host agent definitions at project and user scope,
 inherited defaults. Which host scope wins is host-resolved, so verify it against
-the installed host. Report resolved agent names, model preferences, and `150000`
-limits, and report any host mismatch rather than claiming it was applied.
+the installed host. `process_role` and `parent_process_role` are the only
+blocking role fields. The parent records `agent_selector`; model preference is
+optional and host persona is distinct. A child cannot claim selector or model
+application.
 
 ## Route the Work
 
@@ -105,23 +107,39 @@ Select the smallest suitable process; upgrade in place when complexity appears.
   Reaching one is the normal end of a bounded stint, not an emergency: the role
   reports `handover` and stops, and never schedules more tasks to fit.
 
+Before the first implementation dispatch, the parent preflights role metadata,
+host depth and task capability, available tools, and required child-skill
+availability. A malformed or missing parent packet, process-role mismatch,
+selector/persona confusion, unavailable child skill, or host/preflight rejection
+returns `dispatch-invalid` before source work. It consumes no implementation,
+correction, or review budget; the parent repairs one dispatch once, then
+escalates the process or host failure.
+
 ## Circuit Breakers
 
 The failure mode is effort without state progress: one unit stays unaccepted
 while attempts, corrections, and findings accumulate across fresh Workers, fresh
-Leads, and relabeled briefs. Every other bound in this process is counted inside
-one agent's context, so succession silently resets it.
+Leads, and relabeled briefs. Counts therefore survive succession and are tracked
+both per unit and change-wide.
 
-Attempt accounting belongs to the semantic unit, not to the agent. It survives
-Worker replacement, Lead succession, correction rounds, handovers, and
-malformed, missing, or cancelled reports. The Lead records a unit's attempts,
-correction rounds, and independent reviews in `plan.md` once one of those counts
-exceeds 1; a unit that completed first try needs no entry.
+Attempt accounting belongs to the semantic unit and change, not the agent. It
+survives Worker replacement, Lead succession, correction rounds, handovers, and
+relabeled briefs. `plan.md` records deterministic change-wide implementation
+dispatches, `dispatch-invalid` results, pre-review corrections, finding-fix
+corrections, independent reviews, changed-kind resets, broad-gate runs, Worker
+and Lead tool-call proxies, acceptance criteria moved, and the no-progress
+streak. An implementation dispatch is source work; `dispatch-invalid` is not.
+The no-progress streak increments after each implementation dispatch that moves
+zero acceptance criteria and resets when one moves. Three implementation
+dispatches without a criterion moving parks and escalates. A wrong local command
+is rerun against the plan's canonical gate and reconciled locally, not escalated
+as a user decision.
 
 A breaker trips when any of these would be needed next:
 
 - a third attempt on one unit;
-- a second correction round on one unit or checkpoint;
+- a second pre-review implementation correction on one unit or checkpoint;
+- a second finding-fix correction for one independent-review finding set;
 - a second independent review of the same unit;
 - another round whose failures change location but not class - same subsystem,
   same acceptance criterion, same invariant;
@@ -135,10 +153,11 @@ unaccepted state, and concrete reset options. In normal mode the Orchestrator
 takes it to the user and freezes a changed path before any further dispatch.
 
 A reset changes kind: reduce or split scope, change approach, freeze partial
-acceptance, or park the unit. Another patch, another Worker, another review
-pass, or the same objective under a new brief label is not a reset and does not
-clear the breaker. Re-authorizing the same semantic correction after its budget
-is spent is the loop itself.
+acceptance, or park the unit. Across one change and all descendants, only one
+changed-kind reset is allowed; a second parks and escalates. A real reset changes
+the acceptance mechanism, evidence boundary, fixture/oracle, or ownership.
+Another patch, Worker, review pass, or new label is not a reset. Re-authorizing
+the same semantic correction after its budget is spent is the loop itself.
 
 Breakers are counters on existing artifacts, not new phases or files.
 
@@ -169,17 +188,31 @@ Breakers are counters on existing artifacts, not new phases or files.
 Every Worker brief contains one bounded objective, required inputs and
 constraints, allowed scope, expected evidence, output and checkpoint location,
 explicit authorization for any destructive action it may require, and a
-stop-on-surprise instruction. Before dispatch, the Lead reconciles the brief
-against objective, scope, acceptance criteria, constraints, dependencies, and
-stop conditions; a conflicting brief is not dispatched. Dispatch packets stay
-compact: they link evidence and never replay policy or raw transcripts.
+stop-on-surprise instruction. Every implementation brief also cites plan-owned
+gate IDs, their literal canonical commands, and expected baselines. Before
+dispatch, the parent compares that packet with the plan evidence map and the
+Lead reconciles the brief against objective, scope, acceptance criteria,
+constraints, dependencies, and stop conditions; a mismatch is `dispatch-invalid`
+before source work. A wrong command accidentally run by a Worker is rerun and
+reconciled locally against the canonical gate. The allowed-scope clause
+explicitly excludes unrelated untracked paths without listing them. Dispatch
+packets stay compact: they link artifacts and gate IDs, and never replay policy
+or raw transcripts. Fixture or harness contracts are independently accepted
+bounded units before production integration. Their evidence covers state
+ownership, recursive child behavior where relevant, re-decode and snapshot
+restoration, failure injection where relevant, and public-route constraints. A
+fixture failure never permits a production workaround and remains subject to
+unit and change-wide budgets.
 
 The Lead inspects the actual diff, files, and evidence, never a summary, and
 does not revert a suspicious result before inspecting it - the diff decides. A
 `review-ready` report is a review input, not acceptance or completion: the Lead
-accepts, or returns exactly one same-scope correction round, permitted only with
-unchanged semantic scope and context; changed scope requires a fresh Worker
-after approval. `handover` is the only terminal status.
+accepts, or returns exactly one pre-review implementation correction, permitted
+only with unchanged semantic scope and context. One independent review produces
+one finding set and exactly one finding-fix correction. A second correction in
+either class trips its own breaker. Confirmation checks only that set and is
+neither a review nor a correction. Changed scope requires a fresh Worker after
+approval. `handover` is the only terminal status.
 
 ## Verify and Review
 
