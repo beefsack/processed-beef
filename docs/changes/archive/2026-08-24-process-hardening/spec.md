@@ -3,6 +3,7 @@
 Ownership and approval:
 - Owner: User
 - Status: Approved 2026-08-24 by user and Orchestrator
+- Amendment: Approved 2026-08-25 by user and Orchestrator
 
 ## Intent and Desired Outcome
 
@@ -23,6 +24,10 @@ In scope:
 - Fixture-contract, canonical-gate, VCS, candidate-preservation, and compact
   brief policy.
 - Evidence and recommendations preserved from the source-session retrospective.
+- A causality-bound repair for verification regressions introduced by a preceding
+  correction, with fresh evidence and work-kind-aware accounting.
+- Dependency consistency, scoped tracked/untracked preservation, warning
+  baselines, and deterministic COSMIC and pointer-resize regression records.
 
 Non-goals:
 
@@ -31,6 +36,8 @@ Non-goals:
 - Changes to `plasma-auto-tiler`, dependencies, generated files, publication,
   commit, or push.
 - A second standalone retrospective outside this change directory.
+- Host-specific enforcement, compatibility migration, new lifecycle artifacts or
+  phases, and changes to serial execution or context defaults.
 
 ## Acceptance Criteria
 
@@ -56,6 +63,33 @@ Non-goals:
   bounded candidate preservation, and cleanup ownership.
 - Behavioral documentation covers the observed role, command, correction,
   descendant-reset, fixture, scope, and stage-only regressions.
+- Exactly one correction-regression repair is allowed per immediately preceding
+  correction only when it restores a formerly passing canonical gate without
+  semantic widening. It preserves all existing correction, review, reset, and
+  succession counters; a second claim, failed repair, new finding, or semantic
+  change parks and escalates.
+- Semantic attempts alone advance the semantic no-progress streak. Verified
+  finding closure, canonical-gate advancement, or a newly met criterion reset
+  that streak; a gate restored by the bounded repair is recorded separately and
+  does not reset it.
+- Acceptance evidence records a current scoped source snapshot, gate ID, literal
+  command or observation, expected baseline, output reference, and whether it
+  ran after the latest relevant source change. Stale evidence is not acceptance
+  evidence.
+- Before source work, dependency checks reject cycles and production integration
+  without an accepted fixture/harness dependency as `dispatch-invalid`.
+- Scoped preservation inventories approved, modified, deleted, and untracked
+  candidate paths. Its one manifest records ownership, retention, cleanup
+  disposition and deadline, and separate read/mutate authorization.
+- Test, fixture, typing, and evidence-plumbing repairs are proportionate only
+  through the bounded repair protocol; ownership, route, snapshot, rollback,
+  oracle, and fixture-contract changes remain ordinary semantic work.
+- Optional known-warning baselines use allowed patterns and maximum counts; they
+  cannot mask failed assertions, nonzero results, missing output, or live-safety
+  prerequisites.
+- Behavioral documentation covers COSMIC dependency-cycle, omitted-import, and
+  untracked-preservation cases plus pointer-resize oracle and payload-free-signal
+  cases.
 - `sh tests/validate.sh` and `git diff --check` pass.
 
 ## Constraints
@@ -73,3 +107,6 @@ Non-goals:
 - The one-time bootstrap correction that aligned checkpoint, state, and
   pre-source host semantics is a migration exception only; it does not create a
   second correction right for future changes.
+- The correction-regression repair is a separately bounded verification repair,
+  not a second ordinary correction or changed-kind reset. It introduces no host
+  automation, compatibility behavior, or new process artifact.

@@ -13,6 +13,15 @@ Final Outcome - are Lead-owned and edited directly.
 
 <approach>
 
+Evidence scope and authorization:
+- Source snapshot: <identifier / timestamp / scope>
+- Output correspondence: <output reference linked to the source snapshot>
+- Post-latest-change freshness: <observation>
+- Read authorization: <authority / scope / expiry>
+- Mutate authorization: <authority / scope / expiry, or none>
+- Warning baseline: <informational baseline; never masks failed assertions,
+  nonzero commands, missing output, or unmet live-safety prerequisites>
+
 ## Work Units
 
 | ID | Objective | Depends on | File or subsystem scope | Gate ID and literal canonical command (static or live) | Expected baseline |
@@ -22,6 +31,20 @@ Final Outcome - are Lead-owned and edited directly.
 
 Only the Lead mutates plans and state. Semantic unit IDs are stable; execution
 slices use `unit-<n>/attempt-<n>`.
+
+## Work-Kind Ledger
+
+| Work kind | Scope | Read authorization | Mutate authorization | Evidence |
+|---|---|---|---|---|
+| <read or mutate> | <approved scope> | <authority / scope / expiry> | <authority / scope / expiry, or none> | <reference> |
+
+## Scoped Candidate Inventory
+
+- Scope: <approved paths only>
+
+| Candidate | Classification (`tracked` or `untracked`) | Evidence / disposition |
+|---|---|---|
+| <path> | <tracked or untracked> | <reference> |
 
 ## Progress
 
@@ -93,7 +116,8 @@ remain subject to unit and change-wide budgets.
 - Staging owner: <Lead | user>
 - User commit required: <yes | no>
 - Candidate preservation container: <one authorized bounded container>
-- Manifest and cleanup owner: <path / owner>
+- Preservation manifest: <paths, reason, owner, retention, deadline, cleanup disposition>
+- Cleanup owner: <owner>
 
 ## Pending User Decisions
 
@@ -101,9 +125,9 @@ remain subject to unit and change-wide budgets.
 
 ## Acceptance-Criterion Evidence
 
-| Acceptance criterion | Gate ID | Literal canonical command or observation | Expected baseline | Evidence |
-|---|---|---|---|---|
-| <criterion from spec> | `gate.<id>` | `<literal canonical command>` | <expected result/count/hash> | <reproducible evidence>
+| Acceptance criterion | Gate ID | Literal canonical command or observation | Expected baseline | Source snapshot | Output correspondence | Fresh after latest change | Warning baseline | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| <criterion from spec> | `gate.<id>` | `<literal canonical command>` | <expected result/count/hash> | <snapshot reference> | <output reference> | <yes/no and observation> | <informational, non-masking> | <reproducible evidence>
 
 ## Residual Risks
 

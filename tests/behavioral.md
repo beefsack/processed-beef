@@ -176,3 +176,38 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 |---|---|
 | RED | Measured in the repository on 2026-08-17, before this change: `references/governance.md` required Orchestrator approval of every `plan.md` edit, routing progress ticks and evidence rows through the most expensive tier; the return-threshold paragraph was stated identically in nine files and had to be edited in all nine for one numeric change; `150000` appeared 31 times across 16 files, always followed by an explanation that it cannot be measured; `tests/validate.sh` carried 58 literal phrase assertions across five per-change contract functions that could detect only wording; every Worker read `docs/principles.md` on every dispatch; and `blocked` carried both a pause and a terminal meaning, requiring the distinction to be restated eight times. |
 | GREEN | Pending future observation under the semantic-only plan approval, single-sourced policy prose, retiring contract checks, demoted `150000`, brief-named principles clauses, and the distinct `handover` status added in this change. |
+
+## Scenario 25 - COSMIC Fixture and Integration Dependency Cycle (processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | A COSMIC integration packet depended on a fixture that depended back on the integration, or proceeded with a replacement fixture before the fixture contract was accepted, treating the cycle as implementation work. |
+| GREEN | Pre-source dependency validation returns `dispatch-invalid` for the cycle and for integration without an accepted fixture or harness dependency. One packet repair is allowed; changing the graph requires an approved semantic plan change. No production workaround, semantic attempt, correction, review, or no-progress increment occurs. |
+
+## Scenario 26 - Correction-Omitted Test Import (processed-beef-orchestrate / processed-beef-work-unit)
+
+| Run | Observed behavior |
+|---|---|
+| RED | A finding-fix correction omitted a test import, causing a formerly passing canonical gate to fail, and a follow-up patch was treated as an ordinary correction without proving causality or freshness. |
+| GREEN | Exactly one repair is admitted only after predecessor-valid passing evidence, reproducible failure, localized correction provenance, unchanged finding set, fresh before/after scoped snapshots and output correspondence, and an original-target recheck. The import-only test repair records `canonical_gate_restored`, preserves counters, and does not reset no-progress; stale evidence, a second claim, a failed restoration, or any semantic edit parks and escalates. |
+
+## Scenario 27 - Untracked Generated Candidate Preservation (processed-beef-orchestrate / processed-beef-work-unit)
+
+| Run | Observed behavior |
+|---|---|
+| RED | A generated untracked candidate was overwritten or omitted from the source inventory, then output from a different worktree state was presented as current acceptance evidence. |
+| GREEN | The scoped inventory preserves the generated candidate and classifies approved, modified, deleted, and untracked inputs without mutating excluded state. The source snapshot records relevant untracked inputs, separate read and mutate authorization is retained, and output correspondence plus post-latest-change freshness is required before acceptance. |
+
+## Scenario 28 - Pointer Unsupported Ordered-Write Oracle (processed-beef-orchestrate / processed-beef-work-unit)
+
+| Run | Observed behavior |
+|---|---|
+| RED | A pointer-resize ordered-write failure was labeled a harness defect so a repair could change the oracle or expected ordering, widening semantic scope while preserving a passing test. |
+| GREEN | Oracle, ownership, route, snapshot, rollback, fixture-contract, and production-invariant changes are disqualified from the bounded verification-repair protocol and remain ordinary semantic work. An oracle change cannot erase correction, finding-fix, or changed-kind-reset counters, and mere relabeling cannot reset no-progress. Acceptance or progress credit requires fresh verified evidence. Separately, one genuine changed-kind reset is allowed once across the change and its descendants when it changes the acceptance mechanism, evidence boundary, fixture/oracle, or ownership; a second changed-kind reset parks and escalates. A changed-kind reset is not a patch, Worker replacement, review pass, or relabeled brief. |
+
+## Scenario 29 - Pointer Payload-Free Signal Typing (processed-beef-orchestrate / processed-beef-work-unit)
+
+| Run | Observed behavior |
+|---|---|
+| RED | A payload-free pointer signal exposed a production typing or public-contract change as a verification repair, bypassing the semantic-attempt and review budgets. |
+| GREEN | A test, fixture, harness, gate, typing, or evidence-plumbing-only correction may use the bounded protocol with fresh snapshots and output correspondence. A production signal type, ownership, public route, or contract change remains semantic work, increments only its semantic-attempt class, and receives no repair credit or no-progress reset. |

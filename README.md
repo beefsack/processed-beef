@@ -40,6 +40,15 @@ The process routes work to the smallest suitable level and upgrades in place whe
 - Independent review is mandatory only when a bounded trigger applies - security, authorization, migration, destructive behavior, public contracts, difficult rollback, suspicious results, or two failed attempts on one unit - and routine work receives no duplicate review.
 - The Lead, not the Worker, makes coherent commits of accepted groups and performs archive/completion administration. Startup records VCS policy; default is no agent commit or push. In user-owned commit mode, approved paths only are staged and one one-line commit message is returned. Rejected work has exactly one authorized bounded preservation container with a manifest and cleanup owner; stashes do not accumulate.
 
+## Public Evidence Summary
+
+Public summaries point to the normative [orchestration skill](skills/processed-beef-orchestrate/SKILL.md) and its [scheduling](skills/processed-beef-orchestrate/references/scheduling.md), [verification](skills/processed-beef-orchestrate/references/verification.md), and [artifact](skills/processed-beef-orchestrate/references/artifacts.md) references rather than reproducing their policy.
+
+- Progress distinguishes semantic work, corrections, finding fixes, verification or harness repairs, and resets. A bounded correction-regression repair is one causality-bound repair after the immediately preceding correction: it requires fresh evidence, restores the formerly passing canonical gate, and cannot widen semantics. Only semantic attempts advance no-progress; one pre-review correction, one finding-fix correction, one changed-kind reset, and three no-progress semantic dispatches remain.
+- Evidence is fresh only when tied to the current source snapshot, scoped diff and tracked/untracked inputs, with corresponding output. An optional warning baseline is informational and cannot mask failed assertions, nonzero commands, missing output, or unmet live prerequisites.
+- Dependency cycles and production integration without an independently accepted fixture or harness dependency are pre-source `dispatch-invalid` conditions. Preservation inventories classify approved, modified, deleted, and untracked candidates; one manifest records reason, owner, retention, cleanup disposition, and deadline, with separate read and mutate authorization. Irreversible untracked deletion or overwrite escalates.
+- Ledgers stay compact and change-wide where applicable, preserving serial execution, context defaults, existing correction/reset/parking limits, and portable-host language without claiming compatibility or host enforcement.
+
 ## v1 Constraints
 
 - **Serial**: exactly one subagent is active at a time across the whole hierarchy; never parallelized, in any mode. The process is built for subscription quotas rather than large API spends, so this is a quota control first: concurrent agents burn quota in parallel, hit the ceiling without warning, and lose several agents' in-flight work at once. The latency cost is accepted deliberately.

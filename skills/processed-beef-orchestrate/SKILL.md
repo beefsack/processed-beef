@@ -115,6 +115,13 @@ returns `dispatch-invalid` before source work. It consumes no implementation,
 correction, or review budget; the parent repairs one dispatch once, then
 escalates the process or host failure.
 
+Before source work, the parent also checks the approved dependency graph. A
+cycle, or a production-integration unit without an independently accepted
+fixture or harness dependency, is `dispatch-invalid`, not an implementation
+attempt. The parent may repair the packet once; changing the graph requires an
+approved semantic plan change and is not packet repair. This preflight never
+permits production workarounds for an unaccepted fixture or harness.
+
 ## Circuit Breakers
 
 The failure mode is effort without state progress: one unit stays unaccepted
@@ -125,15 +132,56 @@ both per unit and change-wide.
 Attempt accounting belongs to the semantic unit and change, not the agent. It
 survives Worker replacement, Lead succession, correction rounds, handovers, and
 relabeled briefs. `plan.md` records deterministic change-wide implementation
-dispatches, `dispatch-invalid` results, pre-review corrections, finding-fix
-corrections, independent reviews, changed-kind resets, broad-gate runs, Worker
-and Lead tool-call proxies, acceptance criteria moved, and the no-progress
-streak. An implementation dispatch is source work; `dispatch-invalid` is not.
-The no-progress streak increments after each implementation dispatch that moves
-zero acceptance criteria and resets when one moves. Three implementation
-dispatches without a criterion moving parks and escalates. A wrong local command
-is rerun against the plan's canonical gate and reconciled locally, not escalated
-as a user decision.
+dispatches, semantic attempts, `dispatch-invalid` results, pre-review
+corrections, finding-fix corrections, verification/harness repairs,
+independent reviews, changed-kind resets, broad-gate runs, Worker and Lead
+tool-call proxies, acceptance criteria moved, and the no-progress streak. A
+semantic attempt is source work intended to move the approved behavior. A
+pre-review correction, finding-fix correction, verification/harness repair, or
+`dispatch-invalid` result is a separate class and never becomes a semantic
+attempt by relabeling. Only a semantic attempt increments no-progress, and only
+these verified progress credits reset it:
+
+- `finding_closed`: the frozen independent-review finding is verified closed;
+- `canonical_gate_advanced`: a previously unmet canonical gate reaches its
+  approved baseline; or
+- `acceptance_criterion_newly_met`: an approved criterion becomes met for the
+  first time.
+
+`canonical_gate_restored` from a bounded repair is recorded but does not reset
+no-progress. Repeated output, an added test count, and rerunning an already
+passing gate are not credits. Three semantic attempts without one of the three
+credits parks and escalates. A wrong local command is rerun against the plan's
+canonical gate and reconciled locally, not escalated as a user decision.
+
+### Correction-Regression Repair
+
+A correction-regression repair is one single-use verification or harness repair
+causality-bound to the immediately preceding pre-review implementation
+correction or finding-fix correction. It is permitted only when all of these
+are present: predecessor-valid canonical evidence showing the gate passed before
+the correction; a reproducible current failure introduced by that correction;
+localized provenance linking the failure to the correction; the frozen
+correction target or independent-review finding set is unchanged; fresh scoped
+source snapshots before and after the repair; output correspondence for both
+snapshots; and an original-target recheck. The snapshots bind Git revision,
+scoped diff, and relevant untracked inputs. The repair may edit only test,
+ fixture, harness, gate, or evidence paths, including typing-only changes within
+ those paths, and must restore the formerly passing gate without semantic
+ widening.
+
+It is disqualified by missing or stale predecessor evidence, an unreproducible
+or pre-existing failure, missing or broad provenance, a changed target or
+finding set, a second repair claim, a failed restoration, any new finding,
+serious unresolved finding, edit outside the test/fixture/harness/gate/evidence
+paths, or any change to behavior, ownership, public routing, snapshots,
+rollback, oracle, fixture contract, acceptance mechanism, or production
+invariant. Each disqualifier parks the unit and escalates directly; none may be
+reclassified as a correction, reset, review, or semantic attempt. The repair
+increments only `verification_harness_repairs`, records
+`canonical_gate_restored`, preserves every existing correction, review, reset,
+and succession counter, and does not reset no-progress. A failed repair or a
+second claim parks and escalates.
 
 A breaker trips when any of these would be needed next:
 

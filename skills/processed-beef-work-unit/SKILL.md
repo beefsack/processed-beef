@@ -68,12 +68,34 @@ never fill the gap yourself.
   risk. Mechanical changes: use proportionate checks, not ceremonial tests.
 - Evidence before claim: every completion claim maps to current evidence, such as
   a test run, check, inspection, or observation. Never infer success from intent.
+- Gate evidence binds the Git revision, scoped diff, relevant untracked inputs,
+  gate ID, literal command or observation, expected baseline, output artifact or
+  observation reference, result, and post-latest-change freshness. Stale
+  evidence cannot accept work.
 - A failed unit returns control; never improvise a workaround.
 - Risks (surprising complexity, fragile code, maintenance hazards) are
   report-only: give impact and proportionate remediation in the report; do not
   fix them.
 - Checkpoint `log.md` when one exists, after meaningful results: timestamp, unit,
   result, changed files, and verification. No narration or copied output.
+
+### Bounded Verification Repair
+
+A correction-regression repair is allowed exactly once after the immediately
+preceding pre-review or finding-fix correction. It requires predecessor-valid
+canonical evidence, a reproducible current failure, localized correction
+provenance, an unchanged frozen correction target or finding set, fresh before
+and after scoped source snapshots with output correspondence, and an
+original-target recheck. The repair may change only test, fixture, harness,
+gate, or evidence paths, including typing-only changes within those paths. A
+missing or stale predecessor, unreproducible or
+pre-existing failure, non-local provenance, changed target, second claim, failed
+restoration, new finding, serious unresolved finding, out-of-scope edit, or
+semantic change parks and escalates. Ownership, public-route, snapshot,
+rollback, oracle, fixture-contract, acceptance-mechanism, and production-
+invariant changes are semantic work, not repairs. A successful repair records
+`canonical_gate_restored`, preserves all counters, and does not reset
+no-progress.
 
 ## Context Ceiling
 

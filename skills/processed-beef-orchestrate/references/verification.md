@@ -8,6 +8,14 @@ observation, and the expected baseline. Evidence may be a focused test, check,
 inspection, screenshot, log, or other current observation appropriate to the
 behavior.
 
+Each gate-evidence row also binds the source snapshot (Git revision, scoped
+diff, and relevant untracked inputs), gate ID, literal command or observation,
+expected baseline, output artifact or observation reference, result, and a
+post-latest-change freshness result. The output reference must correspond to
+that exact snapshot and gate. Evidence is stale when any relevant source change
+postdates it, the scoped inputs differ, or the output cannot be tied to the
+snapshot; stale evidence cannot accept work.
+
 - Bug work begins with a reproduced failure or other falsifiable evidence, and
   gets a regression-first test when a practical test boundary exists.
 - New behavior receives targeted tests appropriate to repository conventions and
@@ -86,3 +94,21 @@ production workarounds and remain subject to unit and change-wide budgets.
 New tests trace to an acceptance criterion. A rising test count is not
 acceptance progress, and review that repeatedly requires another proof is a loop
 signal, not diligence.
+
+### Repair Evidence
+
+A correction-regression repair is valid only after an immediately preceding
+pre-review or finding-fix correction and only with predecessor-valid evidence
+of a formerly passing canonical gate, a reproducible current regression,
+localized correction provenance, an unchanged frozen target or finding set,
+fresh before/after scoped source snapshots, output correspondence, and an
+original-target recheck. The repair is limited to test, fixture, harness, gate,
+or evidence paths, including typing-only changes within those paths. Missing or
+stale predecessor evidence, an unreproducible or
+pre-existing failure, non-local provenance, changed target, second claim, failed
+restoration, new finding, serious unresolved finding, out-of-scope edit, or
+semantic change parks and escalates. A successful repair records
+`canonical_gate_restored`; it is not a progress credit and does not reset
+no-progress. Ownership, public-route, snapshot, rollback, oracle,
+fixture-contract, acceptance-mechanism, and production-invariant changes remain
+ordinary semantic work.

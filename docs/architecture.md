@@ -196,6 +196,15 @@ all descendants of a change; a second parks and escalates. A real reset must
 change the acceptance mechanism, evidence boundary, fixture/oracle, or
 ownership. A new name, label, or brief is not a reset.
 
+## Public Evidence Summary
+
+This summary points to the normative [orchestration skill](../skills/processed-beef-orchestrate/SKILL.md) and its [scheduling](../skills/processed-beef-orchestrate/references/scheduling.md), [verification](../skills/processed-beef-orchestrate/references/verification.md), and [artifact](../skills/processed-beef-orchestrate/references/artifacts.md) references.
+
+- Work-kind progress distinguishes semantic attempts, corrections, finding fixes, verification or harness repairs, and changed-kind resets. A bounded correction-regression repair is one causality-bound repair after the immediately preceding correction, supported by fresh scoped evidence, restoring a formerly passing canonical gate without semantic widening. Only semantic attempts advance no-progress; one pre-review correction, one finding-fix correction, one changed-kind reset, and three no-progress semantic dispatches remain.
+- Fresh evidence binds the source snapshot, scoped diff, relevant tracked/untracked inputs, output correspondence, and post-change freshness. A warning baseline is optional and informational only; it cannot mask failed assertions, nonzero commands, missing output, or unmet live prerequisites.
+- Dependency cycles and production integration without an independently accepted fixture or harness dependency are pre-source `dispatch-invalid` conditions. Preservation inventories classify approved, modified, deleted, and untracked candidates, while one manifest retains reason, owner, retention, cleanup disposition, and deadline with separate read and mutate authorization. Irreversible untracked deletion or overwrite escalates.
+- Ledgers remain compact and change-wide where applicable. These summaries preserve serial execution, the `150000` context default, existing correction/reset/parking limits, and portable-host language; they do not claim compatibility or host enforcement.
+
 Rejected work is preserved in exactly one authorized bounded container with a
 manifest, retention reason, and cleanup owner. Every implementation brief cites
 plan-owned gate IDs, literal canonical commands, and expected baselines; the

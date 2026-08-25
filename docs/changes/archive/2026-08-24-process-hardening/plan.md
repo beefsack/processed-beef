@@ -11,6 +11,38 @@ the source-session evidence here rather than retaining a root-level report. The
 P0 patch is documentation and validation work; host enforcement remains a
 bounded P1 integration item.
 
+### Approved 2026-08-25 Amendment
+
+Retain every existing breaker and add a single causality-bound verification
+repair for a regression introduced by the immediately preceding correction.
+The repair restores a formerly passing canonical gate only; it cannot widen
+behavior, alter an invariant, change ownership, route, oracle, fixture contract,
+or acceptance mechanism. It is tracked as `verification_harness_repairs`, not as
+a semantic attempt or ordinary correction. A second claimed repair, failed
+restoration, new finding, serious unresolved finding, or semantic change parks
+and escalates.
+
+Track semantic attempts separately from pre-review corrections, finding-fix
+corrections, verification/harness repairs, and preflight invalidity. Only a
+semantic attempt increments no-progress. Verified `finding_closed`,
+`canonical_gate_advanced`, or `acceptance_criterion_newly_met` resets that
+streak. A repair records `canonical_gate_restored` and does not reset it.
+
+Evidence binds each acceptance claim to a scoped source snapshot, canonical gate
+ID, literal command or observation, expected baseline, output reference, and a
+post-latest-change freshness result. The scoped snapshot includes the Git
+revision, relevant diff, and relevant untracked inputs. Before source work,
+dependency checks reject cycles and integration units lacking accepted
+fixture/harness dependencies as `dispatch-invalid`. A graph correction remains a
+semantic plan change.
+
+Preservation uses one manifest and a canonical scoped status inventory covering
+approved, modified, deleted, and untracked candidates. The manifest records
+reason, owner, retention, cleanup disposition and deadline, plus separate
+read/mutate authorization. Warning baselines are optional allowed patterns and
+maximum counts; they cannot mask assertion, command, output, or live-safety
+failures. Existing artifacts carry this information compactly by reference.
+
 ## Source Session Evidence
 
 - Report target: `processed-beef` at `01cae7ca8a324c1e68383fe16210b0856fb62cab`.
@@ -164,6 +196,28 @@ was persisted; do not infer them from commits, units, or stashes.
 | unit-03 | Add fixture, gate, VCS, preservation, and compact-brief policy | references, templates, README/architecture | plan evidence-map templates and behavioral scenarios |
 | unit-04 | Preserve source-session evidence and P1 follow-up in this change | this change directory | traceable sections above and below |
 
+### Amendment Work Units
+
+| ID | Objective | Depends on | Scope | Gate IDs | Review trigger |
+|---|---|---|---|---|---|
+| unit-05 | Implement correction-regression, counter, freshness, and dependency semantics with deterministic COSMIC and pointer-resize behavioral records | approved amendment | core policy files and behavioral record only | `gate.process-validation`, `gate.diff-hygiene`, `gate.behavioral-contract`, `gate.dependency-consistency`, `gate.evidence-freshness` | broad, subtle lifecycle and breaker change |
+| unit-06 | Add plan/state/log template evidence, warning, and tracked/untracked preservation fields | unit-05 | template and artifact-reference surfaces only | `gate.process-validation`, `gate.diff-hygiene`, `gate.candidate-inventory` | preservation and destructive-action boundary |
+| unit-07 | Align public README and architecture summaries with approved policy | unit-05, unit-06 | public documentation only | `gate.process-validation`, `gate.diff-hygiene` | Lead consistency inspection only |
+
+### Amendment Gate Map
+
+| Gate ID | Literal canonical command or observation | Type | Expected baseline |
+|---|---|---|---|
+| `gate.process-validation` | `sh tests/validate.sh` | static | exits 0; the active log records a historical pass and the amended diff requires a fresh run |
+| `gate.diff-hygiene` | `git diff --check` | static | exits 0 with no whitespace errors |
+| `gate.behavioral-contract` | Direct inspection of `tests/behavioral.md` scenarios 25-29 | static | each GREEN case enforces bounded repair, fresh evidence, preservation coverage, or parking |
+| `gate.dependency-consistency` | Direct inspection of the approved work-unit dependency graph | static | acyclic; every integration unit names an accepted fixture/harness dependency |
+| `gate.candidate-inventory` | `git status --short --untracked-files=all -- <approved-candidate-paths>` | static | manifest exactly classifies in-scope tracked and untracked candidates |
+| `gate.evidence-freshness` | Direct comparison of each evidence row's source snapshot with its output reference | static | every acceptance claim is current after the latest relevant source change |
+
+No amendment gate is live. `node tests/opencode-plugin.mjs` remains covered by
+`gate.process-validation`; this amendment changes no plugin behavior.
+
 ## P0-P2 Recommendations and Backlog
 
 | Priority | Work item | Acceptance scenario |
@@ -186,17 +240,91 @@ was persisted; do not infer them from commits, units, or stashes.
 - [x] unit-02 Correction, review, reset, and no-progress policy
 - [x] unit-03 Fixture, gate, VCS, preservation, and brief policy
 - [x] unit-04 Source-session evidence migration
+- [x] unit-05 Correction-regression, lifecycle evidence, and behavioral records
+- [x] unit-06 Template evidence and preservation alignment
+- [x] unit-07 Public documentation alignment
+
+## Amendment Startup VCS Policy
+
+- Agent commits: no
+- Agent pushes: no
+- Staging owner: Lead at final completion only
+- User commit required: yes
+- Candidate preservation container: none unless triggered
+- Cleanup owner: Lead
+
+## Amendment Attempt Accounting
+
+No amendment unit has inherited an active attempt. Historic accepted units are
+not retroactively reclassified; their completion does not reset a live counter.
+
+| Unit | Semantic attempts | Pre-review corrections | Finding-fix corrections | Verification/harness repairs | Independent reviews |
+|---|---:|---:|---:|---:|---:|
+| unit-05 | 1 | 1 | 1 | 0 | 1 |
+| unit-06 | 1 | 0 | 1 | 0 | 1 |
+| unit-07 | 1 | 0 | 0 | 0 | 0 |
+
+### Amendment Change-Wide Ledger
+
+| Semantic dispatches | Dispatch-invalids / host-preflight invalidity | Pre-review corrections | Finding-fix corrections | Verification/harness repairs | Independent reviews | Changed-kind resets | Broad gate runs | Worker tool-call proxy | Lead tool-call proxy | Findings closed | Canonical gates advanced | Criteria newly met | No-progress streak |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 3 | 1 | 1 | 2 | 0 | 2 | 0 | 0 | n/a | n/a | 2 | 0 | 2 | 0 |
+
+`dispatch-invalid` increments only preflight invalidity. A semantic dispatch
+with no qualifying progress credit increments the no-progress streak; a verified
+finding closure, canonical-gate advancement, or newly met criterion resets it.
+A `canonical_gate_restored` repair is visible evidence but is not a progress
+credit. Repeated output, added test count, and rerunning an already passing gate
+are not credits.
+
+The Unit 05 Worker tool-call proxy was not host-reported. The one
+`dispatch-invalid` is a pre-source correction packet that resolved against the
+wrong repository root; it consumed no correction budget.
+
+A fresh replacement correction Worker stopped before target-root verification
+when its host tool context exposed excluded retrospective content. It made no
+source edit or gate run; this pre-source host block does not alter Unit 05 or
+change-wide counters.
+
+The user-approved fresh target-bound correction changed only Scenario 28. It
+consumed Unit 05's one pre-review correction and the change-wide pre-review
+correction count. It did not create a semantic dispatch, progress credit, or
+no-progress reset. Independent review 01 found one frozen Scenario 28 finding;
+its one authorized finding-fix correction consumed the finding-fix budget. A
+fresh Lead's one read-only confirmation accepted that finding as closed. It was
+not a second independent review or another correction; the verified finding
+closure reset the no-progress streak.
 
 ## Acceptance-Criterion Evidence
 
 | Acceptance criterion | Evidence |
 |---|---|
-| P0 policy contract | staged skills, references, templates, README, architecture, and OpenCode guide |
-| Regression documentation | `tests/behavioral.md` scenarios 17-24 |
-| Process validation | `sh tests/validate.sh` passes |
-| Diff hygiene | `git diff --check` and `git diff --cached --check` pass |
-| Independent review | one independent review found correction-breaker, validation, gate, telemetry, and fixture issues; one finding-fix correction resolved them |
+| P0 policy contract | scoped skills, references, templates, README, architecture, and OpenCode guide |
+| Regression documentation | `tests/behavioral.md` scenarios 17-29; accepted Unit 05 Scenario 28 aligns with the approved changed-kind reset/escalation path while retaining repair anti-loopholes |
+| Process validation | `sh tests/validate.sh` passed after the Unit 05 finding-fix correction on 2026-08-25 |
+| Diff hygiene | `git diff --check` passed after the Unit 05 finding-fix correction on 2026-08-25; `git diff --cached --check` remains required only for final staged scope |
+| Independent review | historic P0 review findings were resolved. Unit 05 independent review 01 found the Scenario 28 contradiction between denying an oracle-change reset and preserving the genuine changed-kind reset for fixture/oracle changes; its one finding-fix correction was confirmed closed by one read-only confirmation |
 | Bootstrap migration correction | user-approved bounded correction aligned checkpoint, state, and pre-source host semantics; targeted confirmation passed |
+| Unit 06 template evidence and preservation alignment | scoped actual diff covers the four approved template/reference paths; the finding-fix correction is confined to `assets/state.md` and `assets/log.md`; `sh tests/validate.sh` and `git diff --check` passed on 2026-08-25; the scoped candidate inventory classified both correction paths as modified tracked candidates with no scoped untracked candidate; direct observation confirms source snapshot/output correspondence, freshness, separate authorization, warning anti-masking, preservation manifest paths, reason, owner, retention, deadline, cleanup disposition, and irreversible-untracked-deletion escalation |
+| Unit 06 independent review | review-01 returned one frozen finding. Finding-fix correction 01 was accepted after one read-only confirmation: `assets/state.md` and `assets/log.md` retain preservation manifest paths, reason, owner, and escalation that prohibits irreversible untracked deletion or overwrite on brief authorization alone; confirmation found the source/output/freshness, candidate classification, separate authorization, and warning anti-masking guards intact |
+| Unit 07 public documentation alignment | actual diff is limited to `README.md` and `docs/architecture.md`; both concise summaries point to the normative skill and scheduling, verification, and artifact references, cover bounded correction-regression repair, work-kind progress, fresh evidence, dependency consistency, scoped tracked/untracked preservation, warning baselines, and compact ledgers, and preserve serial, context-default, correction/reset/parking, and host-portability language without compatibility or enforcement claims; `sh tests/validate.sh` and `git diff --check` passed on 2026-08-25 |
+
+### Completion Evidence Snapshot
+
+- Source snapshot: `02dfc894c406cdf0a051ca2916b24e3c3b46bd98` plus the scoped worktree
+  diff inspected on 2026-08-25T21:40:20+10:00.
+- Candidate inventory: 14 modified tracked paths in the approved policy,
+  template, public-documentation, behavioral-record, and change-record scopes;
+  one untracked candidate, `rationale-and-watchlist.md`, in this change
+  directory; no unrelated candidate was present.
+- Output correspondence: `gate.process-validation` (`sh tests/validate.sh`),
+  `gate.diff-hygiene` (`git diff --check`), and the untracked rationale
+  whitespace check (`git diff --no-index --check /dev/null
+  docs/changes/2026-08-24-process-hardening/rationale-and-watchlist.md`) all
+  passed at the snapshot time above.
+- Freshness: these gates ran after the final policy and rationale content edits.
+  This entry is completion record-keeping only; no policy source changed after
+  the gates.
 
 ## Residual Risks
 
@@ -210,5 +338,6 @@ was persisted; do not infer them from commits, units, or stashes.
 
 ## Final Outcome
 
-- Accepted P0 process patch, approved by user and Orchestrator. The root
-  retrospective was migrated into this standard change record and removed.
+- Completed P0 process patch, approved by user and Orchestrator. The root
+  retrospective was migrated into this standard change record and removed; this
+  plan is retained as the archived completion record.

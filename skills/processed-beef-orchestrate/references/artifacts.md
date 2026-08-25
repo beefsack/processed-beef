@@ -75,6 +75,22 @@ two surfaces:
   Lead succession rather than reset. Three implementation dispatches without a
   criterion moving parks and escalates; one changed-kind reset is the maximum.
 
+Evidence fields are records, not lifecycle policy. Unit 05 owns serial
+execution, completion, correction, reset, repair, dispatch, and escalation
+rules; these templates reference that policy without replaying it. For each
+relevant claim, retain:
+
+- a work-kind ledger with scope and separate read and mutate authorization;
+- the source snapshot, output correspondence, and freshness after the latest
+  source change;
+- a scoped candidate inventory with each candidate classified as tracked or
+  untracked;
+- a warning baseline marked informational only.
+
+Warning baselines cannot mask failed assertions, nonzero commands, missing
+output, or unmet live-safety prerequisites. Stale or mismatched source/output
+evidence is ineligible for acceptance until refreshed.
+
 ## log.md
 
 Template: `assets/log.md`. Append-only checkpoint log for crash recovery. Each
@@ -110,13 +126,16 @@ finding, an approved plan change, and any commit.
 
 At startup, record `agent_commits`, `agent_pushes`, `staging_owner`,
 `user_commit_required`, `candidate_preservation`, and `cleanup_owner` in the
-plan. Default policy is no agent commit or push. In user-owned commit mode,
-stage approved paths only and return one one-line commit message; do not dispatch
-a commit-only Worker.
+plan. Record the scoped tracked/untracked candidate inventory and separate read
+and mutate authorization. Default policy is no agent commit or push. In
+user-owned commit mode, stage approved paths only and return one one-line commit
+message; do not dispatch a commit-only Worker.
 
 Rejected work uses exactly one authorized bounded preservation container. Its
-manifest records paths, reason, owner, retention, and cleanup disposition. A
-second container or accumulating stash is a stop-and-escalate condition.
+manifest records paths, reason, owner, retention, deadline, cleanup owner, and
+cleanup disposition. A second container or accumulating stash is a
+stop-and-escalate condition. Irreversible deletion of an untracked candidate is
+also an escalation, never an implicit cleanup disposition.
 
 ## Completion Transaction
 

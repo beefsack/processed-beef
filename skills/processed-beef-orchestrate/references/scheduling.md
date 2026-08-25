@@ -110,11 +110,41 @@ selector/persona confusion, unavailable child skill, or host/preflight rejection
   The parent repairs one dispatch once, then escalates the process or host
   failure.
 
+The same preflight rejects dependency cycles and production-integration units
+whose fixture or harness dependency is not independently accepted. This is
+`dispatch-invalid` before source work, consumes no semantic-attempt,
+correction, or review budget, and receives at most one packet repair. A graph
+change is an approved semantic plan change, never packet repair. Production
+integration cannot work around a fixture or harness that has not been accepted.
+
 A brief may specify tool constraints only when they are intrinsic to the project
 or objective. It never forwards or restates the parent role's model-specific or
 host-specific tool-use restrictions or capability assumptions: each child
 follows its own active instructions and available tools, and an inherited
 parent-only restriction can make a child non-functional.
+
+### Bounded Correction-Regression Repair
+
+After an immediately preceding pre-review correction or finding-fix correction,
+the Lead may authorize exactly one causality-bound verification/harness repair.
+The repair packet must include canonical evidence that passed before the
+predecessor correction, a reproducible current failure, localized correction
+provenance, the unchanged frozen correction target or finding set, fresh before
+and after scoped source snapshots, corresponding output references, and a
+recheck of the original target. A source snapshot includes the Git revision,
+scoped diff, and relevant untracked inputs. Edits are limited to test, fixture,
+ harness, gate, or evidence paths, including typing-only changes within those
+ paths.
+
+No repair is allowed for stale or missing predecessor evidence, an
+unreproducible or pre-existing failure, non-local provenance, a changed target
+or finding set, a second claim, failed restoration, new finding, serious
+unresolved finding, out-of-scope edit, or semantic change. Any such condition
+parks and escalates directly. Ownership, public-route, snapshot, rollback,
+oracle, fixture-contract, production-invariant, or acceptance-mechanism work
+is ordinary semantic work, not a repair. A successful repair records
+`canonical_gate_restored`, increments only the verification/harness-repair
+counter, preserves all other counters, and does not reset no-progress.
 
 Workers execute, verify every completion claim, checkpoint the log when one
 exists, and return one status. They never delegate: no subagent or task
@@ -192,13 +222,16 @@ handover, changed scope, a correction, or further work.
 Counts drive the circuit breakers in the orchestrate skill. A relabeled brief
 for the same objective does not start a new count. A successor Lead reads the
 `plan.md` unit and change-wide ledger before its first dispatch. Track
-implementation dispatches, `dispatch-invalid` results, pre-review corrections,
-finding-fix corrections, independent reviews, changed-kind resets, broad-gate
-runs, Worker and Lead tool-call proxies, acceptance criteria moved, and the
-no-progress streak. The streak increments after an implementation dispatch
-moves zero criteria and resets when one moves; three such dispatches without
-movement parks and escalates the change. A second changed-kind reset also parks
-and escalates.
+implementation dispatches, semantic attempts, `dispatch-invalid` results,
+pre-review corrections, finding-fix corrections, verification/harness repairs,
+independent reviews, changed-kind resets, broad-gate runs, Worker and Lead
+tool-call proxies, acceptance criteria moved, and the no-progress streak. Only
+semantic attempts increment no-progress. The verified credits that reset it are
+`finding_closed`, `canonical_gate_advanced`, and
+`acceptance_criterion_newly_met`; `canonical_gate_restored`, repeated output,
+added test count, and an already-passing gate do not reset it. Three semantic
+attempts without a credit parks and escalates the change. A second changed-kind
+reset also parks and escalates.
 
 ## Recovery
 
