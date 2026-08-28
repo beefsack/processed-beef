@@ -26,8 +26,8 @@ Evidence scope and authorization:
 
 | ID | Objective | Depends on | File or subsystem scope | Gate ID and literal canonical command (static or live) | Expected baseline |
 |---|---|---|---|---|---|
-| unit-01 | <objective> | - | <scope> | `gate.<id>`: `<literal canonical command>` | <expected result/count/hash> |
-| unit-02 | <objective> | unit-01 | <scope> | `gate.<id>`: `<literal canonical command>` | <expected result/count/hash> |
+| unit-01 | <objective> | - | <scope> | `gate.<id>`: `<literal canonical command>` | <semantic pass condition; exact count only if contractual> |
+| unit-02 | <objective> | unit-01 | <scope> | `gate.<id>`: `<literal canonical command>` | <semantic pass condition; exact count only if contractual> |
 
 Only the Lead mutates plans and state. Semantic unit IDs are stable; execution
 slices use `unit-<n>/attempt-<n>`.
@@ -54,7 +54,7 @@ slices use `unit-<n>/attempt-<n>`.
 ## Attempt Accounting
 
 Counts belong to the semantic unit and change and survive Worker replacement,
-Lead succession, and relabeled briefs. A third implementation attempt on one
+Lead succession, and relabeled briefs. A third semantic attempt on one
 unit trips its unit breaker. A second pre-review implementation correction trips
 the pre-review breaker; a second finding-fix correction for one independent
 review finding set trips the finding-fix breaker. Confirmation is neither a
@@ -66,34 +66,44 @@ A unit is listed only once one of its counts exceeds 1; a unit that completed
 first try is absent, and absence means all counts are 1 or lower. State "no
 entries" when the table is empty.
 
-| Unit | Implementation attempts | Pre-review corrections | Finding-fix corrections | Independent reviews |
+| Unit | Semantic attempts | Pre-review corrections | Finding-fix corrections | Independent reviews |
 |---|---:|---:|---:|---:|
 | <unit-id> | 2 | 1 | 0 | 0 |
 
 ### Change-Wide Ledger
 
-| Implementation dispatches | Dispatch-invalids | Pre-review corrections | Finding-fix corrections | Independent reviews | Changed-kind resets | Broad gate runs | Worker tool-call proxy | Lead tool-call proxy | Acceptance criteria moved | No-progress streak |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Implementation dispatches | Semantic attempts | Dispatch-invalids | Pre-review corrections | Finding-fix corrections | Independent reviews | Changed-kind resets | Broad gate runs | Worker tool-call proxy | Lead tool-call proxy | Acceptance criteria moved | No-progress streak |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
-Implementation dispatches count source-work dispatches, including bounded
-fixture/harness implementation; `dispatch-invalid` is counted separately and
-does not consume implementation budget. Broad gate runs count each invocation
-of a gate marked broad in the work-unit table. Worker and Lead tool-call proxies
-count their tool invocations for this change. Acceptance criteria moved counts
-criteria newly met since the prior implementation dispatch. The no-progress
-streak increments when that dispatch moves zero criteria and resets when one or
-more move. Three implementation dispatches without a criterion moving parks and
-escalates. At most one changed-kind reset is permitted across this change. A
+Implementation dispatches count every valid Worker or live-runner dispatch
+intended to perform semantic work, including bounded fixture/harness work.
+Semantic attempts count only dispatches where approved semantic source changes
+or the first target live scenario or intended host mutation begins. Tool,
+environment, dependency, working-directory,
+output-containment, evidence-path, and record-reconciliation failures before
+that boundary are mechanical events; they consume no semantic, correction,
+review, reset, packet-repair, or no-progress budget. `dispatch-invalid` is
+counted separately and does not consume implementation budget. Broad gate runs
+count each invocation of a gate marked broad in the work-unit table. Worker and
+Lead tool-call proxies count their tool invocations for this change. Acceptance
+criteria moved counts criteria newly met since the prior semantic attempt. The
+no-progress streak
+increments only after a semantic attempt and resets on `finding_closed`,
+`canonical_gate_advanced`, or `acceptance_criterion_newly_met`. Three semantic
+attempts without one of those credits park and escalate. At most one changed-
+kind reset is permitted across this change. A
 second parks and escalates. Record the reset's changed acceptance mechanism,
 evidence boundary, fixture/oracle, or ownership.
 
 Every implementation brief cites the plan-owned gate ID, literal canonical
-command, and expected baseline from the evidence map. The parent compares them
-before source work; a mismatch is `dispatch-invalid`. If a Worker accidentally
-runs a wrong command, rerun and reconcile the canonical gate locally. For
-example, `scripts/start-test.test.sh` with 255 assertions is not a substitute
-for `bash scripts/dogfood-install.test.sh` with 347 expected assertions.
+command, and expected baseline from the evidence map. The parent compares the
+gate being run before source work; a material mismatch in behavior, scope,
+safety, dependencies, or that gate is `dispatch-invalid`. Record-only drift and
+baseline-preserving command corrections are Lead-reconciled. If a Worker
+accidentally runs a wrong command, rerun and reconcile the canonical gate
+locally. For example, `scripts/start-test.test.sh` is not a substitute for the
+plan-owned `bash scripts/dogfood-install.test.sh` command even when both pass.
 
 ## Fixture/Harness Contract
 
@@ -103,11 +113,11 @@ remain subject to unit and change-wide budgets.
 
 | Contract evidence | Gate ID | Literal canonical command or observation | Expected baseline | Evidence |
 |---|---|---|---|---|
-| State ownership | `gate.<id>` | `<command or observation>` | <expected result> | <evidence> |
-| Recursive child behavior where relevant | `gate.<id>` | `<command or observation>` | <expected result or n/a> | <evidence> |
-| Re-decode and snapshot restoration | `gate.<id>` | `<command or observation>` | <expected result> | <evidence> |
-| Failure injection where relevant | `gate.<id>` | `<command or observation>` | <expected result or n/a> | <evidence> |
-| Public-route constraints | `gate.<id>` | `<command or observation>` | <expected result> | <evidence> |
+| State ownership | `gate.<id>` | `<command or observation>` | <semantic pass condition> | <evidence> |
+| Recursive child behavior where relevant | `gate.<id>` | `<command or observation>` | <semantic pass condition or n/a> | <evidence> |
+| Re-decode and snapshot restoration | `gate.<id>` | `<command or observation>` | <semantic pass condition> | <evidence> |
+| Failure injection where relevant | `gate.<id>` | `<command or observation>` | <semantic pass condition or n/a> | <evidence> |
+| Public-route constraints | `gate.<id>` | `<command or observation>` | <semantic pass condition> | <evidence> |
 
 ## Startup VCS Policy
 
@@ -127,7 +137,7 @@ remain subject to unit and change-wide budgets.
 
 | Acceptance criterion | Gate ID | Literal canonical command or observation | Expected baseline | Source snapshot | Output correspondence | Fresh after latest change | Warning baseline | Evidence |
 |---|---|---|---|---|---|---|---|---|
-| <criterion from spec> | `gate.<id>` | `<literal canonical command>` | <expected result/count/hash> | <snapshot reference> | <output reference> | <yes/no and observation> | <informational, non-masking> | <reproducible evidence>
+| <criterion from spec> | `gate.<id>` | `<literal canonical command>` | <semantic pass condition; exact count only if contractual> | <snapshot reference> | <output reference> | <yes/no and observation> | <informational, non-masking> | <reproducible evidence>
 
 ## Residual Risks
 

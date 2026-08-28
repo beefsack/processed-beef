@@ -8,6 +8,12 @@ observation, and the expected baseline. Evidence may be a focused test, check,
 inspection, screenshot, log, or other current observation appropriate to the
 behavior.
 
+Expected baselines state semantic pass conditions. Prefer exit status, zero
+failures, exact required failure identity, no-new-failure differentials, hashes,
+or minimum coverage. Pin an exact assertion or test count only when the count is
+itself part of the approved contract. Added passing tests and record-only drift
+do not invalidate an otherwise unchanged baseline.
+
 Each gate-evidence row also binds the source snapshot (Git revision, scoped
 diff, and relevant untracked inputs), gate ID, literal command or observation,
 expected baseline, output artifact or observation reference, result, and a
@@ -29,6 +35,9 @@ from what the command does, not from its name. Static commands run under
 ordinary test authorization and are never skipped because their name resembles a
 live one. Live commands name prerequisites, approval, cleanup, and the evidence
 to capture before the first run.
+Starting a live runner does not itself start a semantic attempt. A preflight,
+tool, environment, dependency, working-directory, or evidence failure before the
+first intended host mutation or target scenario is mechanically reconciled.
 
 ## Worker Results
 
@@ -56,7 +65,7 @@ Dispatch one independent review when any of these applies:
 - broad or subtle changes not adequately established by focused evidence;
 - a Worker crossed scope, guessed, omitted evidence, or returned a suspicious
   result;
-- two attempts failed on the same work unit;
+- two semantic attempts failed on the same work unit;
 - the Lead introduced a consequential design choice without prior independent
   evidence.
 

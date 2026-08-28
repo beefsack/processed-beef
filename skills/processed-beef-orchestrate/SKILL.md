@@ -110,10 +110,11 @@ Select the smallest suitable process; upgrade in place when complexity appears.
 Before the first implementation dispatch, the parent preflights role metadata,
 host depth and task capability, available tools, and required child-skill
 availability. A malformed or missing parent packet, process-role mismatch,
-selector/persona confusion, unavailable child skill, or host/preflight rejection
-returns `dispatch-invalid` before source work. It consumes no implementation,
-correction, or review budget; the parent repairs one dispatch once, then
-escalates the process or host failure.
+unavailable child skill, or host/preflight rejection returns `dispatch-invalid`
+before source work. Selector, model, and persona observations do not block when
+the two process-role fields match. It consumes no implementation, correction,
+or review budget; the parent repairs one malformed role or capability packet
+once, then escalates the process or host failure.
 
 Before source work, the parent also checks the approved dependency graph. A
 cycle, or a production-integration unit without an independently accepted
@@ -136,11 +137,15 @@ dispatches, semantic attempts, `dispatch-invalid` results, pre-review
 corrections, finding-fix corrections, verification/harness repairs,
 independent reviews, changed-kind resets, broad-gate runs, Worker and Lead
 tool-call proxies, acceptance criteria moved, and the no-progress streak. A
-semantic attempt is source work intended to move the approved behavior. A
-pre-review correction, finding-fix correction, verification/harness repair, or
-`dispatch-invalid` result is a separate class and never becomes a semantic
-attempt by relabeling. Only a semantic attempt increments no-progress, and only
-these verified progress credits reset it:
+semantic attempt begins when approved semantic source changes or the first
+target live scenario or intended host mutation begins. Tool, environment,
+dependency, working-directory, output-containment, evidence-path, and record
+reconciliation failures before that boundary are mechanical events, not
+semantic attempts. A
+pre-review correction, finding-fix correction, verification/harness repair,
+mechanical reconciliation, or `dispatch-invalid` result is a separate class and
+never becomes a semantic attempt by relabeling. Only a semantic attempt
+increments no-progress, and only these verified progress credits reset it:
 
 - `finding_closed`: the frozen independent-review finding is verified closed;
 - `canonical_gate_advanced`: a previously unmet canonical gate reaches its
@@ -240,9 +245,12 @@ stop-on-surprise instruction. Every implementation brief also cites plan-owned
 gate IDs, their literal canonical commands, and expected baselines. Before
 dispatch, the parent compares that packet with the plan evidence map and the
 Lead reconciles the brief against objective, scope, acceptance criteria,
-constraints, dependencies, and stop conditions; a mismatch is `dispatch-invalid`
-before source work. A wrong command accidentally run by a Worker is rerun and
-reconciled locally against the canonical gate. The allowed-scope clause
+constraints, dependencies, and stop conditions. A material mismatch in
+behavior, scope, safety, dependencies, or the gate being run is
+`dispatch-invalid` before source work. Record-only drift and mechanical command
+corrections that preserve the approved baseline are Lead-reconciled. A wrong
+command accidentally run by a Worker is rerun and reconciled locally against
+the canonical gate. The allowed-scope clause
 explicitly excludes unrelated untracked paths without listing them. Dispatch
 packets stay compact: they link artifacts and gate IDs, and never replay policy
 or raw transcripts. Fixture or harness contracts are independently accepted

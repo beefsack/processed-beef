@@ -164,12 +164,12 @@ configuration supports it, by the host. A Worker returns
   confirmation checks only that set and is neither a review nor a correction.
   Changed scope requires a fresh Worker after approval.
 - A malformed or missing parent metadata packet, process-role mismatch,
-  selector/persona confusion, unavailable required child skill, or host/preflight
-  rejection is `dispatch-invalid` before source work. It consumes no
-  implementation, correction, or review budget; the parent repairs one dispatch
-  once, then escalates the process or host failure. A missing, malformed,
-  cancelled, or `host-unknown` result after dispatch remains an unsuccessful,
-  non-resumable host attempt, never evidence.
+  unavailable required child skill, or host/preflight rejection is
+  `dispatch-invalid` before source work. Selector, model, and persona
+  observations are nonblocking when the process-role fields match. Pre-effect
+  mechanical failures consume no semantic budget; a host failure becomes a
+  counted `host-unknown` only after approved semantic source changes, a target
+  live scenario, or an intended host mutation begins.
 - The Lead, not the Worker, makes coherent commits of accepted groups (possibly
   spanning several accepted units) and performs archive/completion
   administration. Workers are never dispatched only to stage or commit and may
@@ -182,15 +182,18 @@ configuration supports it, by the host. A Worker returns
 
 ## Circuit Breakers
 
-`plan.md` records deterministic change-wide implementation dispatches,
-`dispatch-invalid` results, pre-review corrections, finding-fix corrections,
-independent reviews, changed-kind resets, broad-gate runs, Worker and Lead
-tool-call proxies, acceptance criteria moved, and the no-progress streak.
-Implementation dispatches are source-work dispatches; `dispatch-invalid` is not
-one. The no-progress streak increments after an implementation dispatch moves
-zero acceptance criteria and resets when one moves. Three implementation
-dispatches without a criterion moving parks and escalates. A second pre-review
-correction trips the pre-review breaker, and a second finding-fix correction
+`plan.md` records deterministic change-wide implementation dispatches, semantic
+attempts, `dispatch-invalid` results, pre-review corrections, finding-fix
+corrections, independent reviews, changed-kind resets, broad-gate runs, Worker
+and Lead tool-call proxies, acceptance criteria moved, and the no-progress streak.
+Semantic attempts begin when approved semantic source changes or a target live
+scenario or intended mutation begins; `dispatch-invalid` and pre-effect
+mechanical reconciliation are not attempts. The no-progress streak increments
+after a semantic attempt earns no progress credit and resets on
+`finding_closed`, `canonical_gate_advanced`, or
+`acceptance_criterion_newly_met`. Three semantic attempts without a progress
+credit park and escalate. A second pre-review correction trips the pre-review
+breaker, and a second finding-fix correction
 trips the finding-fix breaker. At most one changed-kind reset is allowed across
 all descendants of a change; a second parks and escalates. A real reset must
 change the acceptance mechanism, evidence boundary, fixture/oracle, or
@@ -200,7 +203,7 @@ ownership. A new name, label, or brief is not a reset.
 
 This summary points to the normative [orchestration skill](../skills/processed-beef-orchestrate/SKILL.md) and its [scheduling](../skills/processed-beef-orchestrate/references/scheduling.md), [verification](../skills/processed-beef-orchestrate/references/verification.md), and [artifact](../skills/processed-beef-orchestrate/references/artifacts.md) references.
 
-- Work-kind progress distinguishes semantic attempts, corrections, finding fixes, verification or harness repairs, and changed-kind resets. A bounded correction-regression repair is one causality-bound repair after the immediately preceding correction, supported by fresh scoped evidence, restoring a formerly passing canonical gate without semantic widening. Only semantic attempts advance no-progress; one pre-review correction, one finding-fix correction, one changed-kind reset, and three no-progress semantic dispatches remain.
+- Work-kind progress distinguishes semantic attempts, corrections, finding fixes, verification or harness repairs, mechanical reconciliation, and changed-kind resets. A bounded correction-regression repair is one causality-bound repair after the immediately preceding correction, supported by fresh scoped evidence, restoring a formerly passing canonical gate without semantic widening. Only semantic attempts advance no-progress; pre-effect mechanical events do not. The one-pre-review-correction, one-finding-fix-correction, one-changed-kind-reset, and three-semantic-attempt limits remain.
 - Fresh evidence binds the source snapshot, scoped diff, relevant tracked/untracked inputs, output correspondence, and post-change freshness. A warning baseline is optional and informational only; it cannot mask failed assertions, nonzero commands, missing output, or unmet live prerequisites.
 - Dependency cycles and production integration without an independently accepted fixture or harness dependency are pre-source `dispatch-invalid` conditions. Preservation inventories classify approved, modified, deleted, and untracked candidates, while one manifest retains reason, owner, retention, cleanup disposition, and deadline with separate read and mutate authorization. Irreversible untracked deletion or overwrite escalates.
 - Ledgers remain compact and change-wide where applicable. These summaries preserve serial execution, the `150000` context default, existing correction/reset/parking limits, and portable-host language; they do not claim compatibility or host enforcement.

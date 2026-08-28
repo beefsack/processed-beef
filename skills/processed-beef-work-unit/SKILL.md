@@ -45,10 +45,12 @@ never fill the gap yourself.
 - Ambiguity, missing context, conflicting evidence, or an unrequested decision
   stop work and return to the Lead.
 - If the parent packet is malformed or missing required metadata, the process
-  role does not match, selector and persona are confused, the required child
-  skill is unavailable, or host/preflight rejects the dispatch, return
-  `dispatch-invalid` before source work. This is not an implementation attempt,
-  correction, or review. The parent repairs one dispatch once, then escalates.
+  role does not match, the required child skill is unavailable, or
+  host/preflight rejects the dispatch, return
+  `dispatch-invalid` before source work. This is not a semantic attempt,
+  correction, or review. Selector, model, and persona observations do not block
+  when `process_role` and `parent_process_role` match. The parent repairs one
+  malformed role or capability packet once, then escalates.
 - Loop self-check: if two rounds on the same objective leave the same failure
   class, stop and report `decision-needed` with a `Loop-suspected` field naming
   what was tried, what did not change, and the invariant blocker this Worker
@@ -59,8 +61,14 @@ never fill the gap yourself.
 - Run the assigned commands, edits, investigation, or review exactly as scoped.
 - Before source work, verify the repository root the brief expects, for example
   with `git rev-parse --show-toplevel`. Any root, host, or metadata ambiguity at
-  this pre-source check returns `dispatch-invalid`; a host failure after a valid
-  dispatch has begun source work returns `host-unknown`.
+  this pre-source check returns `dispatch-invalid`. A command that exits before
+  approved semantic source changes, a target live scenario, or an intended host
+  mutation because of tool, environment, dependency, working-directory, or
+  evidence plumbing is a mechanical failure, not a semantic attempt. A host
+  failure after semantic work has begun returns `host-unknown`.
+- Return `blocked` for a pre-effect mechanical failure, name the exact cause, and
+  state that no approved semantic source change, target live scenario, or
+  intended host mutation began. Never silently change the command or scope.
 - Bugs: reproduce the failure (or other falsifiable evidence) first, then write a
   regression-first test when a practical boundary exists - watch it fail, then
   fix.
@@ -123,8 +131,8 @@ Return exactly one status.
 | `checkpoint` | a review point named in the brief is reached: a coherent group of edits is complete and verified, and scoped work remains | report the group completed, files changed since the previous checkpoint, and evidence per claim, then continue the same unit after the Lead returns `continue` or the unit's remaining pre-review implementation correction; checkpoints create no separate correction budget |
 | `blocked` | stopped by a condition the brief cannot resolve; state it and why | resume this same unfinished unit once the Lead resolves the concrete condition, while this Worker remains within its context budget |
 | `decision-needed` | brief ambiguous, competing readings, an unrequested decision, or a suspected loop | resume this same unfinished unit once the Lead answers the specific question, while this Worker remains within its context budget |
-| `dispatch-invalid` | parent metadata, process role, required child skill, capability, or host/preflight is invalid before source work | no implementation, correction, or review attempt; parent repairs one dispatch once, then escalates |
-| `host-unknown` | a host failure occurs after a valid dispatch has begun source work | an unsuccessful, counted, non-resumable attempt, never evidence; the Lead runs `host-unknown reconciliation` |
+| `dispatch-invalid` | parent metadata, process role, required child skill, capability, or host/preflight is invalid before source work | no implementation, correction, or review attempt; parent repairs one malformed role or capability packet once, then escalates; mechanical reconciliation is separate |
+| `host-unknown` | a host failure occurs after approved semantic source changes, a target live scenario, or an intended host mutation begins | an unsuccessful, counted, non-resumable semantic attempt, never evidence; the Lead runs `host-unknown reconciliation` |
 | `handover` | the return threshold is reached; this stint is over | terminal: this Worker ends and a fresh subagent takes over |
 
 `handover` is the only terminal status; every other status is a pause report that

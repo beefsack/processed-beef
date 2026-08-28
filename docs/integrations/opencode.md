@@ -139,9 +139,10 @@ the child reports only `process_role` and `parent_process_role`. The host person
 or UI name is distinct from both and cannot establish selector or model
 application. Before the first implementation dispatch, the parent preflights
 the effective role, depth, task capability, and required child skill. Any
-failure is `dispatch-invalid`, not an implementation attempt. For implementation
-briefs, the parent also compares every plan-owned gate ID, literal canonical
-command, and expected baseline with the plan evidence map before dispatch.
+failure is `dispatch-invalid`, not a semantic attempt. For implementation
+briefs, the parent compares the gate being run, its literal canonical command,
+and semantic baseline with the plan evidence map before dispatch. Record-only
+drift and baseline-preserving invocation corrections are reconciled locally.
 
 ## Tool Availability
 

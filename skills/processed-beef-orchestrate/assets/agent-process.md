@@ -23,9 +23,9 @@ selector or model application.
 - Required child skill available: `<yes | no>`
 - Host depth and task capability available: `<yes | no>`
 - Available tools satisfy the brief: `<yes | no>`
-- Implementation brief gate IDs match the plan evidence map: `<yes | no | n/a>`
-- Literal canonical commands and expected baselines match: `<yes | no | n/a>`
-- `dispatch-invalid` repair: one parent repair, then process/host escalation
+- Gate being run materially matches the plan evidence map: `<yes | no | n/a>`
+- Literal command and semantic baseline match: `<yes | no | mechanical reconciliation | n/a>`
+- `dispatch-invalid` role/capability repair: one parent repair, then process/host escalation
 
 ## VCS Policy
 

@@ -65,15 +65,18 @@ two surfaces:
   spec, principles, and decisions; the Orchestrator approves each edit before it
   is made.
 - Record-keeping - progress, the acceptance-criterion evidence map, per-unit
-  implementation-attempt, pre-review-correction, finding-fix-correction, and
+  semantic-attempt, pre-review-correction, finding-fix-correction, and
   independent-review counts, and deterministic change-wide implementation
-  dispatches, `dispatch-invalid` results, both correction classes, independent
+  dispatches, semantic attempts, `dispatch-invalid` results, both correction classes, independent
   reviews, changed-kind resets, broad-gate runs, Worker and Lead tool-call
   proxies, acceptance criteria moved, and the no-progress streak. Lead-owned,
-  needs no approval, reported in the Lead's normal return. The counts belong to
+  needs no approval, reported in the Lead's normal return. Record-only drift is
+  reconciled but never blocks source work when the approved semantic plan is
+  unambiguous. The counts belong to
   the semantic unit and change and are carried across Worker replacement and
-  Lead succession rather than reset. Three implementation dispatches without a
-  criterion moving parks and escalates; one changed-kind reset is the maximum.
+  Lead succession rather than reset. Three semantic attempts without a progress
+  credit park and escalate; mechanical events never increment this streak. One
+  changed-kind reset is the maximum.
 
 Evidence fields are records, not lifecycle policy. Unit 05 owns serial
 execution, completion, correction, reset, repair, dispatch, and escalation

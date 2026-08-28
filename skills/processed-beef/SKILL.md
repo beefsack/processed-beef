@@ -22,16 +22,18 @@ Orchestrator. Stop and report if nested subagent depth two is unavailable.
   parent-recorded, model preference is optional, and host persona is distinct.
 - Before the first implementation dispatch, preflight host depth and task
   capability, available tools, and the required child skill. A malformed or
-  missing parent metadata packet, process-role mismatch, selector/persona
-  confusion, unavailable required child skill, or host/preflight rejection is
-  `dispatch-invalid`: it is pre-source and consumes no implementation,
-  correction, or review budget. Repair one dispatch once, then escalate the
-  process or host failure.
+  missing parent metadata packet, process-role mismatch, unavailable required
+  child skill, or host/preflight rejection is `dispatch-invalid`: it is
+  pre-source and consumes no implementation, correction, or review budget.
+  Selector, model, and persona observations are reported but do not block when
+  `process_role` and `parent_process_role` match. Repair one malformed role or
+  capability packet once, then escalate the process or host failure.
 - Before each implementation dispatch, compare the brief's plan-owned gate IDs,
   literal canonical commands, and expected baselines with the plan evidence
-  map. A mismatch is `dispatch-invalid` before source work; an accidentally run
-  wrong command is locally rerun and reconciled against the canonical gate
-  without a user decision.
+  map. A material mismatch in behavior, scope, safety, dependencies, or the gate
+  being run is `dispatch-invalid` before source work. Record-only drift and
+  mechanical command corrections that preserve the approved baseline are Lead-
+  reconciled without a user decision or semantic budget.
 
 ## Standing Rules
 

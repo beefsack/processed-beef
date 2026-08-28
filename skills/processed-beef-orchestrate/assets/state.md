@@ -24,17 +24,19 @@ correction, or commit.
 - Warning baseline: <informational only; cannot mask failed assertions, nonzero commands, missing output, or unmet live-safety prerequisites>
 - Preservation: <one container maximum; manifest paths, reason, owner, retention, deadline, cleanup owner, and cleanup disposition; irreversible deletion or overwrite of untracked data escalates to the Orchestrator and must not proceed on brief authorization alone>
 
-Implementation-attempt and correction counts belong to the semantic unit and are
-inherited, never reset by succession. A third implementation attempt, second
+Semantic-attempt and correction counts belong to the semantic unit and are
+inherited, never reset by succession. Mechanical events before approved semantic
+source changes or a target live scenario or intended mutation do not increment
+them. A third semantic attempt, second
 pre-review correction, second finding-fix correction for one finding set, or
 second independent review trips its class's breaker. The change-wide ledger also
-survives succession: a second changed-kind reset, or three implementation
-dispatches without an acceptance criterion moving, parks and escalates.
+survives succession: a second changed-kind reset, or three semantic attempts
+without a progress credit, parks and escalates.
 
-| Unit | Implementation attempts | Pre-review corrections | Finding-fix corrections | Independent reviews |
+| Unit | Semantic attempts | Pre-review corrections | Finding-fix corrections | Independent reviews |
 |---|---:|---:|---:|---:|
 | <unit-id> | 2 | 1 | 0 | 0 |
 
-| Implementation dispatches | Dispatch-invalids | Changed-kind resets | Acceptance criteria moved | No-progress streak |
-|---:|---:|---:|---:|---:|
-| 0 | 0 | 0 | 0 | 0 |
+| Implementation dispatches | Semantic attempts | Dispatch-invalids | Changed-kind resets | Acceptance criteria moved | No-progress streak |
+|---:|---:|---:|---:|---:|---:|
+| 0 | 0 | 0 | 0 | 0 | 0 |

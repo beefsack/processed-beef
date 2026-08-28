@@ -133,7 +133,7 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 | Run | Observed behavior |
 |---|---|
 | RED | A Worker ran `scripts/start-test.test.sh`, observed 255 assertions, and escalated the discrepancy instead of using the plan's canonical dogfood gate. |
-| GREEN | The plan names `bash scripts/dogfood-install.test.sh` as the canonical gate with 347 assertions. The Lead reruns and reconciles that gate locally; the command mismatch is not a user decision. |
+| GREEN | The plan names `bash scripts/dogfood-install.test.sh` as the canonical gate with a zero-failure baseline. The Lead reruns and reconciles that gate locally; the command mismatch is not a user decision. |
 
 ## Scenario 20 - Review Finding-Fix After Pre-Review Correction
 
@@ -211,3 +211,24 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 |---|---|
 | RED | A payload-free pointer signal exposed a production typing or public-contract change as a verification repair, bypassing the semantic-attempt and review budgets. |
 | GREEN | A test, fixture, harness, gate, typing, or evidence-plumbing-only correction may use the bounded protocol with fresh snapshots and output correspondence. A production signal type, ownership, public route, or contract change remains semantic work, increments only its semantic-attempt class, and receives no repair credit or no-progress reset. |
+
+## Scenario 30 - Pre-Effect Live Failures Consume Attempt Budget
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed 2026-08-29 in a plasma-auto-tiler tray session: one live runner stopped before mutation on a harness ownership-query defect and a second stopped before any target scenario because `cargo` was outside `devenv`. Zero product scenarios ran, but both were counted as semantic attempts and the live unit parked. |
+| GREEN | A live semantic attempt begins at the first intended host mutation or target scenario. Preflight, tool, environment, dependency, working-directory, output-containment, and evidence-path failures before that boundary are mechanically reconciled, preserve their evidence, and consume no semantic-attempt or no-progress budget. Any source fix still follows the ordinary semantic lifecycle, and repeated pre-effect failures require Lead reassessment rather than unlimited reruns. |
+
+## Scenario 31 - Incidental Baseline And Record Drift Block Valid Work
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed 2026-08-28 and 2026-08-29 in a plasma-auto-tiler tray session: adding a passing test broke an exact pass-count baseline, and stale summary rows repeatedly invalidated dispatches despite a current detailed gate and unchanged behavior, scope, safety, and dependencies. The final plan still reported both zero and two live attempts in different sections. |
+| GREEN | Expected baselines state semantic pass conditions and pin exact counts only when contractual. Added passing tests do not invalidate an unchanged no-failure or no-new-failure baseline. Record-only drift is Lead-reconciled and cannot block source work when the approved semantic plan and gate are unambiguous. |
+
+## Scenario 32 - Selector And Persona Confused With Process Role
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed 2026-08-28 in a plasma-auto-tiler tray session: a valid Lead/Orchestrator role packet was rejected because `agent_selector` and host persona used the same label, even though the two process-role fields matched and nested Worker capability was demonstrated. |
+| GREEN | `process_role` and `parent_process_role` are the only blocking role fields. Selector, model, and persona observations are reported for host reconciliation but do not invalidate a dispatch when process roles and required capabilities match. |

@@ -5,6 +5,7 @@
 | Change | Proposer | Approval | Editor |
 |---|---|---|---|
 | Plan record-keeping: progress, evidence map, attempt counters, residual risks, final outcome | Lead | none; reported in the Lead's normal return | Lead |
+| Mechanical plan reconciliation that preserves approved behavior, scope, safety, dependencies, and acceptance semantics | Lead | none; reported with the affected gate or record | Lead |
 | Plan semantic adjustment within approved constraints: approach, work units, dependencies, scope, verification | Lead | Orchestrator | Lead |
 | Obvious spec correction with one clear, simple, non-contentious answer | Lead | Orchestrator | Lead |
 | Ambiguous, consequential, or contentious spec change | Lead | User through Orchestrator | Lead after approval |
@@ -17,8 +18,9 @@ and requires the user.
 
 The Orchestrator approves the creation of `spec.md` and `plan.md`, every
 `spec.md` edit, and every edit to a plan's semantic sections before it happens,
-including during autonomous mode. It does not approve plan record-keeping:
-those sections record what already happened, so approving them protects nothing
+including during autonomous mode. It does not approve mechanical plan
+reconciliation or plan record-keeping: those preserve or record already approved
+meaning, so approving them protects nothing
 and routes bookkeeping through the most expensive tier. The Lead edits them
 directly and reports them in its normal return. The user owns principles,
 decisions, and the initial specification approval gate.

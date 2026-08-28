@@ -52,6 +52,26 @@ material. Cost is context volume, not call count: one read of a large document
 can exceed many small ones. Under mixed model tiers a Lead's byte costs more
 than a Worker's, which is a further reason to delegate.
 
+## Mechanical Reconciliation
+
+A Lead resolves a mechanical event locally when approved production behavior,
+scope, dependencies, public contracts, ownership, rollback, security, oracle,
+and acceptance semantics remain unchanged. Eligible events include tool or
+dependency availability, environment variables, working directories, output
+containment, evidence paths, incidental test totals, and stale status, counter,
+or summary text. The Lead may correct the command or record directly when it can
+state the change completely, or return a narrowly corrected brief to the same
+Worker. It reruns only the affected gate and records the result concisely.
+
+Mechanical reconciliation consumes no semantic-attempt, correction, review,
+reset, packet-repair, or no-progress budget. Repetition of the same cause without
+a changed diagnosis is a loop signal and is not rerun. A second consecutive pre-
+effect failure in one unit requires Lead reassessment before another dispatch.
+The failure itself remains mechanical, but any source edit needed to fix it
+follows the ordinary semantic lifecycle. Any production edit or change to
+behavior, scope, dependency graph, public contract, ownership, rollback,
+security, oracle, or acceptance semantics does the same.
+
 ## Corpus Ownership and Forfeit
 
 Every unit names one role that holds its material, and that role acquires it
@@ -100,15 +120,23 @@ preflight: `process_role`, `parent_process_role`, parent-recorded
 tools, host depth, and required child-skill availability. Only the two process
 role fields block role validity; a child cannot claim selector or model
 application. A malformed or missing metadata packet, process-role mismatch,
-selector/persona confusion, unavailable child skill, or host/preflight rejection
-  returns `dispatch-invalid` before source work. It is not an implementation
-  attempt, correction, or review. For implementation briefs, the parent also
-  compares every gate ID, literal canonical command, and expected baseline with
-  the plan evidence map; a mismatch is `dispatch-invalid` before source work.
-  If a Worker accidentally runs a wrong local command, the Lead reruns and
-  reconciles the canonical gate locally and does not request a user decision.
-  The parent repairs one dispatch once, then escalates the process or host
-  failure.
+unavailable child skill, or host/preflight rejection returns `dispatch-invalid`
+before source work. Selector, model, and persona observations are reported but
+do not block when the process-role fields match. It is not an implementation
+attempt, correction, or review. For implementation briefs, the parent also
+compares the gate being run, its literal canonical command, and expected
+baseline with the plan evidence map. A material mismatch in behavior, scope,
+safety, dependencies, or that gate is `dispatch-invalid` before source work;
+record-only drift and baseline-preserving command corrections use Mechanical
+Reconciliation. A command correction is mechanical only when the gate ID,
+source or observation target, and semantic baseline stay unchanged and only
+invocation details such as environment, working directory, timeout, or output
+containment change. A different test or target is a material mismatch even when
+it passes.
+If a Worker accidentally runs a wrong local command, the Lead reruns and
+reconciles the canonical gate locally and does not request a user decision. The
+parent repairs one malformed role or capability packet once, then escalates the
+process or host failure. Mechanical reconciliation is not that packet repair.
 
 The same preflight rejects dependency cycles and production-integration units
 whose fixture or harness dependency is not independently accepted. This is
@@ -198,10 +226,10 @@ top-level session transfer or a boundary without a live parent writes
 | `review-ready` | Worker | Unit done with evidence; a review input, not acceptance or completion | `accepted` or `rejected`, decided only by Lead inspection |
 | `checkpoint` | Worker | A named review point is reached: a coherent group of edits is complete and verified, and scoped work remains | `continue` or the unit's remaining pre-review implementation correction, decided only by Lead inspection |
 | `continue` | Lead | Lead inspected the incremental diff at a checkpoint and accepts it | Worker resumes the same unit toward the next review point or completion |
-| `dispatch-invalid` | parent before source work | Parent metadata, process role, child skill, capability, or host/preflight is invalid | Parent repairs one dispatch once, then escalates the process or host failure; no implementation, correction, or review budget is consumed |
+| `dispatch-invalid` | parent before source work | Parent metadata, process role, child skill, capability, or host/preflight is invalid | Parent repairs one malformed role or capability packet once, then escalates; no implementation, correction, or review budget is consumed; mechanical reconciliation is separate |
 | `blocked` | any role | Pause report; a concrete external condition stops progress | the same role resumes the same unfinished unit once the condition resolves, while within its context budget |
 | `decision-needed` | any role | Pause report; a specific answer is required | the same role resumes the same unfinished unit once the Lead or user answers, while within its context budget |
-| `host-unknown` | Worker | A host failure occurs after a valid dispatch has begun source work; an unsuccessful, counted, non-resumable attempt, never evidence | `host-unknown reconciliation` |
+| `host-unknown` | Worker | A host failure occurs after approved semantic source changes, a target live scenario, or an intended host mutation begins; an unsuccessful, counted, non-resumable semantic attempt, never evidence | `host-unknown reconciliation` |
 | `host-unknown reconciliation` | Lead | Lead reconciles diff, Git, log, and evidence after a failed host attempt | `accepted`, a fresh compressed recovery Worker, or abandon |
 | `accepted` | Lead | Lead inspected the diff and evidence and accepted the unit | next unit, or terminal accepted completion |
 | `rejected` | Lead | Lead inspected and returned the unit | one same-scope pre-review implementation correction or one finding-fix correction for a named independent-review finding set, only with semantic scope and context unchanged, or a fresh Worker after approval |
@@ -210,12 +238,21 @@ top-level session transfer or a boundary without a live parent writes
 `handover` is the only terminal one: it ends the outgoing role, and a fresh
 subagent takes over. `review-ready`, `checkpoint`, `blocked`, and
 `decision-needed` are pause reports that do not end the reporting role.
-`dispatch-invalid` is pre-source and does not end an implementation attempt.
-`host-unknown` ends the attempt, not by handover. A role reaching its return
+`dispatch-invalid` is pre-source and does not end a semantic attempt.
+A tool, environment, dependency, working-directory, output-containment,
+evidence-path, or record failure before approved semantic source changes, a
+target live scenario, or an intended host mutation begins is mechanically
+reconciled and does not start an attempt.
+`host-unknown` ends a semantic attempt, not by handover. A role reaching its return
 threshold reports `handover`, never `blocked`. Missing, malformed, and cancelled
-results after dispatch are equally unsuccessful, counted, non-resumable host
-attempts, handled like `host-unknown`. A fresh subagent is required after a
-handover, changed scope, a correction, or further work.
+results after dispatch are handled like `host-unknown` only when the semantic
+boundary was crossed; otherwise they are mechanical events. A fresh subagent is
+required after a handover, changed scope, a correction, or further work.
+
+A Worker reports a pre-effect mechanical failure as `blocked`, names the exact
+cause, and states that no semantic boundary was crossed. The Lead then applies
+Mechanical Reconciliation; the Worker never silently changes the command or
+scope.
 
 ## Attempt Accounting
 
@@ -226,7 +263,9 @@ implementation dispatches, semantic attempts, `dispatch-invalid` results,
 pre-review corrections, finding-fix corrections, verification/harness repairs,
 independent reviews, changed-kind resets, broad-gate runs, Worker and Lead
 tool-call proxies, acceptance criteria moved, and the no-progress streak. Only
-semantic attempts increment no-progress. The verified credits that reset it are
+semantic attempts increment no-progress. A live semantic attempt begins at the
+first intended host mutation or target scenario, not when its runner starts.
+The verified credits that reset it are
 `finding_closed`, `canonical_gate_advanced`, and
 `acceptance_criterion_newly_met`; `canonical_gate_restored`, repeated output,
 added test count, and an already-passing gate do not reset it. Three semantic
