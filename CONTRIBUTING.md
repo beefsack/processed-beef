@@ -13,20 +13,19 @@ portability, payload ceilings, links, and plugin packaging. It never requires
 literal policy phrases: wording checks cannot prove behavior and make later
 simplification unsafe.
 
-## Vision And Learning Record
+## Project Records
 
-Every behavioral process change must:
+Root [AGENTS.md](AGENTS.md) is the maintainer process-record authority. It is
+not installed skill runtime policy. The canonical records are [VISION.md](VISION.md)
+for purpose and principles, [docs/decisions.md](docs/decisions.md) for active
+durable decisions, [docs/changes/](docs/changes/) for active substantial-change
+state, and [docs/learnings.md](docs/learnings.md) for separate maintainer-only
+historical evidence. Installed-skill users are not required to maintain the
+learning record.
 
-1. State how it advances [VISION.md](VISION.md).
-2. Add or amend a stable entry in [docs/learnings.md](docs/learnings.md) with the
-   observed problem, contributing mechanism, change and rationale, and status.
-3. Link any superseded rule to the newer learning instead of deleting history.
-4. Prefer removing or narrowing policy over adding a universal mechanism.
-5. Record a behavioral scenario only when a real pressure case was observed;
-   do not create speculative wording contracts.
-
-Runtime skills contain current instructions only. History, rationale, and
-supersession live in the learning record and change archives.
+Keep process proportionate: small work needs no change note; substantial,
+long-running, risky, interrupted, or multi-unit work uses one lightweight note.
+Do not create separate spec, plan, or log artifacts for this purpose.
 
 ## Behavioral Evidence
 

@@ -1,9 +1,11 @@
 # Architecture
 
 Processed Beef is a portable three-role delegation hierarchy. Runtime policy is
-confined to three small role-local skills; this human document is not loaded
-into agent context. [VISION.md](../VISION.md) governs design changes, and
-[learnings.md](learnings.md) preserves incident rationale.
+confined to three small role-local skills. Root [AGENTS.md](../AGENTS.md) is
+maintainer process-record authority and is read by the Orchestrator when
+present; it is not installed skill runtime policy. [VISION.md](../VISION.md)
+governs purpose and principles, while [learnings.md](learnings.md) preserves
+separate maintainer-only historical evidence.
 
 ## Repository Canon
 
@@ -87,10 +89,12 @@ One narrowly causal repair may restore test, fixture, harness, or evidence
 plumbing broken by the immediately preceding correction. It cannot change
 product behavior, ownership, routing, oracle, or acceptance semantics.
 
-No process artifact is mandatory. A Lead keeps one concise change note only
-when multiple units, risk, interruption, or ownership transfer makes recovery
-value exceed maintenance cost. Git, repository status, current evidence, and the
-latest concise report are recovery truth.
+Small work needs no change note. For substantial, long-running, risky,
+interrupted, or multi-unit work, a Lead keeps one lightweight file under
+`docs/changes/` covering the goal, material decisions, current plan, and
+accepted evidence. There is no separate spec, plan, or log requirement; update
+the note only for meaningful state changes. Git, repository status, current
+evidence, and the latest concise report are recovery truth.
 
 ## Concurrency
 
@@ -106,8 +110,12 @@ topology. A host limitation alone does not block unrelated safe work.
 ## Documents
 
 - [VISION.md](../VISION.md) - desired outcomes and design rules.
+- [AGENTS.md](../AGENTS.md) - maintainer process-record authority.
+- [decisions.md](decisions.md) - active durable decisions.
+- [changes/](changes/) - active substantial-change state; archives are under
+  `changes/archive/`.
 - [learnings.md](learnings.md) - observed failures, contributing mechanisms,
-  changes, and supersession history.
+  changes, and supersession history for maintainers.
 - [framework-comparison.md](framework-comparison.md) - retained external
   research and design precedents.
 - `docs/integrations/` - host-specific model, nesting, and permission setup.

@@ -107,6 +107,14 @@ if [ -z "$skill_files" ]; then
     exit 1
 fi
 
+expected_skill_files=$(printf '%s\n' \
+    skills/processed-beef/SKILL.md \
+    skills/processed-beef-orchestrate/SKILL.md \
+    skills/processed-beef-work-unit/SKILL.md | sort)
+tracked_skill_files=$(printf '%s\n' "$skill_files" | sort)
+[ "$tracked_skill_files" = "$expected_skill_files" ] || \
+    error "tracked skill paths differ from the three expected SKILL.md paths"
+
 for relative_file in $skill_files; do
     file=$repo_root/$relative_file
     skill_directory=$(dirname "$file")
@@ -132,7 +140,7 @@ done
 [ "$total_skill_bytes" -le 24000 ] || \
     error "installed skill payload is $total_skill_bytes bytes; limit is 24000"
 
-for required in VISION.md docs/learnings.md; do
+for required in AGENTS.md VISION.md docs/decisions.md docs/learnings.md; do
     [ -f "$repo_root/$required" ] || error "missing $required"
 done
 

@@ -2,8 +2,11 @@
 
 Processed Beef is a portable, skill-only delegation process for high-quality
 software delivery with low parent context and progressively cheaper subagents.
-Its governing target is [VISION.md](VISION.md); incident-derived rationale lives
-in [docs/learnings.md](docs/learnings.md) instead of every runtime prompt.
+Its governing target is [VISION.md](VISION.md). Maintainer process records live
+outside installed skills: [AGENTS.md](AGENTS.md) is the maintainer authority,
+[docs/decisions.md](docs/decisions.md) holds active durable decisions,
+[docs/changes/](docs/changes/) holds active substantial-change state, and
+[docs/learnings.md](docs/learnings.md) preserves separate historical evidence.
 
 ## Roles
 
@@ -29,10 +32,11 @@ implementation, and verification proceed without artificial approval gates.
 5. The Lead returns decisions, evidence, risks, and outcome. The Orchestrator
    checks user alignment without repeating implementation review or tests.
 
-No process artifact is required for ordinary work. A Lead uses one concise
-change note only when risk, multiple units, interruption, or handover makes its
-recovery value exceed its cost. Git and current verification remain the primary
-truth.
+Small work needs no change note. A Lead uses one concise `docs/changes/` file
+for substantial, long-running, risky, interrupted, or multi-unit work. It
+covers the goal, material decisions, current plan, and accepted evidence; no
+separate spec, plan, or log is required. Git and current verification remain
+the primary truth.
 
 ## Core Controls
 

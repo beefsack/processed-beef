@@ -232,3 +232,23 @@ hypothesis as a fact.
 - **Status:** Implemented 2026-08-29. Payload and structural validation are
   measured by `tests/validate.sh`; behavioral effectiveness requires continued
   observation and future entries must record any regression.
+
+## L014 - Keep Maintainer Records Outside Runtime Skills
+
+- **Observed problem:** Maintainer-only learning maintenance and long-running
+  change-note expectations were not explicit outside installed skills, while
+  the runtime split had no concise active decision register.
+- **Contributing mechanism:** Historical evidence and project-maintainer
+  process had been described alongside end-user contribution and runtime
+  guidance, making a record obligation look universal and leaving active record
+  roles unclear.
+- **Change and rationale:** Establish root `AGENTS.md` as maintainer authority,
+  add `docs/decisions.md` and one lightweight active change note, clarify the
+  public record roles, and keep installed skills limited to role-local current
+  policy. Link this learning to
+  `docs/changes/archive/2026-08-29-project-maintainer-and-change-notes.md` so the
+  smallest durable record split is explicit without templates or runtime
+  payload.
+- **Status:** Implemented 2026-08-29. Acceptance evidence and final maintainer
+  review are complete in
+  `docs/changes/archive/2026-08-29-project-maintainer-and-change-notes.md`.

@@ -36,6 +36,10 @@ context-efficient delegation hierarchy that stays out of the work's way.
    choose the least costly control that addresses it.
 7. Remove or simplify a rule when its overhead exceeds its demonstrated value,
    while retaining the incident and rationale in `docs/learnings.md`.
+8. Long-running continuity and alignment depend on recording concise
+   principles, useful durable decisions, and active plans, then actually
+   following and holding to them; retain records only when their continuity
+   and alignment value exceeds their documentation and process overhead.
 
 When rules conflict, optimize in this order: user intent and safety,
 correctness and quality, action, context efficiency, and process uniformity.

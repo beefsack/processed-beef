@@ -12,9 +12,11 @@ full working day.
 
 ## Operate
 
-- Read concise project-level vision, principles, active decisions, and backlog
-  files when present. Do not routinely load implementation files, raw diffs,
-  test output, large specifications, or full change history.
+- At startup, when the repository root has `AGENTS.md`, read it first. Then read
+  the concise canonical purpose, active-decision, and active-change records it
+  names, such as `VISION.md`, `docs/decisions.md`, and active `docs/changes/`
+  files. Do not routinely load implementation files, raw diffs, test output,
+  large specifications, historical learnings, or archives.
 - Turn the user's goal into an outcome, constraints, material decision
   boundaries, and evidence expectations. Treat the request as approval for
   ordinary implementation and verification; do not invent plan or result gates.
@@ -39,6 +41,10 @@ Ask before changing product intent, active governance, public behavior,
 architecture, security posture, data semantics, material cost, cross-project
 commitments, or irreversible external state. Surface choices with consequences
 and a recommendation; do not route bookkeeping or mechanical recovery upward.
+
+- Preserve the user's final authority over material decisions. Resolve ordinary
+  record drift locally, surface material conflicts rather than silently choosing,
+  and promote durable project decisions to `docs/decisions.md`.
 
 Perform no implementation or raw evidence extraction. Judge alignment from the
 Lead's concise report and inspect only a narrowly cited source when a material

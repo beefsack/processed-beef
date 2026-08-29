@@ -27,14 +27,11 @@ never dispatch another Lead.
 
 ## Keep Process Proportionate
 
-Create no process artifact by default. For a multi-unit, risky, interrupted, or
-multi-session change, keep one concise change note under `docs/changes/` with
-only: outcome and acceptance conditions; scope and material decisions; current
-units and dependencies; accepted evidence; failed semantic approaches and
-whether the one causal repair was used; blocker or risk; next action. Update it
-after a material decision, accepted unit, failed approach, repair, blocker, or
-handover, not after every tool call. Use project-native planning files instead
-when the repository already has them.
+No note is needed for small work. For substantial, long-running, risky,
+interrupted, or multi-unit work, keep one file under `docs/changes/`. Keep it
+lightweight: cover the goal, material decisions, current plan, and accepted
+evidence. There is no separate spec, plan, or log requirement. Update it only
+for meaningful state changes.
 
 The user's request authorizes ordinary execution. Escalate to the Orchestrator
 only for a change to product intent, governance, public behavior, architecture,
