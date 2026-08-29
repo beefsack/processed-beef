@@ -1,5 +1,7 @@
 # Specification: Delegation Economics
 
+> Historical record. Paths and controls describe the repository at the time.
+
 Ownership and approval:
 - Owner: User
 - Status: Approved 2026-08-07 by user and Orchestrator

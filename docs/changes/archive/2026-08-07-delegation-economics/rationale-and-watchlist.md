@@ -1,5 +1,7 @@
 # Delegation Economics Rationale and Observation Watchlist
 
+> Historical record. Paths and controls describe the repository at the time.
+
 ## Purpose and Status
 
 This is the durable evidence and follow-up record for the delegation economics

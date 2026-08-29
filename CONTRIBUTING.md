@@ -2,53 +2,54 @@
 
 ## Validation
 
-Run the validation gate from anywhere in the repository:
+Run the release gate from anywhere in the repository:
 
-```
+```sh
 sh tests/validate.sh
 ```
 
-The same gate runs in CI (`.github/workflows/validate.yml`) on every push and pull request. A failing gate blocks the release.
+The same gate runs in CI on every push and pull request. It checks structure,
+portability, payload ceilings, links, and plugin packaging. It never requires
+literal policy phrases: wording checks cannot prove behavior and make later
+simplification unsafe.
 
-### Contract checks retire
+## Vision And Learning Record
 
-A change may add a `check_<change>_contract` function of literal phrase
-assertions. Those checks guard the change for the current release cycle only.
-Once its behavior is recorded in `tests/behavioral.md`, delete the function.
-Phrase checks can detect wording, never behavior, and letting them accumulate
-locks the prose in place: the skill set then cannot be simplified without
-breaking tests that were defending old sentences rather than real controls. The
-structural checks - frontmatter, size, ASCII, links, harness tokens, canonical
-paths, single-sourcing - are permanent.
+Every behavioral process change must:
 
-### Policy prose is single-sourced
+1. State how it advances [VISION.md](VISION.md).
+2. Add or amend a stable entry in [docs/learnings.md](docs/learnings.md) with the
+   observed problem, contributing mechanism, change and rationale, and status.
+3. Link any superseded rule to the newer learning instead of deleting history.
+4. Prefer removing or narrowing policy over adding a universal mechanism.
+5. Record a behavioral scenario only when a real pressure case was observed;
+   do not create speculative wording contracts.
 
-A rule is stated in full in exactly one place: the role skill or reference that
-a working agent actually loads. README, `docs/architecture.md`, the
-`agent-process.md` template, and `docs/integrations/*` describe and link.
-Return thresholds are guarded this way by the validator.
+Runtime skills contain current instructions only. History, rationale, and
+supersession live in the learning record and change archives.
 
-## Behavioral Skill TDD
+## Behavioral Evidence
 
-Skill behavior is developed RED/GREEN. Each scenario in `tests/behavioral.md` is observed twice under pressure:
+`tests/behavioral.md` is a historical pressure record, not an executable claim
+that current wording guarantees behavior. Add a scenario only after a concrete
+failure is observed. Record the failing behavior, the guidance under test, and
+the observed result or an explicit pending status. Never invent fixtures to
+justify a preferred process mechanism.
 
-- **RED** - the scenario runs with the skill guidance absent; the observed behavior is the failure the skill targets.
-- **GREEN** - the scenario runs with the skill guidance present; the observed behavior changes to the intended discipline.
+## Size And Portability
 
-Do not invent speculative behavioral fixtures. When real use exposes a concrete
-failure, capture that pressure scenario, observe the RED behavior without new
-guidance, then change the skill and record the GREEN result.
-
-## Size and Portability Constraints
-
-- Each `SKILL.md` stays under 500 lines and approximately 5000 tokens. The
-  dependency-free validator conservatively uses 20000 bytes as the token-budget
-  proxy.
-- Frontmatter is portable: exactly `name` and `description`, and `name` must match the skill directory name.
-- Skills contain no runtime or host-specific content. Host paths and per-host configuration belong in `docs/integrations/`.
-- All skill files are ASCII only.
-- Relative links from a `SKILL.md` must resolve inside its own skill directory; load supporting material as references rather than inlining it.
+- Each `SKILL.md` stays under 120 lines and 12000 bytes; all installed skill
+  content stays under 24000 bytes. These are ceilings, not size targets.
+- Frontmatter contains exactly `name` and `description`; `name` matches the
+  skill directory.
+- Skills contain no host-specific paths, configuration keys, or runtime code.
+  Those belong in `docs/integrations/`.
+- All tracked Markdown is ASCII only.
+- Relative links from a `SKILL.md` resolve inside its own skill directory.
+- Do not add runtime references or templates unless a measured failure cannot be
+  solved inside the role-local skill at lower total context cost.
 
 ## Naming
 
-The project is pre-release and the role agent names are configuration interfaces. Do not add compatibility aliases before the rename or release.
+The project is pre-release and role agent names are configuration interfaces. Do
+not add compatibility aliases before a release requires them.

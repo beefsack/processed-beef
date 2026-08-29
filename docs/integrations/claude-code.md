@@ -109,25 +109,17 @@ through the existing `tools`/`Agent(...)` mechanism:
 
 ## Context-Limit Reality
 
-Claude Code provides no per-subagent hard context ceiling. The `150000` limit
-is skill-enforced: nearing its return threshold, or when the next unit may
-exceed the remaining budget, a role reports `handover` and stops - through chat
-when a live parent exists, otherwise as `handover.md`.
-
-Set the per-agent context budget to `150000` where this host supports one; it
-is a configuration value, not a limit any role can observe about itself. The
-return thresholds that actually govern behavior, and the handover rules that
-follow from them, are stated once in
-`skills/processed-beef-orchestrate/references/scheduling.md` under Context
-Limits. Do not restate them here: this guide covers only what is specific to
-this host.
+Claude Code provides no per-subagent hard context ceiling. The skills control
+context structurally with a long-lived strategic Orchestrator, coherent Lead
+changes, bounded Worker units, and handover when the next coherent objective
+will not fit. Configure a host limit as an additional safeguard when available.
 
 ## Zero-Config Fallback
 
 With no agent files, the process still runs from the main session as
 Orchestrator with the inherited model. Role behavior and serial dispatch come
 from the skills. Per-role model routing is unavailable until the three agent
-files exist; the entry skill reports that mismatch.
+files exist; the process reports the cost limitation when it is material.
 
 ## Known v1 Limitations
 

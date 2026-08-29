@@ -1,5 +1,7 @@
 # Specification: Context and Safety Hardening
 
+> Historical record. Paths and controls describe the repository at the time.
+
 Ownership and approval:
 - Owner: User
 - Status: Approved 2026-08-08 by user and Orchestrator

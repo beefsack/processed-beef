@@ -1,9 +1,10 @@
 # Behavioral Record
 
-Pressure record for the processed-beef skill set. Each scenario was observed
-with the skill guidance absent (RED) and present (GREEN) to confirm the skills
-change behavior under pressure. This is an observation record, not a guarantee
-of behavior.
+Historical pressure record for the processed-beef skill set. It preserves the
+incidents behind current and superseded rules; it is not a normative runtime
+specification or a guarantee. RED is an observed failure. GREEN is an observed
+or explicitly pending result under the guidance named at that time. Durable
+causality and supersession are indexed in `docs/learnings.md`.
 
 ## Scenario 1 - Entry (processed-beef)
 
@@ -232,3 +233,10 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 |---|---|
 | RED | Observed 2026-08-28 in a plasma-auto-tiler tray session: a valid Lead/Orchestrator role packet was rejected because `agent_selector` and host persona used the same label, even though the two process-role fields matched and nested Worker capability was demonstrated. |
 | GREEN | `process_role` and `parent_process_role` are the only blocking role fields. Selector, model, and persona observations are reported for host reconciliation but do not invalidate a dispatch when process roles and required capabilities match. |
+
+## Scenario 33 - Cumulative Process Weight Exceeds Its Work
+
+| Run | Observed behavior |
+|---|---|
+| RED | Measured 2026-08-29 at `bcc1553`: a normal Standard parent/Lead path could load 1,047 lines and 60,569 bytes of skill and references before project context, while each Worker loaded another 160 lines and 10,554 bytes. Nine templates added 16,880 bytes, ordinary work required three change artifacts, and approval, packet, status, and retry ledgers could turn mechanical repair into the dominant work. |
+| GREEN | The 2026-08-29 runtime contains three role-local `SKILL.md` files with no runtime references or templates. `tests/validate.sh` enforces per-skill and aggregate payload ceilings; the user request authorizes ordinary work; one change note, independent review, and escalation are conditional on demonstrated value or risk. Behavioral effectiveness remains subject to future observation. |

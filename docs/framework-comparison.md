@@ -302,16 +302,14 @@ plan.
 
 - concise project principles;
 - concise active decisions;
-- user-approved change specification;
-- agent-owned implementation and evidence plan;
+- clear user intent and material decision boundaries;
 - acceptance criteria linked to current evidence;
-- a deliberate handover when context transfers.
 
 ### Conditionally High Value
 
 - one-line backlog for multiple changes;
-- append-only checkpoints when quota loss is common;
-- state for successive Leads;
+- one concise change note when recovery or multiple units justify it;
+- a deliberate handover when context or ownership transfers;
 - cited research for consequential decisions;
 - migration, rollback, security, or public-contract evidence;
 - independent review findings for high-risk or suspicious work.
@@ -353,10 +351,8 @@ frameworks above, as reviewed; none of them are dependencies of this repository.
 | Adopted design element | Primary precedents |
 |---|---|
 | User-owned principles and decisions | Spec Kit constitution, OpenSpec project context |
-| Change and archive directories | OpenSpec |
-| Specification plus plan | Superpowers, Spec Kit, Kiro |
-| Conditional state and handoff | GSD Core, GSD Pi, OMC |
-| Append-only concise recovery log | BMAD memlog invariants, GSD journals |
+| Conditional single change note | OpenSpec, Matt Pocock skills |
+| Concise handoff when ownership transfers | GSD Core, GSD Pi, OMC |
 | Adaptive process depth | BMAD quick/full routing, GSD quick mode, OpenSpec optional design |
 | Fresh, narrow Worker context | Superpowers, GSD Core, GSD Pi |
 | Bounded skeptical review | OMC, Superpowers, gstack |
@@ -364,7 +360,7 @@ frameworks above, as reviewed; none of them are dependencies of this repository.
 | Criterion-to-evidence traceability | Kiro, Spec Kit, GSD verification |
 | Small tool-neutral skills | Blueprint OS, Superpowers skill format |
 | Exactly serial subagents | Existing local Orchestrate process; deliberately differs from GSD, OMC, and gstack |
-| Hard 150k handover ceiling | Existing local Orchestrate process, strengthened by GSD context budgeting |
+| Bounded role context and deliberate handover | GSD Core, GSD Pi |
 
-The table above is this repository's design traceability record. The bundled
-`assets/decisions.md` is a blank template for user-owned project decisions.
+The table above is this repository's retained framework traceability. Current
+incident-derived design rationale lives in `learnings.md`.

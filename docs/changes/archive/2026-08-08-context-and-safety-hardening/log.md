@@ -1,5 +1,7 @@
 # Log: Context and Safety Hardening
 
+> Historical record. Paths and controls describe the repository at the time.
+
 Append-only. Append after a meaningful checkpoint: an accepted semantic unit,
 verified partial result, blocker, pending user decision, unsuccessful host
 attempt, context handover, semantic or governance change, independent review

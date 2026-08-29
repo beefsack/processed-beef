@@ -133,16 +133,9 @@ a cheaper Worker than Lead. The Task tool accepts no model parameter, so
 per-invocation model switching is not available; role models come only from
 agent definitions.
 
-OpenCode's configured agent name is a host-owned `agent_selector`, not a child
-role assertion. The parent records the selector and optional model preference;
-the child reports only `process_role` and `parent_process_role`. The host persona
-or UI name is distinct from both and cannot establish selector or model
-application. Before the first implementation dispatch, the parent preflights
-the effective role, depth, task capability, and required child skill. Any
-failure is `dispatch-invalid`, not a semantic attempt. For implementation
-briefs, the parent compares the gate being run, its literal canonical command,
-and semantic baseline with the plan evidence map before dispatch. Record-only
-drift and baseline-preserving invocation corrections are reconciled locally.
+OpenCode's configured agent name and UI persona do not prove which model was
+applied. Skills rely only on capabilities they can observe and report a material
+routing or nesting limitation without turning host labels into workflow state.
 
 ## Tool Availability
 
@@ -170,28 +163,21 @@ and cannot dispatch anything.
 ## Context-Limit Reality
 
 OpenCode compacts or otherwise manages session context automatically and does
-not expose a per-agent hard ceiling the process relies on. The `150000` limit
-is skill-enforced: nearing its return threshold, or when the next unit may
-exceed the remaining budget, a role reports `handover` and stops - through chat
-when a live parent exists, otherwise as `handover.md`.
-
-Set the per-agent context budget to `150000` where this host supports one; it
-is a configuration value, not a limit any role can observe about itself. The
-return thresholds that actually govern behavior, and the handover rules that
-follow from them, are stated once in
-`skills/processed-beef-orchestrate/references/scheduling.md` under Context
-Limits. Do not restate them here: this guide covers only what is specific to
-this host.
+not expose a hard per-agent ceiling the process can rely on. The skills control
+context structurally with a long-lived strategic Orchestrator, coherent Lead
+changes, bounded Worker units, and handover when the next coherent objective
+will not fit. Configure a host limit as an additional safeguard when available.
 
 ## Zero-Config Fallback
 
 With no project agent files, zero config works only when the host already
 provides generic depth-two subagents. The default `subagent_depth` is `1`, so
 unless it is raised to `2` and the Orchestrator and Lead hold task permission,
-the primary session cannot dispatch a Lead that dispatches a Worker; the entry
-skill stops and reports that depth two is unavailable. When it does run, role
-behavior and serial dispatch come from the skills. Per-role model routing is
-unavailable until the agent files exist; the entry skill reports that mismatch.
+the primary session cannot dispatch a Lead that dispatches a Worker. The process
+reports the limitation and uses only a safe shallower topology. Role behavior
+comes from the skills. Per-role model routing is
+unavailable until the agent files exist; the process reports the cost limitation
+when it is material.
 
 ## Known v1 Limitations
 
@@ -203,9 +189,8 @@ unavailable until the agent files exist; the entry skill reports that mismatch.
 - Without `subagent_depth: 2` and task permission for the Orchestrator and
   Lead, they cannot dispatch subagents, so both are mandatory for full
   operation.
-- The plugin only registers skills. It does not prove that a required child
-  skill is available to a dispatched agent; the parent must preflight that
-  capability before the first implementation dispatch.
+- The plugin only registers skills. It does not create role agents or prove
+  child capabilities.
 - The `permission.task` configuration above is not tested in this repository.
   The syntax is current per OpenCode documentation as of 2026-07, but
   task-permission behavior has changed across releases (for example, explicit
@@ -214,5 +199,4 @@ unavailable until the agent files exist; the entry skill reports that mismatch.
 - Plugin and skill configuration is process policy only: the plugin registers
   skills but does not activate the workflow, create role agents, or set
   `subagent_depth` and permissions. The actual selected role, model, and limit
-  may mismatch the configured role; the entry skill reports the mismatch rather
-  than silently applying it.
+  may mismatch the intended role or model; the process cannot silently apply it.

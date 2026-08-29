@@ -1,7 +1,7 @@
 {
   "name": "processed-beef",
   "version": "0.1.0",
-  "description": "Structured orchestration workflow skills for coding agents",
+  "description": "Lean delegation skills for cost-efficient software delivery",
   "type": "module",
   "main": ".opencode/plugins/processed-beef.js",
   "license": "MIT"

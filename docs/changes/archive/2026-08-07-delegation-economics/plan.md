@@ -1,5 +1,7 @@
 # Plan: Delegation Economics
 
+> Historical record. Paths and controls describe the repository at the time.
+
 Ownership and approval:
 - Owner: Lead
 - Status: Result accepted 2026-08-07 by Lead under user and Orchestrator approval
