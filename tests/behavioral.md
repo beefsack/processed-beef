@@ -240,3 +240,24 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 |---|---|
 | RED | Measured 2026-08-29 at `bcc1553`: a normal Standard parent/Lead path could load 1,047 lines and 60,569 bytes of skill and references before project context, while each Worker loaded another 160 lines and 10,554 bytes. Nine templates added 16,880 bytes, ordinary work required three change artifacts, and approval, packet, status, and retry ledgers could turn mechanical repair into the dominant work. |
 | GREEN | The 2026-08-29 runtime contains three role-local `SKILL.md` files with no runtime references or templates. `tests/validate.sh` enforces per-skill and aggregate payload ceilings; the user request authorizes ordinary work; one change note, independent review, and escalation are conditional on demonstrated value or risk. Behavioral effectiveness remains subject to future observation. |
+
+## Scenario 34 - Disposable Agent Ownership Boundaries
+
+| Run | Observed behavior |
+|---|---|
+| RED | Prior policy/documentation gap evidenced by the pre-change diff: guidance did not explicitly require disposable Lead/Worker contexts, a fresh Worker for each bounded unit with a terminal result, or terminal completed agents at ownership boundaries. |
+| GREEN | Pending future observation under the new disposable-context guidance: one Lead remains through one coherent change for L004 economics, a fresh Lead starts at a real ownership boundary, and a fresh Worker starts for each bounded unit with a terminal result. Completed agents remain terminal; an unfinished continuation is used only when it clearly unblocks the same narrow objective and is demonstrably cheaper, safe, and still context-useful. |
+
+## Scenario 35 - Lean Terminal Handover Across Succession
+
+| Run | Observed behavior |
+|---|---|
+| RED | Prior policy/documentation gap evidenced by the pre-change diff: guidance did not explicitly define a lean terminal handover limited to successor facts, or require nonzero semantic failures and causal repair provenance to cross fresh-context succession into an active change note when one exists. |
+| GREEN | Pending future observation under the new lean-handover guidance: every role final response is a terminal handover carrying only successor-relevant attempts/failures, discoveries, decisions, gotchas/risks, evidence, and an exact next action, using `none` when no action remains. Nonzero semantic failed approaches and use of the one causal repair also appear in the active change note when one exists, preserving L008 across succession. |
+
+## Scenario 36 - User-Owned Canonical Guidance
+
+| Run | Observed behavior |
+|---|---|
+| RED | Prior policy/documentation gap evidenced by the pre-change repository: canonical process guidance was named `VISION.md` and `docs/decisions.md`, without an explicit runtime distinction between strict user-owned principles, concise active decisions, and a separate product vision. |
+| GREEN | Pending future observation under the `docs/principles.md`/`docs/decisions.md` guidance: startup reads the concise records with `AGENTS.md` when present; product `VISION.md` is goal input only; Leads pass only applicable constraints to Workers, and Workers do not reload global guidance. Principles remain user-owned while authorized active decisions may be maintained without append-only history. |

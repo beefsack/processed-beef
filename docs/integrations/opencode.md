@@ -163,10 +163,7 @@ and cannot dispatch anything.
 ## Context-Limit Reality
 
 OpenCode compacts or otherwise manages session context automatically and does
-not expose a hard per-agent ceiling the process can rely on. The skills control
-context structurally with a long-lived strategic Orchestrator, coherent Lead
-changes, bounded Worker units, and handover when the next coherent objective
-will not fit. Configure a host limit as an additional safeguard when available.
+not expose a hard per-agent ceiling the process can rely on.
 
 ## Zero-Config Fallback
 

@@ -140,8 +140,12 @@ done
 [ "$total_skill_bytes" -le 24000 ] || \
     error "installed skill payload is $total_skill_bytes bytes; limit is 24000"
 
-for required in AGENTS.md VISION.md docs/decisions.md docs/learnings.md; do
+for required in AGENTS.md docs/principles.md docs/backlog.md docs/decisions.md docs/learnings.md; do
     [ -f "$repo_root/$required" ] || error "missing $required"
+done
+
+for obsolete in PRINCIPLES.md BACKLOG.md DECISIONS.md principles.md backlog.md decisions.md; do
+    [ ! -e "$repo_root/$obsolete" ] || error "obsolete canonical record $obsolete"
 done
 
 markdown_files=$(git -C "$repo_root" ls-files --cached --others --exclude-standard '*.md')

@@ -83,11 +83,7 @@ process policy only and must be verified from the installed host.
 
 ## Context-Limit Reality
 
-Antigravity does not provide a per-agent hard context ceiling in v1. The skills
-control context structurally with a long-lived strategic Orchestrator, coherent
-Lead changes, bounded Worker units, and handover when the next coherent
-objective will not fit. Configure a host limit as an additional safeguard when
-available.
+Antigravity does not provide a per-agent hard context ceiling in v1.
 
 ## Zero-Config Fallback
 

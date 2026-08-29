@@ -252,3 +252,67 @@ hypothesis as a fact.
 - **Status:** Implemented 2026-08-29. Acceptance evidence and final maintainer
   review are complete in
   `docs/changes/archive/2026-08-29-project-maintainer-and-change-notes.md`.
+
+## L015 - Make Agent Succession Disposable And Handovers Lean
+
+- **Evidence:** `docs/changes/archive/2026-08-29-agent-lifecycle-and-handover.md`;
+  `tests/behavioral.md` Scenarios 34-35.
+- **Observed problem:** The role skills still required report status schemas and
+  routine changed-path/outcome recaps around L002's terminal-completion boundary
+  and L004's one-Lead ownership. The handover contract did not explicitly require
+  L008's nonzero semantic failure and causal repair provenance to cross
+  succession.
+- **Contributing mechanism:** Context identity and report format were doing work
+  that repository state and an active change note, when one exists, can
+  reconstruct, but nonzero failed approaches and causal repair use cannot be
+  safely reconstructed.
+- **Change and rationale:** Keep one Lead per coherent change, start fresh at
+  ownership boundaries and start a fresh Worker for each bounded unit with a
+  terminal result, never resume completed agents, and permit unfinished
+  continuation only for the same narrow objective
+  when it is clearly cheaper, safe, and context-useful. Require every role's
+  final response to be a lean terminal handover containing only
+  successor-relevant attempts or failures, discoveries, decisions, gotchas or
+  risks, evidence, and an exact next action; use `none` when no action remains.
+  Carry L008 history into the handover and, when present, the active change note.
+  This preserves L002, L004, and L008 with less process overhead.
+- **Status:** Implemented 2026-08-29. Behavioral effectiveness remains subject
+  to future observation.
+
+## L016 - Separate User-Owned Principles From Active Decisions
+
+- **Evidence:** `tests/behavioral.md` Scenario 36;
+  `docs/changes/archive/2026-08-29-canonical-guidance-names.md`.
+- **Observed problem:** The process used `VISION.md` and `docs/decisions.md` as
+  canonical names without clearly separating strict user-owned design
+  boundaries, concise active decisions, and a separate product vision input.
+- **Contributing mechanism:** Governance, active decisions, and product goals
+  shared names and startup guidance, leaving ownership and historical-record
+  boundaries implicit.
+- **Change and rationale:** Establish `docs/principles.md` and
+  `docs/decisions.md` as the canonical records; make principles user-owned and immutable
+  by agents without explicit approval; keep decisions active and concise while
+  Git/history preserves prior decisions; and pass only applicable constraints
+  from Lead to Worker without global-guidance reloads. This clarifies runtime
+  behavior without adding process ceremony to small work.
+- **Status:** Implemented 2026-08-29. Behavioral effectiveness remains subject
+  to future observation.
+
+## L017 - Restore Lifecycle Value Without Ceremony
+
+- **Evidence:**
+  `docs/changes/archive/2026-08-29-lean-project-lifecycle.md`.
+- **Observed problem:** Removing mandatory process artifacts also removed an
+  explicit ordered backlog, compact meaningful-change specification and plan,
+  and completion archival.
+- **Contributing mechanism:** The lean policy named conditional change notes but
+  did not assign backlog ownership, define their compact contents, or connect
+  accepted completion to archival.
+- **Change and rationale:** Give the Orchestrator a concise prioritized backlog
+  and the Lead one combined specification/plan note for meaningful work. Keep
+  updates meaningful-only and archive concise outcome/evidence at completion;
+  omit approval gates, logs, recovery state, routine progress, ledgers, ticks,
+  and completion transactions. This restores alignment and continuity at lower
+  overhead than the retired machinery.
+- **Status:** Implemented 2026-08-29. Behavioral effectiveness remains subject
+  to future observation.

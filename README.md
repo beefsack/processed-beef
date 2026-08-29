@@ -2,11 +2,17 @@
 
 Processed Beef is a portable, skill-only delegation process for high-quality
 software delivery with low parent context and progressively cheaper subagents.
-Its governing target is [VISION.md](VISION.md). Maintainer process records live
-outside installed skills: [AGENTS.md](AGENTS.md) is the maintainer authority,
-[docs/decisions.md](docs/decisions.md) holds active durable decisions,
-[docs/changes/](docs/changes/) holds active substantial-change state, and
-[docs/learnings.md](docs/learnings.md) preserves separate historical evidence.
+Its strict project-wide design boundaries are [docs/principles.md](docs/principles.md),
+owned by the user and constraining plans, designs, decisions, and work.
+Maintainer process records live outside installed skills: [AGENTS.md](AGENTS.md)
+is the maintainer authority. The canonical records are [docs/principles.md](docs/principles.md)
+for strict, user-owned project-wide design boundaries, [docs/backlog.md](docs/backlog.md) is the Orchestrator-owned
+concise prioritized list with one linked priority/dependency line per pending or
+active meaningful change, and [docs/decisions.md](docs/decisions.md) holds concise active
+decisions. Supporting records include [docs/changes/](docs/changes/) for active
+meaningful-change notes and [docs/learnings.md](docs/learnings.md) for separate
+historical evidence. A separate product `VISION.md`, when present, is goal input only, not
+Processed Beef governance.
 
 ## Roles
 
@@ -23,20 +29,24 @@ implementation, and verification proceed without artificial approval gates.
 
 1. The Orchestrator turns the user's goal into an outcome, constraints, material
    decision boundaries, and evidence expectations.
-2. One Lead owns a coherent change. It delegates implementation, investigation,
-   repetitive work, and output-heavy commands before loading expensive corpora.
-3. Workers execute bounded units. The Lead accepts work only after inspecting
-   the real diff, repository state, and current evidence.
+2. One Lead owns a coherent change, with a fresh Lead at each real ownership
+   boundary. It delegates implementation, investigation, repetitive work, and
+   output-heavy commands before loading expensive corpora.
+3. A fresh Worker executes each bounded unit with a terminal result and never
+   maintains project records. The Lead accepts work only after inspecting the
+   real diff, repository state, and current evidence.
 4. Independent review is added only for risk, subtle breadth, suspicious output,
    or repeated semantic failure.
-5. The Lead returns decisions, evidence, risks, and outcome. The Orchestrator
-   checks user alignment without repeating implementation review or tests.
+5. The Lead returns a lean terminal handover. The Orchestrator checks user
+   alignment without repeating implementation review or tests.
 
-Small work needs no change note. A Lead uses one concise `docs/changes/` file
-for substantial, long-running, risky, interrupted, or multi-unit work. It
-covers the goal, material decisions, current plan, and accepted evidence; no
-separate spec, plan, or log is required. Git and current verification remain
-the primary truth.
+Trivial requests use the request directly. Each meaningful change has one
+Lead-owned `docs/changes/<slug>.md` combining compact specification and current
+plan, plus an Orchestrator-prioritized backlog line. Update the note only for
+meaningful changes. At completion, verify acceptance, promote authorized durable
+decisions, retain concise outcome/evidence, archive the note, and advance or
+remove its backlog line. No approval gate, log, state or recovery file, routine
+progress record, retry ledger, tick, or completion transaction is required.
 
 ## Core Controls
 

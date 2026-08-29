@@ -16,16 +16,25 @@ simplification unsafe.
 ## Project Records
 
 Root [AGENTS.md](AGENTS.md) is the maintainer process-record authority. It is
-not installed skill runtime policy. The canonical records are [VISION.md](VISION.md)
-for purpose and principles, [docs/decisions.md](docs/decisions.md) for active
-durable decisions, [docs/changes/](docs/changes/) for active substantial-change
-state, and [docs/learnings.md](docs/learnings.md) for separate maintainer-only
-historical evidence. Installed-skill users are not required to maintain the
-learning record.
+not installed skill runtime policy. The canonical records are
+[docs/principles.md](docs/principles.md) for strict, user-owned project-wide design
+boundaries, [docs/backlog.md](docs/backlog.md) for the Orchestrator's concise prioritized
+list with one linked priority/dependency line per pending or active meaningful
+change, and [docs/decisions.md](docs/decisions.md) for concise active decisions.
+Supporting records are [docs/changes/](docs/changes/) for one Lead-owned active
+note per meaningful change and [docs/learnings.md](docs/learnings.md) for separate
+maintainer-only historical evidence. Workers never maintain project records.
+Installed-skill users are not required to maintain the learning record.
 
-Keep process proportionate: small work needs no change note; substantial,
-long-running, risky, interrupted, or multi-unit work uses one lightweight note.
-Do not create separate spec, plan, or log artifacts for this purpose.
+Keep process proportionate: trivial requests use the request directly and need
+no note. For a
+meaningful change, its one note combines goal, scope/non-goals, acceptance,
+approach, bounded units/dependencies, and verification. Update it only for
+meaningful intent, material decisions, plan, blockers, accepted evidence, or
+outcome changes. On completion, verify acceptance, promote authorized durable decisions,
+add concise outcome/evidence, archive the note, and advance or remove the
+backlog line. Do not create approval gates, logs, state or recovery files,
+routine progress records, retry ledgers, ticks, or completion transactions.
 
 ## Behavioral Evidence
 

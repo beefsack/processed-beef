@@ -2,12 +2,19 @@
 
 ## Unreleased
 
-- Vision and lean runtime: add a canonical vision and durable incident-to-change
-  learning record; reduce runtime policy to three role-local skills; remove nine
-  templates and four references; replace mandatory specification, plan, log,
-  approval, packet, status, and retry-ledger machinery with conditional change
-  notes, material-decision escalation, outcome-based loop stops, and local
-  mechanical recovery.
+- Agent lifecycle and handover: make Leads and Workers disposable at ownership
+  and bounded-unit boundaries, preserve L004 continuity, and replace routine
+  report and lifecycle machinery with lean terminal handovers that retain L008
+  semantic history.
+- Principles, decisions, and lean runtime: add canonical user-owned principles
+  and concise active decisions with a durable incident-to-change learning record;
+  restore the Orchestrator-owned prioritized backlog and one Lead-owned combined
+  specification/plan note per meaningful change, with Workers maintaining no
+  project records; reduce runtime policy to three
+  role-local skills; remove nine templates and four references; replace mandatory
+  specification, plan, log, approval, packet, status, and retry-ledger machinery
+  with meaningful-only note updates, completion archival, material-decision
+  escalation, outcome-based loop stops, and local mechanical recovery.
 - Initial iteration: portable, skill-only three-role agent process with entry, orchestrate, and work-unit skills, host integration guides, and validation gate.
 - Delegation economics: specifiability test for Lead delegation, corpus-ownership and forfeit rule, late-size-discovery reactive trigger, checkpoint/continue lifecycle status, and an Orchestrator raw-extraction prohibition.
 - Delegation economics follow-up: extend the Orchestrator's Context Discipline and raw-extraction prohibition to the Lead, add a Late Size Discovery rule for self-discovered size, extend the specifiability test to read-only and investigation units, require corpus-ownership briefs to carry forward established in-session facts, require read-only Worker reports to itemize every requested fact, and record that a Lead's byte typically costs more than a Worker's under mixed model tiers.

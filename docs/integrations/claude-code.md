@@ -109,10 +109,7 @@ through the existing `tools`/`Agent(...)` mechanism:
 
 ## Context-Limit Reality
 
-Claude Code provides no per-subagent hard context ceiling. The skills control
-context structurally with a long-lived strategic Orchestrator, coherent Lead
-changes, bounded Worker units, and handover when the next coherent objective
-will not fit. Configure a host limit as an additional safeguard when available.
+Claude Code provides no per-subagent hard context ceiling.
 
 ## Zero-Config Fallback
 
