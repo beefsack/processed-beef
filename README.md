@@ -28,17 +28,20 @@ implementation, and verification proceed without artificial approval gates.
 ## Flow
 
 1. The Orchestrator turns the user's goal into an outcome, constraints, material
-   decision boundaries, and evidence expectations.
-2. One Lead owns a coherent change, with a fresh Lead at each real ownership
-   boundary. It delegates implementation, investigation, repetitive work, and
-   output-heavy commands before loading expensive corpora.
-3. A fresh Worker executes each bounded unit with a terminal result and never
-   maintains project records. The Lead accepts work only after inspecting the
+   decision boundaries, and evidence expectations, passing useful knowledge to
+   the Lead rather than making it rediscover known facts.
+2. One Lead owns a coherent change. It delegates implementation, investigation,
+   repetitive work, and output-heavy commands before loading expensive corpora.
+3. Workers execute coherent bounded assignments using relevant context and facts
+   passed by the Lead. The Lead accepts work only after inspecting the
    real diff, repository state, and current evidence.
-4. Independent review is added only for risk, subtle breadth, suspicious output,
-   or repeated semantic failure.
-5. The Lead returns a lean terminal handover. The Orchestrator checks user
-   alignment without repeating implementation review or tests.
+4. Parents prefer reusing Leads and Workers with relevant context and capacity,
+   including after completion; fresh contexts address crowded, stale, or
+   unrelated context and independent review needs. Independent review is added
+   only for risk, subtle breadth, suspicious output, or repeated semantic failure.
+5. Subagents return results and lean handovers with reusable discoveries and
+   source locations for successor briefs. The Orchestrator checks user alignment
+   without repeating implementation review or tests.
 
 Trivial requests use the request directly. Each meaningful change has one
 Lead-owned `docs/changes/<slug>.md` combining compact specification and current

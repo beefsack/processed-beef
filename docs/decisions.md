@@ -27,14 +27,23 @@ record split. It is not a template or a ceremony.
   Agents may maintain it as authorized decisions become active, change, or are
   superseded; material decisions remain user-owned, and Git/history preserves
   prior decisions.
-- Leads and Workers are disposable contexts: retain one Lead through one
-  coherent change, use a fresh Lead at real ownership boundaries, and use a
-  fresh Worker for each bounded unit, with a terminal result. Completed agents
-  are never resumed; unfinished resumption is exceptional and limited to a
-  clearly unblocking, cheaper, safe continuation of the same narrow objective
-  while context remains useful. Final results are lean terminal handovers
-  containing only successor-relevant attempts or failures, discoveries,
-  decisions, gotchas or risks, evidence, and an exact next action; use `none`
-  when no action remains. Do not require routine changed-path/outcome recaps,
-  transcripts, repeated briefs, schemas, lifecycle/status machines, fixed
-  token/tool ceilings, counters, or ledgers.
+- Keep assignments coherent and verifiable without tying each to a new session.
+  Retain one Lead through a coherent change and prefer reusing a Lead or Worker
+  whose context directly supports the next assignment and has sufficient
+  capacity, whether its previous assignment is complete or unfinished. Start
+  fresh when context is crowded, stale, or unrelated, or independent review
+  requires separation. Orchestrators and Leads judge context fit and remaining
+  capacity from available information against the cost of rebuilding context;
+  no fixed thresholds, counters, or session-tracking records are required.
+- Orchestrator-to-Lead and Lead-to-Worker briefs pass relevant knowledge already
+  available to the parent: learned facts, decisions, source locations, and
+  useful evidence alongside the objective and constraints. For resumed agents,
+  focus on the next objective and intervening changes. Avoid policy dumps and
+  transcripts, not useful starting context; do not make children rediscover
+  what the parent already knows.
+- Final results are lean handovers, not permanent agent retirement. Include only
+  continuation- or successor-relevant attempts or failures, discoveries with
+  source locations, decisions, gotchas or risks, evidence, and an exact next
+  action; use `none` when no action remains. Do not require routine
+  changed-path/outcome recaps, transcripts, repeated briefs, schemas,
+  lifecycle/status machines, fixed token/tool ceilings, counters, or ledgers.

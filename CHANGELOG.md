@@ -2,10 +2,10 @@
 
 ## Unreleased
 
-- Agent lifecycle and handover: make Leads and Workers disposable at ownership
-  and bounded-unit boundaries, preserve L004 continuity, and replace routine
-  report and lifecycle machinery with lean terminal handovers that retain L008
-  semantic history.
+- Agent lifecycle and handover: prefer reusing relevant Lead and Worker context
+  with sufficient capacity, including after completed assignments; pass useful
+  parent knowledge in briefs, keep related work together, and retain lean
+  handovers and semantic failure history without mandatory session replacement.
 - Principles, decisions, and lean runtime: add canonical user-owned principles
   and concise active decisions with a durable incident-to-change learning record;
   restore the Orchestrator-owned prioritized backlog and one Lead-owned combined

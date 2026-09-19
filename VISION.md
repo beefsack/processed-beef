@@ -8,7 +8,7 @@ context-efficient delegation hierarchy that stays out of the work's way.
 - A frontier-model Orchestrator can remain useful for a full working day while
   keeping its context small. It shares product-owner and head-of-engineering
   work with the user; the user has final authority over material decisions.
-- Leads and Workers receive bounded sessions sized to complete coherent work
+- Leads and Workers receive bounded assignments sized to complete coherent work
   without carrying unrelated history. The Orchestrator delegates to a cheaper
   Lead, which delegates execution to the cheapest capable Worker when the host
   supports model routing.

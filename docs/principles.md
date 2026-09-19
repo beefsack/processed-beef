@@ -13,17 +13,17 @@ explicit approval.
 - A frontier-model Orchestrator can remain useful for a full working day while
   keeping its context small. It shares product-owner and head-of-engineering
   work with the user; the user has final authority over material decisions.
-- Leads and Workers receive bounded sessions sized to complete coherent work
+- Leads and Workers receive bounded assignments sized to complete coherent work
   without carrying unrelated history. The Orchestrator delegates to a cheaper
   Lead, which delegates execution to the cheapest capable Worker when the host
   supports model routing.
-- Leads and Workers are short-lived disposable contexts. Retain one Lead through
-  one coherent change for L004 economics, use a fresh Lead at real ownership
-  boundaries, and use a fresh Worker for each bounded unit, with a terminal
-  result. Never resume a completed agent. Resume an unfinished subagent only
-  exceptionally, when an immediate answer clearly unblocks the same narrow
-  objective and continuation is demonstrably cheaper and safe while its context
-  remains useful; otherwise spawn fresh.
+- Retain coherent change ownership and reuse useful context. Prefer resuming a
+  Lead or Worker when its existing context directly supports the next bounded
+  assignment and has sufficient capacity, including after a completed assignment.
+  Start fresh when context is crowded, stale, or unrelated, or when independent
+  review requires separation. The parent judges context fit and remaining
+  capacity from available information, weighing reuse against rebuilding cost;
+  assignment completion alone does not require a new agent.
 - Process overhead remains smaller than the work it supports. Documentation,
   review, handovers, and escalation are added only when their expected value
   exceeds their cost.
@@ -55,9 +55,10 @@ explicit approval.
    enough for trivial work. Do not require approval gates, logs, state or
    recovery files, routine progress records, retry ledgers, ticks, or elaborate
    completion transactions.
-9. Every role final response is a lean terminal handover containing only
-   successor-relevant attempts or failures, discoveries, decisions, gotchas or
-   risks, evidence, and an exact next action. Use `none` when no action remains.
+9. Every role final response is a lean handover containing only
+   continuation- or successor-relevant attempts or failures, discoveries,
+   decisions, gotchas or risks, evidence, and an exact next action. Use `none`
+   when no action remains. Completing an assignment does not retire the agent.
    Do not require routine changed-path/outcome recaps, transcripts, repeated
    briefs, schemas, lifecycle/status machines, fixed token/tool ceilings,
    counters, or ledgers. Nonzero semantic failed approaches and use of the one

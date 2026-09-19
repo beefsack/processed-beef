@@ -316,3 +316,29 @@ hypothesis as a fact.
   overhead than the retired machinery.
 - **Status:** Implemented 2026-08-29. Behavioral effectiveness remains subject
   to future observation.
+
+## L018 - Reuse Relevant Context Instead Of Rebuilding It
+
+- **Evidence:** User report and explicit principle-change approval in the
+  2026-09-19 maintainer session.
+- **Observed problem:** The user reports serial Workers in a large project
+  repeatedly spending over 100k tokens exploring before starting work, while
+  useful context already exists in other agents. Parent briefs also omit
+  information that would reduce rediscovery.
+- **Contributing mechanism:** Mandatory fresh Workers and the ban on completed
+  agent resumption discard relevant context at assignment boundaries. Briefing
+  guidance discourages copying "known context" while also asking parents to
+  pass learned facts, creating conflicting signals.
+- **Change and rationale:** Replace mandatory freshness in principles and active
+  decisions with parent judgment about context relevance, remaining capacity,
+  independence, and rebuilding cost. Separate assignment completion from agent
+  retirement and explicitly pass useful parent knowledge in briefs. Align the
+  role skills by replacing lifecycle and briefing clauses, keeping related work
+  together, and returning reusable discoveries with source locations so parents
+  can brief replacements. This replaces restrictions and redundant prose without
+  adding quotas, tracking, or process machinery.
+- **Status:** Canonical policy and runtime skills aligned with user approval on
+  2026-09-19, superseding L002/L015's mandatory fresh-context and terminal-agent
+  rules. Structural validation passes; runtime payload decreases from 13,722 to
+  13,526 bytes. Behavioral effectiveness is not yet measured. See
+  `docs/changes/archive/2026-09-19-context-aware-delegation-runtime.md`.

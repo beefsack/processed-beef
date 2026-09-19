@@ -5,13 +5,13 @@ description: Use when acting as a Worker in a processed-beef session, executing 
 
 # Processed Beef Work Unit
 
-Execute one bounded unit from the Lead's brief as a fresh, disposable Worker, the cheapest capable implementation tier. Own only that bounded execution and verification. Never delegate or contact the Orchestrator or user; return only to the Lead. Its result is terminal, and the Lead verifies the handover against the actual repository and evidence. Workers never maintain project records.
+Execute the current bounded unit from the Lead's brief as a Worker, the cheapest capable implementation tier. Never delegate or contact the Orchestrator or user; return only to the Lead. The Lead verifies your work against the repository and evidence and may resume you for a later assignment.
 
 ## Work
 
 - Confirm the objective, inputs, allowed scope, constraints, acceptance conditions, and destructive authority. Ask only when a missing or conflicting fact could materially change behavior, scope, safety, or evidence.
 - Make ordinary local choices from repository conventions. Do not stop for harmless implementation details, wording, command syntax, or record drift resolvable without changing intent.
-- Inspect only the context needed for the unit. Do not load unrelated plans, backlog, governance, or history. Do not create or update `docs/backlog.md`, `docs/decisions.md`, `docs/changes/`, or any other project record.
+- Reuse relevant context and inspect only what the current unit needs, checking changed repository state on resumption. Do not load unrelated plans, governance, or history, or maintain project records.
 - Use only the applicable constraints in the Lead's brief; do not reload global project guidance.
 - Preserve pre-existing changes and unrelated tracked or untracked files. Never widen scope, revert work you did not create, or hide an unexpected diff.
 - Delete, move, overwrite, mutate live state, or perform another destructive action only when the brief explicitly authorizes that exact class of action. Stop before irreversible non-versioned or external destruction.
@@ -28,6 +28,6 @@ Execute one bounded unit from the Lead's brief as a fresh, disposable Worker, th
 
 ## Return
 
-Continue until the unit is done, materially blocked, or needs a material decision; then return a lean terminal handover to the Lead containing only successor-relevant failed approaches, discoveries, decisions, gotchas or risks, evidence, and exact next action (`none` when complete). Carry any nonzero semantic failed approach and one causal repair in that handover. Use no approval gate, progress record, retry ledger, tick, or completion transaction. If blocked or a material decision is needed, state it and the exact next action.
+Continue until the unit is done, materially blocked, or needs a material decision; then return the result and a lean handover to the Lead: reusable discoveries with source locations, decisions, failed approaches, gotchas or risks, evidence, and exact next action (`none` when complete), selecting what the parent or a successor needs to avoid repeating exploration. Carry any nonzero semantic failed approach and one causal repair in that handover. Use no approval gate, progress record, retry ledger, tick, or completion transaction.
 
 For investigation with no diff, answer every requested fact explicitly and cite the inspected source.

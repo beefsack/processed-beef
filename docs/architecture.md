@@ -36,13 +36,11 @@ behavior. Host configuration selects named agents, models, nesting depth, and
 tool permissions. A skill cannot portably prove which model or selector the host
 applied, so it reports material limitations without inventing enforcement.
 
-Leads and Workers are short-lived disposable contexts. One Lead is retained
-through one coherent change for L004 economics; a real ownership boundary starts
-a fresh Lead, and each bounded unit starts a fresh Worker with a terminal result.
-Completed agents are never resumed. An unfinished subagent is resumed only
-exceptionally when an immediate answer clearly unblocks the same narrow
-objective and continuation is demonstrably cheaper and safe while its context
-remains useful; otherwise a fresh agent is spawned.
+One Lead retains coherent change ownership. Parents prefer reusing a Lead or
+Worker when its context directly supports the next bounded assignment and has
+capacity, including after completion. Fresh contexts address crowded, stale, or
+unrelated context and independent review needs. Assignment boundaries do not
+require session replacement.
 
 ## Cost And Context
 
@@ -50,18 +48,22 @@ The hierarchy separates expensive judgment from implementation volume:
 
 - the frontier Orchestrator shares product and engineering leadership with the
   user while retaining only project-level priorities and decisions;
-- one Lead amortizes change-domain knowledge across fresh, cheap Workers and
+- one Lead amortizes change-domain knowledge across cheap Workers and
   independently inspects their work;
 - each Worker receives one coherent bounded unit;
 - large or unknown output is delegated before an expensive role loads it;
-- briefs and reports pass facts, decisions, and evidence, not raw transcripts.
+- both parent tiers brief with useful facts, decisions, source locations, and
+  evidence already known; resumptions focus on the next objective and intervening
+  changes, not repeated briefs or transcripts;
+- subagent results retain reusable discoveries with source locations so parents
+  can brief successors without repeating exploration.
 
 Hard token ceilings and fixed tool-call proxies are neither portable nor
 reliably observable. No fixed token/tool ceilings or rotation counters are
-required. A Lead hands over only at a real ownership boundary; host telemetry or
-the next coherent objective may reveal that boundary, but context pressure
-alone does not rotate Lead ownership. Useful returned work stays reviewable even
-if a host threshold was crossed; redispatching it repeats cost.
+required. Parents weigh context relevance and remaining capacity against
+rebuilding cost using available information, including host telemetry when
+exposed. Useful returned work stays reviewable even if a host threshold was
+crossed; redispatching it repeats cost.
 
 ## Authority And Action
 
@@ -114,7 +116,7 @@ completion, verify acceptance, promote durable decisions, add concise
 outcome/evidence, archive the note, and advance or remove the backlog line. No
 approval gate, log, state or recovery file, routine progress record, retry
 ledger, tick, or completion transaction is required. Git, repository status,
-current evidence, and the latest lean terminal handover are recovery truth.
+current evidence, and the latest lean handover are recovery truth.
 Nonzero semantic failed approaches and use of the one causal repair cross both
 the handover and active change note, when one exists, so succession cannot reset
 them. Workers never maintain project records.
