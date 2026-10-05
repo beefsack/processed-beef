@@ -342,3 +342,35 @@ hypothesis as a fact.
   rules. Structural validation passes; runtime payload decreases from 13,722 to
   13,526 bytes. Behavioral effectiveness is not yet measured. See
   `docs/changes/archive/2026-09-19-context-aware-delegation-runtime.md`.
+
+## L019 - Carry Knowledge Through Handovers Instead Of Excessive Reuse
+
+- **Evidence:** One observed incident in the `plasma-auto-tiler` session on
+  2026-10-05, reported by the user; `tests/behavioral.md` Scenario 37.
+  The Orchestrator resumed one `gpt-sol` Lead across a cross-platform audit
+  (research), B1-B5 KDE implementation plus decision research, and an
+  11-repository reference comparison plus a native C++/Rust FFI underlay feature
+  (B7). Host session records supplied by the user show the reused Lead consumed
+  380,662 uncached input tokens and 16,749,440 cache-read tokens across its three
+  assignments; the fresh `processed-beef` Lead used 62,699 uncached input tokens
+  and 365,568 cache-read tokens for its first assignment. These host-recorded
+  figures are not visible to the parent agent.
+- **Observed problem:** The user flagged excessive cost and likely context rot
+  from reusing the Lead across these separate substantial assignments. Context
+  rot remains unmeasured; cost growth is measured in the host records.
+- **Contributing mechanism:** Runtime wording preferred resuming even after
+  completion when context "has capacity" and judging "not assignment boundaries".
+  The host returns only the child's final message, not its context usage, so
+  capacity cannot be judged and in practice defaults to yes. Discarding assignment
+  boundaries removes a signal the parent can see.
+- **Change and rationale:** Prefer fresh agents briefed from handovers for new
+  items or units and assume substantial completed work leaves little room. Keep
+  resumption for unknowns, direction, corrections, and small follow-ups within
+  existing work. Handover discoveries with source locations address L018's
+  repeated 100k+ token exploration concern without retaining overloaded agents. Replace
+  reuse clauses with soft guidance, not counts, tracking, gates, or new steps.
+- **Status:** Applied with user approval for review on 2026-10-05; partially
+  supersedes L018's preference for resuming after completion while preserving
+  its handover and briefing improvements. Behavioral effectiveness is not yet
+  measured; GREEN is pending observation. See
+  `docs/changes/archive/2026-10-05-handover-based-agent-freshness.md`.

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Agent reuse follow-up: prefer fresh Leads and Workers briefed from handovers
+  for new items or units after substantial work; keep resumption for unknowns,
+  direction, corrections, and small follow-ups. Partially reverse the earlier
+  completed-agent reuse preference without adding counts, tracking, gates, or
+  process steps.
 - Agent lifecycle and handover: prefer reusing relevant Lead and Worker context
   with sufficient capacity, including after completed assignments; pass useful
   parent knowledge in briefs, keep related work together, and retain lean

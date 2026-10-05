@@ -35,10 +35,12 @@ implementation, and verification proceed without artificial approval gates.
 3. Workers execute coherent bounded assignments using relevant context and facts
    passed by the Lead. The Lead accepts work only after inspecting the
    real diff, repository state, and current evidence.
-4. Parents prefer reusing Leads and Workers with relevant context and capacity,
-   including after completion; fresh contexts address crowded, stale, or
-   unrelated context and independent review needs. Independent review is added
-   only for risk, subtle breadth, suspicious output, or repeated semantic failure.
+4. Parents resume agents for unknowns, direction, corrections, and small
+   follow-ups; prefer fresh agents briefed from handovers for new items or units,
+   crowded, stale, or unrelated context, or independent review. Substantial
+   completed work is assumed to leave little capacity. Independent review is
+   added only for risk, subtle breadth, suspicious output, or repeated semantic
+   failure.
 5. Subagents return results and lean handovers with reusable discoveries and
    source locations for successor briefs. The Orchestrator checks user alignment
    without repeating implementation review or tests.

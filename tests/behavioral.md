@@ -261,3 +261,10 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 |---|---|
 | RED | Prior policy/documentation gap evidenced by the pre-change repository: canonical process guidance was named `VISION.md` and `docs/decisions.md`, without an explicit runtime distinction between strict user-owned principles, concise active decisions, and a separate product vision. |
 | GREEN | Pending future observation under the `docs/principles.md`/`docs/decisions.md` guidance: startup reads the concise records with `AGENTS.md` when present; product `VISION.md` is goal input only; Leads pass only applicable constraints to Workers, and Workers do not reload global guidance. Principles remain user-owned while authorized active decisions may be maintained without append-only history. |
+
+## Scenario 37 - Fresh Items And Useful Continuation (processed-beef / processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | One observed incident, reported by the user in the 2026-10-05 `plasma-auto-tiler` session: the Orchestrator resumed one `gpt-sol` Lead across a cross-platform audit, B1-B5 KDE implementation plus decision research, and an 11-repository comparison plus the B7 native C++/Rust FFI underlay feature. The user flagged excessive cost and likely context rot; host records measure cost growth, while context rot remains unmeasured. See L019. |
+| GREEN | Pending observation under the handover-based freshness guidance: after substantial completed work, a new item gets a fresh Lead briefed from the latest handover, and a new unit gets a fresh Worker briefed with relevant handover discoveries and source locations. An unknown or correction on current work resumes the existing agent. These are preferences, not mandatory rotation or completion gates. |

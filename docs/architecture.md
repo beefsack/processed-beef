@@ -36,11 +36,10 @@ behavior. Host configuration selects named agents, models, nesting depth, and
 tool permissions. A skill cannot portably prove which model or selector the host
 applied, so it reports material limitations without inventing enforcement.
 
-One Lead retains coherent change ownership. Parents prefer reusing a Lead or
-Worker when its context directly supports the next bounded assignment and has
-capacity, including after completion. Fresh contexts address crowded, stale, or
-unrelated context and independent review needs. Assignment boundaries do not
-require session replacement.
+One Lead retains coherent change ownership. Parents resume agents for unknowns,
+direction, corrections, and small follow-ups within their work. Prefer fresh
+agents briefed from handovers for new items or units, crowded, stale, or unrelated
+context, or independent review. Handovers carry knowledge between items.
 
 ## Cost And Context
 
@@ -60,10 +59,10 @@ The hierarchy separates expensive judgment from implementation volume:
 
 Hard token ceilings and fixed tool-call proxies are neither portable nor
 reliably observable. No fixed token/tool ceilings or rotation counters are
-required. Parents weigh context relevance and remaining capacity against
-rebuilding cost using available information, including host telemetry when
-exposed. Useful returned work stays reviewable even if a host threshold was
-crossed; redispatching it repeats cost.
+required. Assume an agent that has finished substantial work has little capacity
+left; handover-based briefs reduce rebuilding cost without depending on hidden
+child context usage. Useful returned work stays reviewable even if a host
+threshold was crossed; redispatching it repeats cost.
 
 ## Authority And Action
 

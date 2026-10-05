@@ -17,13 +17,12 @@ explicit approval.
   without carrying unrelated history. The Orchestrator delegates to a cheaper
   Lead, which delegates execution to the cheapest capable Worker when the host
   supports model routing.
-- Retain coherent change ownership and reuse useful context. Prefer resuming a
-  Lead or Worker when its existing context directly supports the next bounded
-  assignment and has sufficient capacity, including after a completed assignment.
-  Start fresh when context is crowded, stale, or unrelated, or when independent
-  review requires separation. The parent judges context fit and remaining
-  capacity from available information, weighing reuse against rebuilding cost;
-  assignment completion alone does not require a new agent.
+- Retain coherent change ownership; resume agents for unknowns, direction,
+  corrections, and small follow-ups within their work. Prefer a fresh agent
+  briefed from the latest handover for a new item or unit, crowded, stale, or
+  unrelated context, or independent review. Assume an agent that has finished
+  substantial work has little capacity left. Handovers, not retained agents,
+  carry knowledge between items. No fixed counts.
 - Process overhead remains smaller than the work it supports. Documentation,
   review, handovers, and escalation are added only when their expected value
   exceeds their cost.
@@ -58,7 +57,7 @@ explicit approval.
 9. Every role final response is a lean handover containing only
    continuation- or successor-relevant attempts or failures, discoveries,
    decisions, gotchas or risks, evidence, and an exact next action. Use `none`
-   when no action remains. Completing an assignment does not retire the agent.
+   when no action remains. Completed agents remain available for small follow-ups.
    Do not require routine changed-path/outcome recaps, transcripts, repeated
    briefs, schemas, lifecycle/status machines, fixed token/tool ceilings,
    counters, or ledgers. Nonzero semantic failed approaches and use of the one

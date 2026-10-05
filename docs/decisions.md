@@ -27,22 +27,20 @@ record split. It is not a template or a ceremony.
   Agents may maintain it as authorized decisions become active, change, or are
   superseded; material decisions remain user-owned, and Git/history preserves
   prior decisions.
-- Keep assignments coherent and verifiable without tying each to a new session.
-  Retain one Lead through a coherent change and prefer reusing a Lead or Worker
-  whose context directly supports the next assignment and has sufficient
-  capacity, whether its previous assignment is complete or unfinished. Start
-  fresh when context is crowded, stale, or unrelated, or independent review
-  requires separation. Orchestrators and Leads judge context fit and remaining
-  capacity from available information against the cost of rebuilding context;
-  no fixed thresholds, counters, or session-tracking records are required.
+- Retain one Lead through a coherent change; resume agents for unknowns,
+  direction, corrections, and small follow-ups within their work. Prefer fresh
+  agents briefed from handovers for new items or units, independent review, or
+  crowded, stale, or unrelated context. Assume substantial completed work leaves
+  little capacity; handovers carry knowledge between items. No fixed counts.
 - Orchestrator-to-Lead and Lead-to-Worker briefs pass relevant knowledge already
   available to the parent: learned facts, decisions, source locations, and
   useful evidence alongside the objective and constraints. For resumed agents,
   focus on the next objective and intervening changes. Avoid policy dumps and
   transcripts, not useful starting context; do not make children rediscover
   what the parent already knows.
-- Final results are lean handovers, not permanent agent retirement. Include only
-  continuation- or successor-relevant attempts or failures, discoveries with
+- Final results are lean handovers; completed agents remain available for small
+  follow-ups. Include only continuation- or successor-relevant attempts or
+  failures, discoveries with
   source locations, decisions, gotchas or risks, evidence, and an exact next
   action; use `none` when no action remains. Do not require routine
   changed-path/outcome recaps, transcripts, repeated briefs, schemas,

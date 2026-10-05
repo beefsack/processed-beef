@@ -5,7 +5,7 @@ description: Use when acting as a Worker in a processed-beef session, executing 
 
 # Processed Beef Work Unit
 
-Execute the current bounded unit from the Lead's brief as a Worker, the cheapest capable implementation tier. Never delegate or contact the Orchestrator or user; return only to the Lead. The Lead verifies your work against the repository and evidence and may resume you for a later assignment.
+Execute the current bounded unit from the Lead's brief as a Worker, the cheapest capable implementation tier. Never delegate or contact the Orchestrator or user; return only to the Lead. The Lead verifies your work against the repository and evidence and may resume you for follow-ups.
 
 ## Work
 
