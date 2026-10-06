@@ -1,8 +1,6 @@
 {
   "name": "processed-beef",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Lean delegation skills for cost-efficient software delivery",
-  "type": "module",
-  "main": ".opencode/plugins/processed-beef.js",
   "license": "MIT"
 }

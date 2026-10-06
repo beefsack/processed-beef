@@ -5,6 +5,11 @@ record split. It is not a template or a ceremony.
 
 - Installed skills contain current role-local runtime policy only. Project
   records, templates, and historical payloads are not installed skill runtime.
+- Skills are distributed from the Agent Skills `skills/` layout via `npx skills`,
+  `gh skill`, or copying, and to OpenCode via `skills.urls` pointing at
+  `skills/index.json` on `main`. There is no OpenCode plugin: cached plugin
+  specs never refresh. Index versions are content-derived and gated by
+  `tests/validate.sh`.
 - `docs/principles.md` contains strict project-wide design boundaries owned by
   the user; `docs/decisions.md` is the active decision register; `docs/changes/` is
   active change state;

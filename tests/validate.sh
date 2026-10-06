@@ -1,5 +1,6 @@
 #!/bin/sh
 # Structural release gate for the processed-beef Agent Skills repository.
+# Usage: sh tests/validate.sh [--write-index]
 set -u
 
 repo_root=$(CDPATH= cd "$(dirname "$0")/.." && pwd)
@@ -101,6 +102,37 @@ check_portability() {
     done
 }
 
+skill_payload() {
+    git -C "$repo_root" ls-files --cached --others --exclude-standard "$1" | LC_ALL=C sort
+}
+
+# Content-derived version: OpenCode skills.urls clients re-download a skill only
+# when its index version changes. Git blob hashes normalize line endings.
+skill_version() {
+    skill_payload "$1" | while IFS= read -r relative_file; do
+        [ -f "$repo_root/$relative_file" ] || continue
+        printf '%s %s\n' "$(git -C "$repo_root" hash-object -- "$relative_file")" \
+            "${relative_file#"$1"/}"
+    done | git -C "$repo_root" hash-object --stdin | cut -c1-12
+}
+
+skill_index() {
+    printf '{\n  "skills": [\n'
+    separator=
+    for skill_directory in $(printf '%s\n' "$skill_files" | xargs -n1 dirname | LC_ALL=C sort); do
+        files=
+        for relative_file in $(skill_payload "$skill_directory"); do
+            [ -f "$repo_root/$relative_file" ] || continue
+            files="$files${files:+, }\"${relative_file#"$skill_directory"/}\""
+        done
+        printf '%s    {\n      "name": "%s",\n      "version": "%s",\n      "files": [%s]\n    }' \
+            "$separator" "$(basename "$skill_directory")" "$(skill_version "$skill_directory")" "$files"
+        separator=',
+'
+    done
+    printf '\n  ]\n}\n'
+}
+
 skill_files=$(git -C "$repo_root" ls-files 'skills/*/SKILL.md')
 if [ -z "$skill_files" ]; then
     printf 'no skills found\n' >&2
@@ -154,8 +186,14 @@ for relative_file in $markdown_files; do
         check_ascii "$repo_root/$relative_file" "$relative_file"
 done
 
-if ! node --no-warnings "$repo_root/tests/opencode-plugin.mjs"; then
-    error "OpenCode plugin contract failed"
+index_file=$repo_root/skills/index.json
+if [ "${1:-}" = --write-index ]; then
+    skill_index > "$index_file"
+fi
+if [ ! -f "$index_file" ]; then
+    error "missing skills/index.json; run: sh tests/validate.sh --write-index"
+elif [ "$(skill_index)" != "$(tr -d '\r' < "$index_file")" ]; then
+    error "skills/index.json is stale; run: sh tests/validate.sh --write-index"
 fi
 
 exit "$fail"

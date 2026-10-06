@@ -77,28 +77,64 @@ blocking unrelated work.
 
 ## Install
 
-Install all three skills from this canonical repository:
+The three skills work together; install all of them. Installing registers skills
+only. It does not activate the workflow, create role agents, select models, or
+configure nesting and permissions; see [Configure](#configure).
 
-```sh
-npx skills add beefsack/processed-beef --all
-```
+### OpenCode (auto-updating)
 
-```sh
-gh skill install beefsack/processed-beef --all --agent <agent> --scope user
-```
-
-OpenCode can register them directly as a plugin:
+Add the skill index to global `~/.config/opencode/opencode.json` or a project
+`opencode.json`:
 
 ```json
 {
-  "plugin": [
-    "processed-beef@git+https://github.com/beefsack/processed-beef.git"
-  ]
+  "$schema": "https://opencode.ai/config.json",
+  "skills": {
+    "urls": [
+      "https://raw.githubusercontent.com/beefsack/processed-beef/main/skills/"
+    ]
+  }
 }
 ```
 
-The plugin registers skills only. It does not activate the workflow, create role
-agents, select models, or configure nesting and permissions.
+Restart OpenCode. On every start it fetches `skills/index.json` and re-downloads
+any skill whose version changed. If the index cannot be fetched, for example
+offline, the skills are unavailable for that session.
+
+Upgrading from the former `processed-beef@git+https://...` plugin entry: remove
+it from `plugin`, then delete its stale cache directory,
+`~/.cache/opencode/packages/processed-beef@git+https_` (the same path under
+your user profile on Windows).
+
+### Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, and others
+
+Use either installer. Both support many more hosts than listed here and update
+on request, not automatically.
+
+With [`npx skills`](https://github.com/vercel-labs/skills):
+
+```sh
+npx skills add beefsack/processed-beef --skill '*' -g -a claude-code
+npx skills update -g
+```
+
+With [`gh skill`](https://cli.github.com/manual/gh_skill) (GitHub CLI):
+
+```sh
+gh skill install beefsack/processed-beef --all --agent claude-code --scope user
+gh skill update --all
+```
+
+Replace `claude-code` with `codex`, `cursor`, `gemini-cli`, `github-copilot`,
+`antigravity`, or `opencode`, or repeat `-a` to target several hosts with
+`npx skills`. Omit `-g` or `--scope user` to install into the current project
+instead. `gh skill` installs the latest tagged release, or the default branch
+when no release is tagged.
+
+### Manual
+
+Copy each directory under [`skills/`](skills/) into your host's skills
+directory, for example `~/.claude/skills/` for Claude Code. Repeat to update.
 
 ## Configure
 
@@ -121,8 +157,7 @@ retains the research precedents.
 
 ## Limitations
 
-- The project is pre-release; role agent names are not stable compatibility
-  interfaces.
+- Role agent names are not stable compatibility interfaces.
 - Per-role model routing and Worker delegation denial depend on host support.
 - Hosts do not consistently expose context telemetry or hard per-agent limits;
   bounded work and deliberate handover remain process policy.

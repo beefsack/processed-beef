@@ -1,7 +1,15 @@
 # Changelog
 
-## Unreleased
+## 1.0.0
 
+- Distribution: replace the OpenCode plugin with an OpenCode `skills.urls`
+  index, `skills/index.json`, served from `main`. OpenCode never refreshes a
+  cached Git or `@latest` plugin install, so plugin users stayed on their first
+  installed commit; the index carries content-derived skill versions that
+  OpenCode checks on every start. `tests/validate.sh` fails on a stale index and
+  `--write-index` regenerates it. README documents OpenCode, `npx skills`,
+  `gh skill`, and manual installation. Plugin users must remove the `plugin`
+  entry and delete `~/.cache/opencode/packages/processed-beef@git+https_`.
 - Agent reuse follow-up: prefer fresh Leads and Workers briefed from handovers
   for new items or units after substantial work; keep resumption for unknowns,
   direction, corrections, and small follow-ups. Partially reverse the earlier

@@ -20,22 +20,31 @@ creates the `processed-beef-lead` agent. The `.opencode` and
 `~/.config/opencode` directories accept either `agent/` or `agents/`
 subdirectories.
 
-## Install as a Plugin
+## Install
 
-Add the Git-backed package to the `plugin` array in project or global
-`opencode.json`:
+Add the skill index to `skills.urls` in project or global `opencode.json`:
 
 ```json
 {
-  "plugin": [
-    "processed-beef@git+https://github.com/beefsack/processed-beef.git"
-  ]
+  "skills": {
+    "urls": [
+      "https://raw.githubusercontent.com/beefsack/processed-beef/main/skills/"
+    ]
+  }
 }
 ```
 
-Restart OpenCode after changing plugin configuration. The plugin registers the
-repository's bundled skills only. It does not activate the workflow, create
-role agents, or set `subagent_depth` and permissions; configure those below.
+Restart OpenCode after changing configuration. On every start OpenCode fetches
+`index.json`, re-downloads each skill whose `version` differs from its cached
+copy under `~/.cache/opencode/skills/<name>/`, and loads the cached files. If
+the index fetch fails, no skills from it load for that session. This registers
+skills only. It does not activate the workflow, create role agents, or set
+`subagent_depth` and permissions; configure those below.
+
+Do not install from a `plugin` entry. OpenCode installs a plugin spec once under
+`~/.cache/opencode/packages/<spec>/` and never refreshes it, so Git and
+`@latest` specs stay on their first installed version. Remove a former
+`processed-beef@git+https://...` plugin entry and delete its cache directory.
 
 ## Minimal Role-Agent Configuration
 
@@ -186,14 +195,15 @@ when it is material.
 - Without `subagent_depth: 2` and task permission for the Orchestrator and
   Lead, they cannot dispatch subagents, so both are mandatory for full
   operation.
-- The plugin only registers skills. It does not create role agents or prove
-  child capabilities.
+- The skill index only registers skills. It does not create role agents or prove
+  child capabilities, and skills are unavailable when the index cannot be
+  fetched at startup.
 - The `permission.task` configuration above is not tested in this repository.
   The syntax is current per OpenCode documentation as of 2026-07, but
   task-permission behavior has changed across releases (for example, explicit
   task-deny objects on a subagent have not always been honored); verify the
   effective behavior on the installed version.
-- Plugin and skill configuration is process policy only: the plugin registers
-  skills but does not activate the workflow, create role agents, or set
+- Skill configuration is process policy only: the skill index registers skills
+  but does not activate the workflow, create role agents, or set
   `subagent_depth` and permissions. The actual selected role, model, and limit
   may mismatch the intended role or model; the process cannot silently apply it.

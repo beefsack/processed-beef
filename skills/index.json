@@ -1,0 +1,19 @@
+{
+  "skills": [
+    {
+      "name": "processed-beef",
+      "version": "e1ddb1b9cf25",
+      "files": ["SKILL.md"]
+    },
+    {
+      "name": "processed-beef-orchestrate",
+      "version": "d9f777809469",
+      "files": ["SKILL.md"]
+    },
+    {
+      "name": "processed-beef-work-unit",
+      "version": "4791492beb4f",
+      "files": ["SKILL.md"]
+    }
+  ]
+}

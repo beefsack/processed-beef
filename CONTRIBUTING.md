@@ -9,9 +9,17 @@ sh tests/validate.sh
 ```
 
 The same gate runs in CI on every push and pull request. It checks structure,
-portability, payload ceilings, links, and plugin packaging. It never requires
-literal policy phrases: wording checks cannot prove behavior and make later
-simplification unsafe.
+portability, payload ceilings, links, and skill index freshness. It never
+requires literal policy phrases: wording checks cannot prove behavior and make
+later simplification unsafe.
+
+`skills/index.json` serves OpenCode `skills.urls` installs, which re-download a
+skill only when its index version changes. Versions are derived from skill
+content, so after any change under `skills/`, regenerate the index:
+
+```sh
+sh tests/validate.sh --write-index
+```
 
 ## Project Records
 
@@ -59,5 +67,5 @@ justify a preferred process mechanism.
 
 ## Naming
 
-The project is pre-release and role agent names are configuration interfaces. Do
-not add compatibility aliases before a release requires them.
+Role agent names are configuration interfaces, not stable compatibility
+interfaces. Do not add compatibility aliases unless a release requires them.
