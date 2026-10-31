@@ -10,7 +10,7 @@ normative source for lifecycle rules.
 
 ## Historical Baseline
 
-The brdgme session that prompted this change ran for 14.27 wall hours across
+The external-project session that prompted this change ran for 14.27 wall hours across
 157 sessions:
 
 - Root session: 1.

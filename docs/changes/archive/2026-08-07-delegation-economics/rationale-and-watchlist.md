@@ -12,12 +12,12 @@ their references remain the normative source for delegation rules.
 
 ## Historical Baseline
 
-The brdgme session that prompted this change ran 2026-08-06/07 under the
+The external-project session that prompted this change ran 2026-08-06/07 under the
 Lead-owned lifecycle from 2026-08-05. It was measured from one opencode session
 store, across 13 sessions:
 
-- Roles: 1 Orchestrator (claude-opus-5), 8 Leads (claude-sonnet-5 high), and 4
-  Workers (deepseek-v4-flash).
+- Roles: 1 Orchestrator, 8 Leads, and 4 Workers; provider and model assignments
+  are omitted.
 - Cost: Orchestrator $12.48 (43%), Leads $16.45 (57%), Workers $0.03 (0.1%).
   Total $28.96.
 - Tokens: 55.2M cache-read tokens and 444k output tokens.
@@ -241,11 +241,11 @@ Watchlist:
 
 ## Session Capture: 2026-08-08
 
-A brdgme production-incident session was measured against the desired
+An external-project production-incident session was measured against the desired
 outcomes above:
 
-- 33 sessions: 1 Orchestrator (claude-opus-5), 8 Leads (claude-sonnet-5, one
-  nested), 24 Workers (deepseek-v4-flash). Max depth 2. Worker:Lead ratio 3.0.
+- 33 sessions: 1 Orchestrator, 8 Leads (one nested), and 24 Workers. Provider
+  and model assignments are omitted. Max depth 2. Worker:Lead ratio 3.0.
 - Cost $36.07: Orchestrator $17.78 (49.3%), Leads $18.01 (49.9%), Workers
   $0.28 (0.8%).
 - Tool calls: Orchestrator 67 (29 bash, 1 read, 24 task); Leads 369 (187

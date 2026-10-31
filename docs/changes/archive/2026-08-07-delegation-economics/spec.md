@@ -8,7 +8,7 @@ Ownership and approval:
 
 ## Intent and Desired Outcome
 
-A live brdgme session under the Lead-owned lifecycle exposed concrete
+A live external-project session under the Lead-owned lifecycle exposed concrete
 under-delegation: Leads self-executing discoverable, delegable work instead of
 dispatching Workers. Replace the ambiguous "direct reads are insufficient"
 delegation guidance with a specifiability test, name a corpus-ownership and

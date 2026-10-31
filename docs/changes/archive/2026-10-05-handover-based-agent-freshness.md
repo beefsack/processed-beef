@@ -24,11 +24,10 @@
 - **Evidence:** Structural validation and whitespace checks pass; diff inspection
   confirms soft freshness preferences, current-work continuation, handover-based
   briefs, and no new runtime machinery. Behavioral effectiveness is unmeasured.
-  Host session records supplied by the user show the reused `plasma-auto-tiler`
-  Lead consumed 380,662 uncached input tokens and 16,749,440 cache-read tokens
-  across three assignments; the fresh `processed-beef` Lead used 62,699 and
-  365,568 respectively for its first assignment. These figures are recorded by
-  the host and not visible to the parent agent. Cost growth is measured; context
-  rot remains unmeasured.
+  User-supplied host session records show substantially greater cumulative usage
+  for the reused Lead across three assignments than for a fresh Lead's first
+  assignment. Exact project and usage details are omitted. These figures were
+  recorded by the host and not visible to the parent agent. Relative usage growth
+  is reported; context rot remains unmeasured.
 - **Next action:** User reviews the working tree before landing. The backlog is
   empty; no line needs advancement or removal. No commit or push was made.

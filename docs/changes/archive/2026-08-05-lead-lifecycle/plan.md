@@ -56,7 +56,7 @@ governance changes.
 
 ## Rationale and Follow-Up Observation
 
-See [`rationale-and-watchlist.md`](rationale-and-watchlist.md) for the brdgme
+See [`rationale-and-watchlist.md`](rationale-and-watchlist.md) for the external-project
 baseline, the rationale behind this lifecycle, and the concrete post-change
 watchlist. It distinguishes historical evidence and future hypotheses from the
 normative lifecycle contract in the installed skills and references.

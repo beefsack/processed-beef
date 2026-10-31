@@ -1,4 +1,4 @@
-# Plan: Process Hardening From Plasma Auto Tiler Retrospective
+# Plan: Process Hardening From External-Project Retrospective
 
 Ownership and approval:
 - Owner: Lead
@@ -45,78 +45,69 @@ failures. Existing artifacts carry this information compactly by reference.
 
 ## Source Session Evidence
 
-- Report target: `processed-beef` at `01cae7ca8a324c1e68383fe16210b0856fb62cab`.
-- Evaluated source: `plasma-auto-tiler` at parked commit
-  `0726537a9da5322611495df73be16463d8380c27` (`docs: park COSMIC fixture foundation`).
-- Scope: resumed controller-source-split completion and subsequent COSMIC
-  directional-movement proposal, implementation, resets, and parked state on
-  2026-08-24.
-- Evidence labels: `A` is inspected repository/Git evidence, `S` is
-  user-supplied chronology, and `I` is an inference. Recommendations are not
+- The source was an external project; project identity, source paths, commit
+  identifiers, implementation labels, and platform/runtime details are omitted.
+- Scope covered resumed work, a subsequent platform-integration proposal,
+  implementation, resets, and parked state on 2026-08-24.
+- Evidence labels were `A` for inspected repository/Git evidence, `S` for
+  user-supplied chronology, and `I` for inference. Recommendations were not
   findings.
 
-### Current Accepted, Rejected, and Parked State
+### Accepted, Rejected, and Parked State
 
-| Category | State and evidence |
-|---|---|
-| Accepted COSMIC seam | `012351e4ef2b7b0765adedec498cce6e305cb513` - `feat: add COSMIC directional movement seam` |
-| Accepted COSMIC planner | `b8731e4e17275ef51fbce63e7bdb6aa0947e9238` - `feat: add COSMIC directional movement planner` |
-| Accepted transaction safety | `eebd535d9e7f7b32c261f8c03f24309226768fb7` - `feat: add COSMIC runtime transaction safety` |
-| Historical reset record | `f7683563d32c6c4566cf971c91defe21a7aa7998` - 03C/03D reset, never dispatched |
-| Parked record | `0726537a9da5322611495df73be16463d8380c27` - Unit 03E parked |
-| Rejected candidates | Four named candidate stashes recorded below |
-| Unaccepted integration | No accepted controller integration proves COSMIC R1-R4 or full re-decoded snapshot restoration |
-| Blocked work | Unit 04 depends on parked 03E; Unit 05 depends on Unit 04 |
-
-Unit 03E directly constructed `createDirectionalMovementRuntime` with a
-replacement environment. That was prohibited production behavior integration,
-not fixture evidence. It froze with no correction, reset, review, or production
-integration dispatch permitted. The source repository had three unrelated
-untracked paths, `CMakeFiles/`, `Project Technical Report and Implementation
-Plan.md`, and `test-output`, which were not changed for this evidence record.
+- Some bounded seams and transaction-safety work were accepted; several
+  integration candidates were rejected or parked.
+- No accepted integration established all required behavior and complete state
+  restoration. Dependent work remained blocked by the parked unit.
+- Four rejected candidate stashes were recorded in the source session; their
+  identifiers and implementation details are omitted.
+- One fixture-only attempt improperly constructed production runtime behavior
+  instead of supplying fixture evidence. It parked without further correction,
+  reset, review, or integration dispatch.
+- Unrelated untracked source-project paths were left unchanged.
 
 ### Session Chronology
 
 | Phase | Event, consequence, and classification |
 |---|---|
-| Startup | Root activated the process skill while some child reports said it was unavailable; depth two and selectors existed. This was a host-integration mismatch. |
-| Startup | User selected `lead-openai`/`worker-openai`, required serial work, then changed autonomous and VCS policy mid-session. This was a process/briefing failure. |
-| Controller split | Unit 04 recovered an inherited cancelled attempt and dirty candidate with correction and review; preservation worked. |
-| Controller split | Original Unit 05 spent two attempts on malformed parent/configured-role/untracked-path preflights before source work; 05A/05B reset local counters. Process amplified cost. |
-| Controller split | Host investigation found valid configuration; `worker-openai`, model, persona, and process role had been conflated, causing false stops. |
-| Controller split | Unit 06 repeated the false mismatch; missing role lines were inconsistently blocking versus compliance debt. |
-| Controller split | Full 965/91 tests, dual typechecks, 347 dogfood, deterministic builds, reviews, artifacts, commits, and successions were repeated. Assurance was strong but broad-gate churn was high. |
-| COSMIC proposal | A read-only proposal task was cancelled/stuck; user ended autonomous mode and required stage-only, no-agent-commit/push behavior. |
-| COSMIC setup | User committed approved spec, plan, and backlog link in `05b5487`; durable scope existed before implementation. |
-| Unit 01 | Worker used `scripts/start-test.test.sh` (255 assertions), not canonical `scripts/dogfood-install.test.sh` (347), and escalated a local reconciliation as a decision. |
-| Unit 02 | A narrow pure planner completed without review or reset. |
-| Unit 03 | One broad runtime-integration unit mixed empty-output R4, maximized guard, partial rollback, duplicate occupancy, and legacy fallback defects. Breaker correctly stopped it. |
-| Reset 1 | 03 split into 03A transaction safety and 03B integration closure. 03A corrected six findings and was accepted. |
-| 03B | Correction reduced keyboard evidence while still lacking R1-R4 and snapshot proof; breaker correctly froze it. |
-| Reset 2 | 03C/03D were committed as a plan-only reset then superseded before dispatch, adding ceremony without evidence. |
-| Checkpoint recovery | Private runtime construction/replacement bypassed public routing; correction restored routing but recursive children remained non-stateful. |
-| Fixture investigation | Established `Harness`, `TestTile`, `TestWindow`, `attachTileWriter`, and `installDwindleSplitter` precedent was found. Read-only rejected-candidate inspection versus mutation needed clearer policy. |
-| Final reset | 03E made one fixture-only attempt but constructed production runtime with replacement callbacks; it parked and produced a fourth rejected stash. |
+| Startup | Host skill activation and child reports disagreed despite configured nesting and selectors; this was a host-integration mismatch. |
+| Startup | User-selected provider-specific agent labels, serial-work requirements, and mid-session autonomy/VCS changes caused process and briefing friction. |
+| Resumed work | A cancelled attempt and dirty candidate were recovered with correction and review; preservation worked. |
+| Preflight | Two attempts were spent on malformed role and path preflights before source work; descendant units reset local counters and amplified cost. |
+| Role semantics | Valid host configuration was found; selector, model, persona, and process role had been conflated, causing false stops. |
+| Role enforcement | A false mismatch recurred, while missing role lines were inconsistently treated as blockers or compliance debt. |
+| Verification | Broad test suites, typechecks, environment checks, deterministic builds, reviews, and handovers were repeated; assurance was strong but broad-gate churn was high. |
+| Integration proposal | A read-only proposal task was cancelled or stuck; the user ended autonomous mode and required stage-only, no-agent-commit/push behavior. |
+| Integration setup | The user committed an approved specification, plan, and backlog link before implementation; durable scope existed. |
+| Verification command | A Worker used the wrong test command and escalated a local reconciliation as a decision. |
+| Narrow unit | A bounded planning unit completed without review or reset. |
+| Broad integration | One broad unit mixed several behavior and state-restoration invariants; the breaker correctly stopped it. |
+| Reset 1 | The unit was split into bounded safety and integration work. The safety unit corrected six findings and was accepted. |
+| Follow-up | A correction weakened evidence while required behavior and state proof remained absent; the breaker correctly froze the unit. |
+| Reset 2 | A plan-only reset was superseded before dispatch, adding ceremony without evidence. |
+| Recovery | Private construction bypassed the public route; correction restored routing, but recursive children remained non-stateful. |
+| Fixture investigation | Existing fixture precedent was found. Read-only rejected-candidate inspection versus mutation needed clearer policy. |
+| Final reset | One fixture-only attempt improperly constructed production behavior, then parked and produced a fourth rejected candidate. |
 
 ### Quantified Churn
 
 | Measure | Count or result |
 |---|---:|
-| Controller executable semantic units accepted | 8 |
-| Controller Worker attempts in original 05 and Units 04-07 | 9 |
-| Controller cancellations in that table | 1 |
-| Controller malformed preflight attempts | At least 3 |
-| Controller independent reviews | 5 |
-| Controller breaker resets | 1 |
-| COSMIC dispatched implementation attempts | 7 |
-| COSMIC corrections | 5 |
-| COSMIC independent reviews | 2 |
-| COSMIC breaker-frozen units | 4 |
-| COSMIC changed-kind resets | At least 3 |
-| COSMIC superseded-before-start units | 2 |
+| Resumed-work executable semantic units accepted | 8 |
+| Resumed-work Worker attempts across the original and follow-up units | 9 |
+| Resumed-work cancellations in that table | 1 |
+| Resumed-work malformed preflight attempts | At least 3 |
+| Resumed-work independent reviews | 5 |
+| Resumed-work breaker resets | 1 |
+| Platform-integration dispatched implementation attempts | 7 |
+| Platform-integration corrections | 5 |
+| Platform-integration independent reviews | 2 |
+| Platform-integration breaker-frozen units | 4 |
+| Platform-integration changed-kind resets | At least 3 |
+| Platform-integration superseded-before-start units | 2 |
 | Rejected candidate stashes | 4 |
-| Documented broad COSMIC gate result sets | At least 3 |
-| Controller full-suite baselines for Units 04, 05A, 05B, 06, 07 | At least 5 |
+| Documented broad integration gate result sets | At least 3 |
+| Resumed-work full-suite baselines across later units | At least 5 |
 | Deterministic build pairs for those units | At least 5 pairs |
 | Policy transitions | 2: autonomous-to-normal and no-agent-commit/push |
 | Lead sessions, task dispatches, task IDs, token use, tool calls | Unknown; no complete durable ledger |
@@ -132,11 +123,11 @@ retained recovery truth, but its immediate records accompanied each reset and
 increased historical clutter.
 
 Agent/brief failures included treating selector/persona as a role mismatch,
-inconsistent role-line enforcement, using the wrong dogfood command, an original
-Unit 03 that mixed transaction safety, composition, fixtures, and snapshot proof,
-weakened 03B keyboard evidence, private runtime bypass, non-stateful fixture
-children, and 03E's fixture-scope breach. These candidate defects were not all
-process-caused; the process exposed and stopped them.
+inconsistent role-line enforcement, using the wrong verification command, an
+initial unit that mixed safety, composition, fixtures, and state proof, weakened
+follow-up evidence, private runtime bypass, non-stateful fixture children, and a
+fixture-scope breach. These candidate defects were not all process-caused; the
+process exposed and stopped them.
 
 Host limitations were real: the plugin registers skills only; it does not
 activate workflow, create role agents, set depth/permissions, inject dispatch
@@ -146,46 +137,46 @@ quota-safety tradeoff, not a defect. The required depth-two configuration was
 documented, but current project/global host configuration could not be
 independently recovered; a historical backup was not active-configuration proof.
 
-Genuine project complexity included opaque native split shape/cardinality,
-geometry-local ordering, controller-only routing, stateful native fixtures,
-multi-step recovery, and complete re-decoded snapshots. The transaction and
-occupancy findings were product-safety defects the process correctly prevented.
+Genuine project complexity included opaque platform data shape and cardinality,
+ordering, public-route ownership, stateful fixtures, multi-step recovery, and
+complete restored-state checks. Some implementation findings were product-safety
+defects the process correctly prevented.
 
 What worked: breakers prevented incomplete candidates shipping; independent
-review found material defects; rejected candidates were preserved; controller
-05A/05B demonstrated a useful reduced-scope reset; static gates caught weakened
-evidence and scope violations; and Lead inspection, rather than a passing test
-summary, rejected 03E's prohibited integration. User approval created a
+review found material defects; rejected candidates were preserved; bounded work
+demonstrated a useful reduced-scope reset; static gates caught weakened evidence
+and scope violations; and Lead inspection, rather than a passing test summary,
+rejected a prohibited integration. User approval created a
 recoverable parked boundary instead of a hidden dirty candidate.
 
 What failed or amplified cost: invalid preflights consumed implementation budget,
 reset-local counters enabled relabeling, fixture work exhausted correction budget,
 role semantics were ambiguous, broad gates repeated, and a user had to impose the
-final no-further-reset stop. The record does not attribute native fixture
+final no-further-reset stop. The record does not attribute fixture
 complexity, rollback requirements, or original implementation defects to process.
 
 ### Preserved Identifiers and Gate Evidence
 
 | Rejected stash | Association |
 |---|---|
-| `06f5ab76826927394ae46e529f746f3b703e7c8b` | rejected cosmic stateful fixture foundation, Unit 03E |
-| `2c15d895b128200070f7f772e2f98b6e8fe96b90` | rejected cosmic checkpointed integration fixture candidate |
-| `f2553e69eefe0433ab0c1ae2a79c8c97756a18f4` | rejected cosmic Unit 03B candidate |
-| `8578bbf4f0e4e953be8c0128506c051de863fe0f` | rejected cosmic Unit 03 candidate |
+| Candidate 1 | rejected stateful fixture foundation |
+| Candidate 2 | rejected checkpointed integration fixture |
+| Candidate 3 | rejected integration candidate |
+| Candidate 4 | rejected integration candidate |
 
 | Gate | Recorded command and evidence |
 |---|---|
-| Focused runtime | `node --test kwin/dist/tests/directional-movement-runtime.test.js`: 11 tests, one suite, no failures/skips for 03A |
-| Full suite | `npm --prefix kwin test`: COSMIC baseline 965 tests/91 suites; 03A 990/95, no failures/skips |
-| Typecheck | `npm --prefix kwin run typecheck`: dual typechecks required |
-| Dogfood | `bash scripts/dogfood-install.test.sh`: canonical 347 assertions, no failures |
-| Package | `bash scripts/build-kpackage.test.sh` |
-| Determinism | two `npm --prefix kwin run build` runs plus `sha256sum kwin/contents/code/main.js`; 03A hash `b90f9b23f9e2e290f7b581acaef9743a4ff48c320e895f7a06fa7de005d074dc` |
+| Focused runtime | Focused suite: 11 tests, one suite, no failures/skips for the accepted bounded unit |
+| Full suite | Baseline 965 tests/91 suites; accepted unit 990/95, no failures/skips |
+| Typecheck | Dual typechecks required |
+| Environment check | Canonical environment check: 347 assertions, no failures |
+| Packaging | Package-build check was run |
+| Determinism | Two builds were compared; the exact source path and hash are omitted |
 | Hygiene | `git diff --check` |
 
-The erroneous Unit 01 command was `scripts/start-test.test.sh` with 255
-assertions. No stable COSMIC task IDs, full Lead-session ledger, or token total
-was persisted; do not infer them from commits, units, or stashes.
+The erroneous first-unit command produced 255 assertions instead of the
+canonical check's 347. No stable platform task IDs, full Lead-session ledger, or
+token total was persisted; do not infer them from commits, units, or stashes.
 
 ## Work Units
 
@@ -200,7 +191,7 @@ was persisted; do not infer them from commits, units, or stashes.
 
 | ID | Objective | Depends on | Scope | Gate IDs | Review trigger |
 |---|---|---|---|---|---|
-| unit-05 | Implement correction-regression, counter, freshness, and dependency semantics with deterministic COSMIC and pointer-resize behavioral records | approved amendment | core policy files and behavioral record only | `gate.process-validation`, `gate.diff-hygiene`, `gate.behavioral-contract`, `gate.dependency-consistency`, `gate.evidence-freshness` | broad, subtle lifecycle and breaker change |
+| unit-05 | Implement correction-regression, counter, freshness, and dependency semantics with deterministic platform-integration and interaction behavioral records | approved amendment | core policy files and behavioral record only | `gate.process-validation`, `gate.diff-hygiene`, `gate.behavioral-contract`, `gate.dependency-consistency`, `gate.evidence-freshness` | broad, subtle lifecycle and breaker change |
 | unit-06 | Add plan/state/log template evidence, warning, and tracked/untracked preservation fields | unit-05 | template and artifact-reference surfaces only | `gate.process-validation`, `gate.diff-hygiene`, `gate.candidate-inventory` | preservation and destructive-action boundary |
 | unit-07 | Align public README and architecture summaries with approved policy | unit-05, unit-06 | public documentation only | `gate.process-validation`, `gate.diff-hygiene` | Lead consistency inspection only |
 
@@ -223,12 +214,12 @@ No amendment gate is live. `node tests/opencode-plugin.mjs` remains covered by
 | Priority | Work item | Acceptance scenario |
 |---|---|---|
 | P0 | Change-wide breaker/reset ledger | Descendants cannot obtain fresh budget without a genuinely new acceptance mechanism. |
-| P0 | Dispatch classification and role metadata | Missing role metadata and `worker-openai` plus OpenCode persona yield `dispatch-invalid`, not false role mismatch. |
-| P0 | Brief/gate validation | A `start-test.test.sh` brief cannot replace a plan dogfood gate. |
+| P0 | Dispatch classification and role metadata | Missing role metadata and a provider-specific selector plus OpenCode persona yield `dispatch-invalid`, not false role mismatch. |
+| P0 | Brief/gate validation | An alternate test command cannot replace the plan's canonical gate. |
 | P0 | Review correction protocol | Review findings retain one finding-fix correction and confirmation is not review two. |
-| P1 | Fixture-contract workflow | Stateful recursive children and snapshot/re-decode proof are accepted before controller/runtime integration. |
+| P1 | Fixture-contract workflow | Stateful fixture dependencies and restored-state proof are accepted before integration. |
 | P1 | Promotion/Lead-forfeit policy | Repeated Worker-invalid results can escalate without uncontrolled Lead implementation. |
-| P1 | Risk-tier gates | Pure units run focused gates; full suite/dogfood/two-build gates run once at integration checkpoint. |
+| P1 | Risk-tier gates | Narrow units run focused gates; broad suite, environment, and repeated-build gates run at named integration checkpoints. |
 | P1 | Startup VCS and skill preflight | No-agent-commit policy and child skill availability are recorded before first dispatch. |
 | P1 | Host integration: metadata and child skill availability | Host-observable metadata is injected/verified parent-side; child never self-proves selector/model; unavailable skill yields `dispatch-invalid`; a fake-host test covers it. Current plugin cannot provide this safely. |
 | P2 | Candidate lifecycle | One recovery branch/worktree/patch bundle has owner, reason, retention, expiry, disposition, and separate read/mutate authorization. |
@@ -311,8 +302,8 @@ closure reset the no-progress streak.
 
 ### Completion Evidence Snapshot
 
-- Source snapshot: `02dfc894c406cdf0a051ca2916b24e3c3b46bd98` plus the scoped worktree
-  diff inspected on 2026-08-25T21:40:20+10:00.
+- Source snapshot: revision identifier omitted; the scoped worktree diff was
+  inspected on 2026-08-25T21:40:20+10:00.
 - Candidate inventory: 14 modified tracked paths in the approved policy,
   template, public-documentation, behavioral-record, and change-record scopes;
   one untracked candidate, `rationale-and-watchlist.md`, in this change
@@ -333,7 +324,7 @@ closure reset the no-progress streak.
   supplies enforcement.
 - Policy remains dependent on parent discipline until a host integration exposes
   testable facts.
-- The source COSMIC integration remains parked; this process patch does not
+- The source platform integration remains parked; this process patch does not
   claim project acceptance.
 
 ## Final Outcome

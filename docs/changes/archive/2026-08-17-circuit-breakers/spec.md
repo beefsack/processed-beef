@@ -6,8 +6,8 @@ Ownership and approval:
 
 ## Intent and Desired Outcome
 
-Two observed session retrospectives (`plasma-auto-tiler`, 2026-08-14 and the
-2026-08-15 resumption, plus an anti-loop finding from a later session) showed
+Two observed external-project session retrospectives from 2026-08-14 and
+2026-08-15, plus an anti-loop finding from a later session, showed
 one dominant failure mode the skills do not currently catch: effort without
 state progress. A single semantic unit stayed unaccepted while attempts,
 correction rounds, and independent-review findings accumulated across fresh
@@ -63,9 +63,8 @@ Non-goals:
 - Machine-readable dispatch ledgers, preflight record artifacts, live-debt
   dashboards, and brief linters. These require enforcement that does not exist
   in a prompt-only skill set.
-- Project-specific controls from the retrospective (KWin lifecycle risk family,
-  QJSEngine built-in scans, live evidence capture contract). These belong in
-  the consuming project's `docs/agent-process.md`.
+- Project-specific platform and runtime controls from the retrospective. These
+  belong in the consuming project's own documentation.
 - Standing-policy handles and inherited brief metadata. The compact-brief rule
   already exists; a versioned policy-handle mechanism adds process rather than
   removing it.

@@ -1,4 +1,4 @@
-# Specification: Process Hardening From Plasma Auto Tiler Retrospective
+# Specification: Process Hardening From External-Project Retrospective
 
 Ownership and approval:
 - Owner: User
@@ -9,7 +9,7 @@ Ownership and approval:
 
 Prevent the invalid-dispatch, role-metadata, correction-budget, reset-loop,
 fixture-contract, verification-churn, VCS, candidate-preservation, and
-no-progress failures observed in the 2026-08-24 `plasma-auto-tiler` session.
+no-progress failures observed in an external-project session on 2026-08-24.
 The process must retain its effective safety breakers while distinguishing
 process/host failure from implementation failure.
 
@@ -27,13 +27,14 @@ In scope:
 - A causality-bound repair for verification regressions introduced by a preceding
   correction, with fresh evidence and work-kind-aware accounting.
 - Dependency consistency, scoped tracked/untracked preservation, warning
-  baselines, and deterministic COSMIC and pointer-resize regression records.
+  baselines, and deterministic platform-integration and interaction regression
+  records.
 
 Non-goals:
 
 - Plugin, host configuration, machine-injected metadata, or automatic child
   skill detection.
-- Changes to `plasma-auto-tiler`, dependencies, generated files, publication,
+- Changes to the external project, its dependencies or generated files, publication,
   commit, or push.
 - A second standalone retrospective outside this change directory.
 - Host-specific enforcement, compatibility migration, new lifecycle artifacts or
@@ -87,9 +88,9 @@ Non-goals:
 - Optional known-warning baselines use allowed patterns and maximum counts; they
   cannot mask failed assertions, nonzero results, missing output, or live-safety
   prerequisites.
-- Behavioral documentation covers COSMIC dependency-cycle, omitted-import, and
-  untracked-preservation cases plus pointer-resize oracle and payload-free-signal
-  cases.
+- Behavioral documentation covers platform-integration dependency cycles,
+  omitted-import and untracked-preservation cases, plus interaction-oracle and
+  payload-free-signal cases.
 - `sh tests/validate.sh` and `git diff --check` pass.
 
 ## Constraints

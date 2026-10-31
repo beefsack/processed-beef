@@ -8,7 +8,7 @@ Ownership and approval:
 
 ## Intent and Desired Outcome
 
-A brdgme session measured against the `2026-08-07-delegation-economics`
+A session measured against the `2026-08-07-delegation-economics`
 targets hit the delegation-economics goals (Worker:Lead ratio, zero
 `host-unknown`, correct escalations) but failed the context ceiling
 completely: peak single-request context reached 306,523 tokens, over double

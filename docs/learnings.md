@@ -345,19 +345,15 @@ hypothesis as a fact.
 
 ## L019 - Carry Knowledge Through Handovers Instead Of Excessive Reuse
 
-- **Evidence:** One observed incident in the `plasma-auto-tiler` session on
-  2026-10-05, reported by the user; `tests/behavioral.md` Scenario 37.
-  The Orchestrator resumed one `gpt-sol` Lead across a cross-platform audit
-  (research), B1-B5 KDE implementation plus decision research, and an
-  11-repository reference comparison plus a native C++/Rust FFI underlay feature
-  (B7). Host session records supplied by the user show the reused Lead consumed
-  380,662 uncached input tokens and 16,749,440 cache-read tokens across its three
-  assignments; the fresh `processed-beef` Lead used 62,699 uncached input tokens
-  and 365,568 cache-read tokens for its first assignment. These host-recorded
-  figures are not visible to the parent agent.
+- **Evidence:** One user-reported incident on 2026-10-05;
+  `tests/behavioral.md` Scenario 37. One Lead was resumed across three
+  substantial, distinct assignments. User-supplied host records showed
+  substantially greater cumulative usage for the reused Lead than for a fresh
+  Lead's first assignment; exact project and usage details are omitted. These
+  host-recorded figures were not visible to the parent agent.
 - **Observed problem:** The user flagged excessive cost and likely context rot
-  from reusing the Lead across these separate substantial assignments. Context
-  rot remains unmeasured; cost growth is measured in the host records.
+  from reusing the Lead across separate substantial assignments. Context rot
+  remains unmeasured; relative usage growth is reported by host records.
 - **Contributing mechanism:** Runtime wording preferred resuming even after
   completion when context "has capacity" and judging "not assignment boundaries".
   The host returns only the child's final message, not its context usage, so
@@ -374,3 +370,61 @@ hypothesis as a fact.
   its handover and briefing improvements. Behavioral effectiveness is not yet
   measured; GREEN is pending observation. See
   `docs/changes/archive/2026-10-05-handover-based-agent-freshness.md`.
+
+## L020 - Keep Refused Delegation With Its Owner
+
+- **Evidence:** User-reported incident; exact details are unavailable and
+  unverified. See `tests/behavioral.md` Scenario 38 and
+  `docs/changes/archive/2026-10-31-external-review-learnings.md`.
+- **Observed problem:** The user reports that a Lead took over work after a
+  Worker could not continue, causing additional cost.
+- **Contributing mechanism:** Fallback and mechanical-recovery guidance can be
+  mistaken for permission to absorb work that delegation could not complete.
+- **Change and rationale:** Pause refused or failed work and report its state;
+  repair only malformed dispatches. This keeps recovery distinct from taking
+  over work.
+- **Status:** Implemented; behavioral effectiveness remains pending observation.
+
+## L021 - Separate Evidence From Recommendations
+
+- **Evidence:** Review reports in
+  `docs/changes/archive/2026-10-31-external-review-learnings.md`;
+  `tests/behavioral.md` Scenario 39. Source reports were not independently
+  inspected for this record.
+- **Observed problem:** Review work can yield a recommendation based on
+  incomplete or stale evidence.
+- **Contributing mechanism:** Treating delegated evidence as sufficient judgment
+  can bypass inspection of decisive sources.
+- **Change and rationale:** Leads return evidence and options with verification
+  status; the Orchestrator inspects narrow decisive sources before recommending.
+  This preserves delegated research while keeping recommendations grounded.
+- **Status:** Implemented; behavioral effectiveness remains pending observation.
+
+## L022 - Keep Current Records Concise
+
+- **Evidence:** Review reports in
+  `docs/changes/archive/2026-10-31-external-review-learnings.md`;
+  `tests/behavioral.md` Scenario 40. Reported measurements were not independently
+  repeated.
+- **Observed problem:** Current decision and backlog records can accumulate
+  obsolete detail and historical material, obscuring what is active.
+- **Contributing mechanism:** Treating promotion and progress as append-only
+  updates retains history in records intended to express current state.
+- **Change and rationale:** Update active decisions and pending work in place;
+  keep historical detail in change notes and version history. This keeps current
+  records focused without requiring a new schema.
+- **Status:** Implemented; future runtime observation remains pending.
+
+## L023 - Respect The Intended Scope Of Instructions
+
+- **Evidence:** User-directed guidance recorded in
+  `docs/changes/archive/2026-10-31-external-review-learnings.md`.
+- **Observed problem:** Guidance can be copied into durable records beyond the
+  scope intended by the user.
+- **Contributing mechanism:** Record maintenance may treat every instruction as
+  durable policy without checking its intended scope.
+- **Change and rationale:** Keep session-scoped instructions out of durable
+  records unless the user requests documentation. This avoids turning temporary
+  guidance into broader policy.
+- **Status:** Implemented at the user's direction; no effectiveness measurement
+  is claimed.

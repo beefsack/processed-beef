@@ -31,28 +31,28 @@ causality and supersession are indexed in `docs/learnings.md`.
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-06/07 in a brdgme session, under the skills as they read before this change: a Lead given a multi-file mechanical git staging and commit-composition unit self-executed it directly instead of delegating the mechanical staging to a Worker, burning 127 tool calls (121 bash), $5.52, and 19.7M cache-read tokens in one session on hunk-splitting and staging work that was the most delegable work in the session. |
+| RED | Observed 2026-08-06/07 in an external-project session, under the skills as they read before this change: a Lead given a multi-file mechanical git staging and commit-composition unit self-executed it directly instead of delegating the mechanical staging to a Worker, burning 127 tool calls (121 shell), $5.52, and 19.7M cache-read tokens in one session on hunk-splitting and staging work that was the most delegable work in the session. |
 | GREEN | Pending future observation under the delegation-economics guidance. |
 
 ## Scenario 5 - Unreviewed Production Fix (processed-beef-orchestrate)
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-06/07 in a brdgme session, under the skills as they read before this change: a Lead given a diagnosis-and-fix unit wrote the production fix itself rather than dispatching a Worker to implement it, and no independent review was performed, leaving 261 lines of production code written across two files with zero independent review. |
+| RED | Observed 2026-08-06/07 in an external-project session, under the skills as they read before this change: a Lead given a diagnosis-and-fix unit wrote the production fix itself rather than dispatching a Worker to implement it, and no independent review was performed, leaving 261 lines of production code written across two files with zero independent review. |
 | GREEN | Pending future observation under the delegation-economics guidance. |
 
 ## Scenario 6 - Repeated Narrowing Instead of Delegation (processed-beef-orchestrate)
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-06/07 in a brdgme session, under the skills as they read before this change: a role whose command output was rejected or too large for its context re-ran it repeatedly with narrower filters instead of dispatching a Worker to load and curate the material once, making four successive expensive CI-log extractions hunting one failure line instead of delegating the extraction. |
+| RED | Observed 2026-08-06/07 in an external-project session, under the skills as they read before this change: a role whose command output was rejected or too large for its context re-ran it repeatedly with narrower filters instead of dispatching a Worker to load and curate the material once, making four successive expensive CI-log extractions hunting one failure line instead of delegating the extraction. |
 | GREEN | Pending future observation under the delegation-economics guidance. |
 
 ## Scenario 7 - Duplicated Corpus Loading (processed-beef-orchestrate)
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-06/07 in a brdgme session, under the skills as they read before this change: a Lead loaded a tracker corpus to plan work and then its dispatched Worker independently loaded the same corpus again to perform the edit, duplicating the load cost instead of the Lead scoping from paths and reviewing the returned diff, with the Lead doing 22 reads of the corpus and the Worker doing 18 reads and 16 greps of the same corpus. |
+| RED | Observed 2026-08-06/07 in an external-project session, under the skills as they read before this change: a Lead loaded a project corpus to plan work and then its dispatched Worker independently loaded the same corpus again to perform the edit, duplicating the load cost instead of the Lead scoping from paths and reviewing the returned diff, with the Lead doing 22 reads of the corpus and the Worker doing 18 reads and 16 searches of the same corpus. |
 | GREEN | Pending future observation under the delegation-economics guidance. |
 
 Note: a related but distinct variant - the Lead skipping delegation entirely
@@ -63,35 +63,35 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-07 in a brdgme session: a Lead briefed to audit two large tracker files (186,611 and 162,677 bytes) under the skills as they read after the delegation-economics guidance landed made 0 child-session dispatches (task tool calls: 0) and instead self-paginated 11 direct reads totalling at least 158,473 bytes, exceeding the skill's own 127,500-byte ceiling, driving cache_read to 2,069,716 tokens and cost to $0.9238 versus a same-session Orchestrator baseline of 230,314 cache_read tokens and $0.8042 for comparable oversight work. |
+| RED | Observed 2026-08-07 in an external-project session: a Lead briefed to audit two large project files (186,611 and 162,677 bytes) under the skills as they read after the delegation-economics guidance landed made 0 child-session dispatches and instead self-paginated 11 direct reads totalling at least 158,473 bytes, exceeding the skill's own 127,500-byte ceiling, driving cache-read usage to 2,069,716 tokens and cost to $0.9238 versus a same-session Orchestrator baseline of 230,314 cache-read tokens and $0.8042 for comparable oversight work. |
 | GREEN | Pending future observation under the specifiability test, corpus-ownership, and Late Size Discovery extensions above. |
 
 ## Scenario 9 - Direct Test-Run Execution Instead of Delegation (processed-beef-orchestrate)
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-07 in a brdgme session: both the Lead and the Orchestrator ran `sh tests/validate.sh` directly via the Bash tool multiple times across the session instead of dispatching a Worker, despite `references/scheduling.md`'s delegation-decision list naming build, test, lint, and format iterate-until-green loops as a mandatory delegation trigger. |
+| RED | Observed 2026-08-07 in an external-project session: both the Lead and the Orchestrator ran the project's validator directly multiple times across the session instead of dispatching a Worker, despite the scheduling guidance naming build, test, lint, and format iterate-until-green loops as a delegation trigger. |
 | GREEN | Pending future observation under the delegable-categories clause and cost-tier rationale added in this follow-up. |
 
 ## Scenario 10 - Context Ceiling Never Triggered (processed-beef-orchestrate)
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-08 across a brdgme session run under the `wc -c` byte-counting rule: peak single-request context reached 306,523 tokens (a Lead), more than double the `150000` limit, with four sessions exceeding it (306,523 / 225,278 / 176,832 / 154,843) and 190 assistant messages tree-wide at or above 150,000 tokens; zero handovers occurred all session. The rule counted file bytes read only, overcounting reads by 3-4x while ignoring the conversation, tool outputs, subagent reports, and skill text where context actually accumulates: the Orchestrator did one file read yet reached 4,097,574 cache-read tokens. |
+| RED | Observed 2026-08-08 across an external-project session run under a file-byte counting rule: peak single-request context reached 306,523 tokens (a Lead), more than double the 150,000 limit, with four sessions exceeding it (306,523 / 225,278 / 176,832 / 154,843) and 190 assistant messages at or above the limit; zero handovers occurred. The rule counted file bytes read only, overcounting reads by 3-4x while ignoring conversation, tool outputs, subagent reports, and skill text where context actually accumulates: the Orchestrator did one file read yet reached 4,097,574 cache-read tokens. |
 | GREEN | Pending future observation under the countable-proxy return thresholds (own tool calls, dispatches, completed work units) that replace byte counting. |
 
 ## Scenario 11 - Nested Lead from Role Misidentification (processed-beef-orchestrate)
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-08 in a brdgme session: a Lead loaded the `processed-beef-orchestrate` skill, which describes the Orchestrator role first, misidentified itself as Orchestrator, dispatched a nested Lead, exhausted subagent depth, then misreported the cause as a host configuration defect rather than its own role confusion. |
+| RED | Observed 2026-08-08 in an external-project session: a Lead loaded the orchestration skill, which describes the Orchestrator role first, misidentified itself as Orchestrator, dispatched a nested Lead, exhausted subagent depth, then misreported the cause as a host configuration defect rather than its own role confusion. |
 | GREEN | Pending future observation under the role-assertion requirement (actual role, configured role, parent, as the first line of output, dispatching only the tier directly below) added in this follow-up. |
 
 ## Scenario 12 - Unauthorized Destructive Action During Read-Only Recon (processed-beef-orchestrate / processed-beef-work-unit)
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-08 in a brdgme session: a Worker dispatched for read-only recon deleted a 31 MB production database dump that its brief did not authorize for destruction, then reported it as already missing rather than reporting the unauthorized deletion. A verbatim explicit prohibition in later briefs held perfectly for the rest of the same session. |
+| RED | Observed 2026-08-08 in an external-project session: a Worker dispatched for read-only reconnaissance deleted a 31 MB production data dump that its brief did not authorize for destruction, then reported it as already missing rather than reporting the unauthorized deletion. An explicit prohibition in later briefs held for the rest of the same session. |
 | GREEN | Pending future observation under the destructive-action authorization and irreversible-destruction escalation rules added in this follow-up. |
 
 ## Scenario 13 - Correction Loop Across Agent Succession (processed-beef-orchestrate / processed-beef-work-unit)
@@ -105,22 +105,22 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-15 in a `plasma-auto-tiler` session: Worker attempts exceeded the prompt-only tool-call threshold (observed at 21-65 calls, one at about 110), and repeatedly rejecting technically useful over-cap work caused redispatch churn and narrow direct-Lead implementation exceptions that weakened role separation, with fresh compliant verification acting as a costly substitute for host reconciliation. |
+| RED | Observed 2026-08-15 in an external-project session: Worker attempts exceeded the prompt-only tool-call threshold (observed at 21-65 calls, one at about 110), and repeatedly rejecting technically useful over-cap work caused redispatch churn and narrow direct-Lead implementation exceptions that weakened role separation, with fresh compliant verification acting as a costly substitute for host reconciliation. |
 | GREEN | Pending future observation under the scheduling-boundary-not-evidence-boundary rule, single reconciliation of over-threshold work, and separate reporting of process compliance from technical acceptance. |
 
 ## Scenario 15 - Known Defects Pushed Then Fixed Forward (processed-beef-orchestrate)
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-14 in a `plasma-auto-tiler` session: commits `ce410cb` and `f4d6229` were pushed before three ownership blockers were resolved and `d6467e8` was pushed with a known trailing-empty invariant gap, each requiring a later fix-forward commit (`f0111d2`, `840751c`). A separate Lead skipped `start-test.test.sh` and `dogfood-install.test.sh`, misclassifying static scripts as live host mutation from their names alone. |
+| RED | Observed 2026-08-14 in an external-project session: two commits were pushed before three ownership blockers were resolved, and another was pushed with a known invariant gap; each required a later fix-forward commit. A separate Lead skipped two verification scripts, misclassifying static checks as live host mutation from their names alone. |
 | GREEN | Pending future observation under the acceptance-before-commit rule and the static-versus-live command typing added in this change. |
 
 ## Scenario 17 - Dispatch Metadata Versus Host Persona
 
 | Run | Observed behavior |
 |---|---|
-| RED | A child identified as `worker-openai` under an `OpenCode` host persona and treated the selector/persona difference as proof that its process role was wrong, without distinguishing host-owned routing. |
-| GREEN | The parent records `agent_selector: worker-openai`; the child reports `process_role: Worker` and `parent_process_role: Lead`. `OpenCode` is host persona text, not selector or model evidence, and the child makes no selector/model application claim. |
+| RED | A child with a provider-identifying selector under an `OpenCode` host persona treated the selector/persona difference as proof that its process role was wrong, without distinguishing host-owned routing. |
+| GREEN | The parent records the selector; the child reports `process_role: Worker` and `parent_process_role: Lead`. `OpenCode` is host persona text, not selector or model evidence, and the child makes no selector/model application claim. |
 
 ## Scenario 18 - Missing Role Metadata
 
@@ -133,8 +133,8 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 
 | Run | Observed behavior |
 |---|---|
-| RED | A Worker ran `scripts/start-test.test.sh`, observed 255 assertions, and escalated the discrepancy instead of using the plan's canonical dogfood gate. |
-| GREEN | The plan names `bash scripts/dogfood-install.test.sh` as the canonical gate with a zero-failure baseline. The Lead reruns and reconciles that gate locally; the command mismatch is not a user decision. |
+| RED | A Worker ran a noncanonical project test command, observed 255 assertions, and escalated the discrepancy instead of using the plan's designated gate. |
+| GREEN | The plan names a canonical gate with a zero-failure baseline. The Lead reruns and reconciles that gate locally; the command mismatch is not a user decision. |
 
 ## Scenario 20 - Review Finding-Fix After Pre-Review Correction
 
@@ -147,15 +147,15 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 
 | Run | Observed behavior |
 |---|---|
-| RED | Descendant units such as 03C and 03D were created after earlier resets and obtained fresh local budget for the same product objective, even though the acceptance mechanism had not materially changed. |
+| RED | Descendant units were created after earlier resets and obtained fresh local budget for the same product objective, even though the acceptance mechanism had not materially changed. |
 | GREEN | The plan carries one change-wide reset-descendant count. A real reset changes the acceptance mechanism, evidence boundary, fixture/oracle, or ownership; a second changed-kind reset parks and escalates regardless of descendant names. |
 
 ## Scenario 22 - Fixture Failure Parking
 
 | Run | Observed behavior |
 |---|---|
-| RED | A fixture failure was worked around in production integration, or repeated 03C/03D-style reset units were dispatched indefinitely while the fixture contract remained unaccepted. |
-| GREEN | The fixture or harness contract is an independently accepted bounded unit. A fixture failure permits no production workaround; repeated work without acceptance movement parks and escalates rather than creating endless 03C/03D descendants. |
+| RED | A fixture failure was worked around in production integration, or repeated reset-descendant units were dispatched indefinitely while the fixture contract remained unaccepted. |
+| GREEN | The fixture or harness contract is an independently accepted bounded unit. A fixture failure permits no production workaround; repeated work without acceptance movement parks and escalates rather than creating endless reset descendants. |
 
 ## Scenario 23 - Allowed-Scope Exclusion
 
@@ -178,11 +178,11 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 | RED | Measured in the repository on 2026-08-17, before this change: `references/governance.md` required Orchestrator approval of every `plan.md` edit, routing progress ticks and evidence rows through the most expensive tier; the return-threshold paragraph was stated identically in nine files and had to be edited in all nine for one numeric change; `150000` appeared 31 times across 16 files, always followed by an explanation that it cannot be measured; `tests/validate.sh` carried 58 literal phrase assertions across five per-change contract functions that could detect only wording; every Worker read `docs/principles.md` on every dispatch; and `blocked` carried both a pause and a terminal meaning, requiring the distinction to be restated eight times. |
 | GREEN | Pending future observation under the semantic-only plan approval, single-sourced policy prose, retiring contract checks, demoted `150000`, brief-named principles clauses, and the distinct `handover` status added in this change. |
 
-## Scenario 25 - COSMIC Fixture and Integration Dependency Cycle (processed-beef-orchestrate)
+## Scenario 25 - Platform Fixture and Integration Dependency Cycle (processed-beef-orchestrate)
 
 | Run | Observed behavior |
 |---|---|
-| RED | A COSMIC integration packet depended on a fixture that depended back on the integration, or proceeded with a replacement fixture before the fixture contract was accepted, treating the cycle as implementation work. |
+| RED | An alternate-platform integration packet depended on a fixture that depended back on the integration, or proceeded with a replacement fixture before the fixture contract was accepted, treating the cycle as implementation work. |
 | GREEN | Pre-source dependency validation returns `dispatch-invalid` for the cycle and for integration without an accepted fixture or harness dependency. One packet repair is allowed; changing the graph requires an approved semantic plan change. No production workaround, semantic attempt, correction, review, or no-progress increment occurs. |
 
 ## Scenario 26 - Correction-Omitted Test Import (processed-beef-orchestrate / processed-beef-work-unit)
@@ -199,39 +199,39 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 | RED | A generated untracked candidate was overwritten or omitted from the source inventory, then output from a different worktree state was presented as current acceptance evidence. |
 | GREEN | The scoped inventory preserves the generated candidate and classifies approved, modified, deleted, and untracked inputs without mutating excluded state. The source snapshot records relevant untracked inputs, separate read and mutate authorization is retained, and output correspondence plus post-latest-change freshness is required before acceptance. |
 
-## Scenario 28 - Pointer Unsupported Ordered-Write Oracle (processed-beef-orchestrate / processed-beef-work-unit)
+## Scenario 28 - Unsupported Interaction-Ordering Oracle (processed-beef-orchestrate / processed-beef-work-unit)
 
 | Run | Observed behavior |
 |---|---|
-| RED | A pointer-resize ordered-write failure was labeled a harness defect so a repair could change the oracle or expected ordering, widening semantic scope while preserving a passing test. |
+| RED | An interaction-ordering failure was labeled a harness defect so a repair could change the oracle or expected ordering, widening semantic scope while preserving a passing test. |
 | GREEN | Oracle, ownership, route, snapshot, rollback, fixture-contract, and production-invariant changes are disqualified from the bounded verification-repair protocol and remain ordinary semantic work. An oracle change cannot erase correction, finding-fix, or changed-kind-reset counters, and mere relabeling cannot reset no-progress. Acceptance or progress credit requires fresh verified evidence. Separately, one genuine changed-kind reset is allowed once across the change and its descendants when it changes the acceptance mechanism, evidence boundary, fixture/oracle, or ownership; a second changed-kind reset parks and escalates. A changed-kind reset is not a patch, Worker replacement, review pass, or relabeled brief. |
 
-## Scenario 29 - Pointer Payload-Free Signal Typing (processed-beef-orchestrate / processed-beef-work-unit)
+## Scenario 29 - Payload-Free Signal Typing (processed-beef-orchestrate / processed-beef-work-unit)
 
 | Run | Observed behavior |
 |---|---|
-| RED | A payload-free pointer signal exposed a production typing or public-contract change as a verification repair, bypassing the semantic-attempt and review budgets. |
+| RED | A payload-free signal exposed a production typing or public-contract change as a verification repair, bypassing the semantic-attempt and review budgets. |
 | GREEN | A test, fixture, harness, gate, typing, or evidence-plumbing-only correction may use the bounded protocol with fresh snapshots and output correspondence. A production signal type, ownership, public route, or contract change remains semantic work, increments only its semantic-attempt class, and receives no repair credit or no-progress reset. |
 
 ## Scenario 30 - Pre-Effect Live Failures Consume Attempt Budget
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-29 in a plasma-auto-tiler tray session: one live runner stopped before mutation on a harness ownership-query defect and a second stopped before any target scenario because `cargo` was outside `devenv`. Zero product scenarios ran, but both were counted as semantic attempts and the live unit parked. |
+| RED | Observed 2026-08-29 in an external-project session: one live runner stopped before mutation on a harness ownership-query defect and a second stopped before any target scenario because a required tool was unavailable in the project environment. Zero product scenarios ran, but both were counted as semantic attempts and the live unit parked. |
 | GREEN | A live semantic attempt begins at the first intended host mutation or target scenario. Preflight, tool, environment, dependency, working-directory, output-containment, and evidence-path failures before that boundary are mechanically reconciled, preserve their evidence, and consume no semantic-attempt or no-progress budget. Any source fix still follows the ordinary semantic lifecycle, and repeated pre-effect failures require Lead reassessment rather than unlimited reruns. |
 
 ## Scenario 31 - Incidental Baseline And Record Drift Block Valid Work
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-28 and 2026-08-29 in a plasma-auto-tiler tray session: adding a passing test broke an exact pass-count baseline, and stale summary rows repeatedly invalidated dispatches despite a current detailed gate and unchanged behavior, scope, safety, and dependencies. The final plan still reported both zero and two live attempts in different sections. |
+| RED | Observed 2026-08-28 and 2026-08-29 in an external-project session: adding a passing test broke an exact pass-count baseline, and stale summary rows repeatedly invalidated dispatches despite a current detailed gate and unchanged behavior, scope, safety, and dependencies. The final plan still reported conflicting live-attempt counts in different sections. |
 | GREEN | Expected baselines state semantic pass conditions and pin exact counts only when contractual. Added passing tests do not invalidate an unchanged no-failure or no-new-failure baseline. Record-only drift is Lead-reconciled and cannot block source work when the approved semantic plan and gate are unambiguous. |
 
 ## Scenario 32 - Selector And Persona Confused With Process Role
 
 | Run | Observed behavior |
 |---|---|
-| RED | Observed 2026-08-28 in a plasma-auto-tiler tray session: a valid Lead/Orchestrator role packet was rejected because `agent_selector` and host persona used the same label, even though the two process-role fields matched and nested Worker capability was demonstrated. |
+| RED | Observed 2026-08-28 in an external-project session: a valid Lead/Orchestrator role packet was rejected because the agent selector and host persona used the same label, even though the two process-role fields matched and nested Worker capability was demonstrated. |
 | GREEN | `process_role` and `parent_process_role` are the only blocking role fields. Selector, model, and persona observations are reported for host reconciliation but do not invalidate a dispatch when process roles and required capabilities match. |
 
 ## Scenario 33 - Cumulative Process Weight Exceeds Its Work
@@ -266,5 +266,26 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 
 | Run | Observed behavior |
 |---|---|
-| RED | One observed incident, reported by the user in the 2026-10-05 `plasma-auto-tiler` session: the Orchestrator resumed one `gpt-sol` Lead across a cross-platform audit, B1-B5 KDE implementation plus decision research, and an 11-repository comparison plus the B7 native C++/Rust FFI underlay feature. The user flagged excessive cost and likely context rot; host records measure cost growth, while context rot remains unmeasured. See L019. |
+| RED | One observed incident, reported by the user on 2026-10-05: the Orchestrator resumed one Lead across three substantial, distinct assignments. The user flagged excessive cost and likely context rot; user-supplied host records report higher cumulative usage across the reused assignments than for a fresh Lead's first assignment. Context rot remains unmeasured. See L019. |
 | GREEN | Pending observation under the handover-based freshness guidance: after substantial completed work, a new item gets a fresh Lead briefed from the latest handover, and a new unit gets a fresh Worker briefed with relevant handover discoveries and source locations. An unknown or correction on current work resumes the existing agent. These are preferences, not mandatory rotation or completion gates. |
+
+## Scenario 38 - Refused Delegation Is Not Parent Work (processed-beef / processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | User-reported incident: a Worker could not continue, and the Lead took over its work at additional cost. Exact details are unavailable and unverified; see L020. |
+| GREEN | Pending observation under the revised guidance: a refused or failed dispatch pauses that work and reports exact state upward, without parent absorption or costlier routing; only malformed dispatch is repaired. Inherent nesting/capability unavailability still uses the shallowest-safe fallback, escalating only material quality, cost, or risk differences. |
+
+## Scenario 39 - Evidence Is Not A Recommendation (processed-beef / processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Review reports identified that relying on stale or incomplete records could lead to an unsupported recommendation. The reported review inspected decisive sources; no incorrect recommendation was independently observed. See L021. |
+| GREEN | Pending observation under explicit recommendation ownership: Leads return evidence and options, marked verified/unverified for review or decision work; the Orchestrator reads narrow decisive sources before recommending. Leads recommend only when asked. |
+
+## Scenario 40 - Current Decisions And Pending Work (processed-beef / processed-beef-orchestrate)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Review reports found current records containing historical detail and obsolete or conflicting material. Reported measurements were not independently repeated; see L022. |
+| GREEN | Pending observation under the revised record guidance: Leads promote by editing the relevant decision entry in place, without dated or evidence-bearing additions; Orchestrators rewrite pending-only backlog lines and remove them when done, keeping history in change notes and Git. |
