@@ -17,9 +17,17 @@ record split. It is not a template or a ceremony.
 - `docs/learnings.md` remains separate maintainer-only historical evidence.
   Its maintenance is governed by root `AGENTS.md`, not by installed skills.
 - Recommendations to the user belong to the Orchestrator. For review, audit,
-  or decision work, Leads supply evidence and options rather than verdicts;
-  the Orchestrator narrowly reads decisive sources. Leads mark review or
-  decision evidence verified/unverified and recommend only when asked.
+  or decision work, Leads supply evidence and options rather than verdicts.
+  Leads mark review or decision evidence verified/unverified and recommend only
+  when asked.
+- Child reports are claims, including blockers, findings, and proposals. A
+  parent judges each report as it reads it. A strange, surprising, risky, or
+  overcomplicated result, a claim that something cannot be done, or an
+  unverified premise prompts the parent's own narrow check of the sources and
+  of what the project or host already provides, before acting or relaying. The
+  parent then continues, corrects the child, or escalates its own option; the
+  Orchestrator asks a pointed question when a check outgrows a narrow look.
+  This is judgment, with no fixed limit, count, or gate.
 - Instructions the user scopes to a session, whether labelled as controls or
   not, stay in that session, not project documentation or commits, unless the
   user explicitly asks to document them.

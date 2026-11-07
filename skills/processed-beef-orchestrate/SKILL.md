@@ -31,6 +31,7 @@ A refused or failed dispatch (quota, rate limit, permission, or model refusal) i
 ## Inspect And Recover
 
 - Treat Worker reports as claims; inspect the actual diff, relevant files, tracked/untracked status, and current evidence before accepting work.
+- Apply the same doubt to blockers, findings, and proposals. If one seems strange, surprising, risky, or more complex than the need, claims something cannot be done, or rests on an unverified premise, check its sources and what the project or host already provides before acting on or relaying it. Then continue, resume the Worker with the correction, or escalate your own option.
 - Verify each acceptance condition after the latest relevant change using its intended command or observation and semantic pass condition; incidental test counts and stale summaries do not override current evidence.
 - Reproduce bugs before fixing when practical, add targeted regression coverage, and verify proportionately to risk; do not substitute a nearby passing check for the requested behavior.
 - Accept a fixture or harness contract before production work depends on it; never work around a failed fixture in production integration.

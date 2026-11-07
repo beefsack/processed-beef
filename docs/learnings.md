@@ -428,3 +428,35 @@ hypothesis as a fact.
   guidance into broader policy.
 - **Status:** Implemented at the user's direction; no effectiveness measurement
   is claimed.
+
+## L024 - Question Delegated Premises Before Relaying Them
+
+- **Evidence:** One observed incident, recorded in a proposal note reviewed with
+  the user on 2026-11-07 and not retained; `tests/behavioral.md` Scenario 41. The
+  user's OpenCode skill cache held L021's rule from 2026-11-01, so the session
+  likely ran it; the incident's session records were not inspected.
+- **Observed problem:** A report that a host fact had "no script property" was
+  read as "scripts cannot read it". The user received three heavy mechanisms,
+  all inheriting that premise. The Orchestrator recommended one without checking
+  a stated assumption, and it proved unsound. When the user asked for a
+  high-level review, the Orchestrator found a host API already used in the
+  project that was simpler and more correct than every option.
+- **Contributing mechanism:** The user attributes the misread to a cheap model,
+  which can make mistakes or miss things. A narrow brief also yields route-local
+  truth, while only a parent sees the wider need. Each level then treated the
+  claim as settled: L021's reading rule covered only review, audit, and decision
+  work, "narrowly cited source" excluded looking for uncited alternatives, and
+  "Treat Worker reports as claims" addressed accepting completed work. The
+  Orchestrator could find the answer once asked, so the gap was disposition
+  rather than capability.
+- **Change and rationale:** Parents judge every report as they read it and check
+  sources themselves when it seems strange, surprising, risky, or overcomplicated,
+  claims something cannot be done, or rests on an unverified premise, including
+  what the project or host already provides. They then continue, correct the
+  child, or escalate their own option. Workers report negatives as what they
+  checked. A rejected proposal would have required review of every listed output
+  type, ordered questions, and a report of checks on every upward message; this
+  is guidance rather than a gate, and it sets no numeric limit because fixed
+  limits have repeatedly caused dysfunction.
+- **Status:** Implemented; the user is observing runtime behavior for problems
+  or dysfunction. Behavioral effectiveness remains pending observation.

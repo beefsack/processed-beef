@@ -289,3 +289,10 @@ directly) - was observed RED on 2026-08-07; see Scenario 8.
 |---|---|
 | RED | Review reports found current records containing historical detail and obsolete or conflicting material. Reported measurements were not independently repeated; see L022. |
 | GREEN | Pending observation under the revised record guidance: Leads promote by editing the relevant decision entry in place, without dated or evidence-bearing additions; Orchestrators rewrite pending-only backlog lines and remove them when done, keeping history in change notes and Git. |
+
+## Scenario 41 - Unexamined Premise Reaches The User (processed-beef / processed-beef-orchestrate / processed-beef-work-unit)
+
+| Run | Observed behavior |
+|---|---|
+| RED | Observed incident: "no script property" was read as "scripts cannot read it", so the user chose among three heavy mechanisms sharing that premise. The Orchestrator recommended one without checking a stated assumption, which proved unsound; a user-requested review then found a simpler host API already used in the project. See L024. |
+| GREEN | Pending observation under the revised guidance: parents judge each report as they read it and, when it seems strange, surprising, risky, or overcomplicated, claims something cannot be done, or rests on an unverified premise, narrowly check its sources and what the project or host already provides before acting or relaying. Workers report negatives as what they checked. Routine reports get no extra review, and no numeric limit applies. |

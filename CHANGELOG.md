@@ -2,6 +2,12 @@
 
 ## 1.0.0
 
+- Delegated premise checks: parents judge each child report as they read it and
+  check sources themselves when a result seems strange, surprising, risky, or
+  overcomplicated, claims something cannot be done, or rests on an unverified
+  premise, including what the project or host already provides. They then
+  continue, correct the child, or escalate their own option. Workers report
+  negatives as what they checked. No gates, stages, records, or numeric limits.
 - Distribution: replace the OpenCode plugin with an OpenCode `skills.urls`
   index, `skills/index.json`, served from `main`. OpenCode never refreshes a
   cached Git or `@latest` plugin install, so plugin users stayed on their first

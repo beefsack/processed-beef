@@ -30,4 +30,4 @@ Execute the current bounded unit from the Lead's brief as a Worker, the cheapest
 
 Continue until the unit is done, materially blocked, or needs a material decision; then return the result and a lean handover to the Lead: reusable discoveries with source locations, decisions, failed approaches, gotchas or risks, evidence, and exact next action (`none` when complete), selecting what the parent or a successor needs to avoid repeating exploration. Carry any nonzero semantic failed approach and one causal repair in that handover. Use no approval gate, progress record, retry ledger, tick, or completion transaction.
 
-For investigation with no diff, answer every requested fact explicitly and cite the inspected source.
+For investigation with no diff, answer every requested fact explicitly and cite the inspected source. Report a blocker or negative finding as what you checked and what you did not; "this route fails" is not "this cannot be done".
