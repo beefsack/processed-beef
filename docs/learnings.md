@@ -460,3 +460,25 @@ hypothesis as a fact.
   limits have repeatedly caused dysfunction.
 - **Status:** Implemented; the user is observing runtime behavior for problems
   or dysfunction. Behavioral effectiveness remains pending observation.
+
+## L025 - Quiesce Session-Bound Work Before Handover
+
+- **Observed problem:** A Lead handed over with a background owner watcher
+  armed; the watcher could only wake the locked session yet held its entity's
+  single watcher slot until the parent killed it by pid. A child locked after
+  writing its handover while still shown as running to its parent, needing user
+  notice and a manual kill. Handovers while durable external work (a bucket task
+  run by another entity) was in flight resumed cleanly from that durable state.
+- **Contributing mechanism:** Handover guidance covered what to write, not what
+  the session still had running. Background commands and child sessions are
+  bound to the session that started them and cannot be inherited.
+- **Change and rationale:** Before returning or handing over, a session stops
+  background commands and watchers it started and lets running children finish
+  or stops them and carries their reported state into its own handover (a
+  successor briefs fresh children; it cannot adopt them), naming durable work left running
+  elsewhere with the ids and cursors a successor needs. A strict "no
+  outstanding tasks" rule was rejected: a long external task would leave an
+  exhausted session unable to hand over. Host tool support (refuse or warn on
+  live children/processes) is a separate proposal
+  (`docs/changes/handover-quiescence.md`).
+- **Status:** Implemented; behavioral effectiveness pending observation.
