@@ -482,3 +482,21 @@ hypothesis as a fact.
   live children/processes) is a separate proposal
   (`docs/changes/handover-quiescence.md`).
 - **Status:** Implemented; behavioral effectiveness pending observation.
+
+## L026 - Work Alongside A Child Only Without Overlap
+
+- **Observed problem:** Leads kept reading, reviewing, and planning while a
+  Worker ran, and one Lead ran three Workers at once. The Workers edited
+  separate files, yet one extended the harness that measured the other two
+  Workers' changes, so its results went stale as they landed.
+- **Contributing mechanism:** "One at a time by default" left exceptions to the
+  model's judgment of independence, which it read as file separation. Host
+  subagent tools run children in the background and encourage continuing on
+  non-overlapping work, and an idle parent reports to its own parent, so
+  waiting feels like stopping.
+- **Change and rationale:** A parent works alongside a running child only when
+  nothing it edits, reads, builds, measures, or concludes can be changed by the
+  child's outcome; when unsure, it waits. This keeps clearly separate
+  parallelism, avoids inviting wasted effort, and adds no gate, count, or
+  record. An outright ban on parallel work was rejected as unhelpful.
+- **Status:** Implemented; behavioral effectiveness pending observation.

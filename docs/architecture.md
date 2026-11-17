@@ -125,7 +125,10 @@ them. Workers never maintain project records.
 One subagent at a time is the default because subscription quotas can be
 exhausted unpredictably and concurrent loss is expensive. It is not an
 artificial prohibition: the user may choose concurrency when quota behavior is
-understood and work, recovery, and integration are isolated.
+understood and work, recovery, and integration are isolated. A parent works
+alongside a running child only when nothing it edits, reads, builds, measures,
+or concludes can be changed by that child's outcome; isolation by file alone is
+not enough. When unsure, it waits.
 
 Full operation requires depth-two nesting. If unavailable, the Orchestrator
 reports the material quality or cost consequence and uses the shallowest safe

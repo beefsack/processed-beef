@@ -2,12 +2,12 @@
   "skills": [
     {
       "name": "processed-beef",
-      "version": "fa81fb5734b8",
+      "version": "53879e10b6e7",
       "files": ["SKILL.md"]
     },
     {
       "name": "processed-beef-orchestrate",
-      "version": "33138e92145b",
+      "version": "8b3e0a032d4f",
       "files": ["SKILL.md"]
     },
     {

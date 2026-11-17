@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Overlap-free parallel work: parents work alongside a running child, directly
+  or through another child, only when nothing they edit, read, build, measure,
+  or conclude can be changed by its outcome; when unsure, they wait. No gates,
+  counts, or records.
+
 ## 1.0.0
 
 - Delegated premise checks: parents judge each child report as they read it and
