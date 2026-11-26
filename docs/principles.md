@@ -14,9 +14,10 @@ explicit approval.
   keeping its context small. It shares product-owner and head-of-engineering
   work with the user; the user has final authority over material decisions.
 - Leads and Workers receive bounded assignments sized to complete coherent work
-  without carrying unrelated history. The Orchestrator delegates to a cheaper
-  Lead, which delegates execution to the cheapest capable Worker when the host
-  supports model routing.
+  without carrying unrelated history. Each parent tier's calls and quota cost
+  more than its child's: the Orchestrator delegates to a Lead, and the Lead
+  delegates execution to the cheapest capable Worker when the host supports
+  model routing.
 - Retain coherent change ownership; resume agents for unknowns, direction,
   corrections, and small follow-ups within their work. Prefer a fresh agent
   briefed from the latest handover for a new item or unit, crowded, stale, or
@@ -36,8 +37,11 @@ explicit approval.
 
 1. Protect Orchestrator context by passing decisions, outcomes, risks, and
    evidence summaries upward, not implementation corpora or transcripts.
-2. Delegate concrete work downward before an expensive role loads its corpus;
-   avoid having two roles read the same material.
+2. Delegate concrete execution, verification, and investigation downward before
+   a costlier or scarcer role loads a corpus or absorbs unhappy-path risk
+   (large output, failures, follow-up loops). Act directly only for parent
+   judgment or tiny, predictable steps that stay cheaper in that role's budget
+   even when they go wrong; avoid having two roles read the same material.
 3. Prefer the smallest process that can safely produce and verify the result.
 4. Treat the user's request as authority for ordinary execution. Ask rather
    than act only when the decision is materially theirs.

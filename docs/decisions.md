@@ -74,3 +74,12 @@ record split. It is not a template or a ceremony.
   action; use `none` when no action remains. Do not require routine
   changed-path/outcome recaps, transcripts, repeated briefs, schemas,
   lifecycle/status machines, fixed token/tool ceilings, counters, or ledgers.
+- Parent tiers protect their scarcer budget and context by delegating execution,
+  verification commands, edits, investigation, and iterative or open-ended work
+  downward by default, reading imperative verbs in incoming briefs as outcomes
+  to deliver through children. Act directly only for parent judgment or tiny,
+  predictable steps that stay cheaper in the parent's own budget even on the
+  unhappy path (large output, failures, or follow-up debugging). Orchestrator
+  premise self-checks stay narrow reads and searches; builds, command runs, and
+  environment diagnosis go downward. No delegation ratios, tool caps, or
+  routine handover delegation logs apply.

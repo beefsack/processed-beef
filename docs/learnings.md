@@ -500,3 +500,36 @@ hypothesis as a fact.
   parallelism, avoids inviting wasted effort, and adds no gate, count, or
   record. An outright ban on parallel work was rejected as unhelpful.
 - **Status:** Implemented; behavioral effectiveness pending observation.
+
+## L027 - Delegate Execution By Relative Cost And Unhappy-Path Risk
+
+- **Evidence:** User-supplied session report on 2026-11-26 summarizing Lead and
+  Orchestrator runs in an external project; source session transcripts were not
+  independently inspected.
+- **Observed problem:** Leads performed file edits, test and build runs,
+  linting, iterative fixture steps, and commits directly, exhausting Lead quota
+  while Workers sat idle. An Orchestrator also ran build and environment
+  diagnostic commands directly instead of delegating them.
+- **Contributing mechanism:** The Lead skill described the role as "a cheaper
+  capable model" without stating that its calls and quota cost more than a
+  Worker's, allowed direct work whenever local happy-path cost looked lower
+  than briefing overhead, listed `integration` and `mechanical reconciliation`
+  as direct Lead work, wrote verification, bug reproduction, and local failure
+  recovery as direct imperatives, and did not tell Leads to read imperative
+  brief verbs as delegated outcomes. Base model bias toward direct tool use
+  amplified those openings. On the Orchestrator, premise self-check guidance
+  did not explicitly exclude running builds or diagnostic commands.
+- **Change and rationale:** Align `docs/principles.md`, `docs/decisions.md`,
+  and the Orchestrator and Lead skills around downward relative cost and
+  unhappy-path risk (large output, wrong flags, failures, follow-up loops):
+  delegate execution, verification commands, edits, investigation, and iterative
+  work by default (giving Workers loops and stop criteria with checkpointed
+  resumption), read incoming brief verbs as delegated outcomes, frame
+  verification and failure recovery through Workers, and restrict direct parent
+  work to judgment or tiny, predictable steps that stay cheaper in the parent's
+  budget even on the unhappy path. Keep Orchestrator self-checks to narrow
+  reads and searches. Rejected proposals included hard delegation bans ("unless
+  no Worker can do it"), enumerated action prohibitions, numeric caps/ratios,
+  and mandatory handover delegation logs, all of which add ceremony or
+  encourage wasteful dispatches.
+- **Status:** Implemented; behavioral effectiveness pending observation.
